@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "292161351614",
+    "firebase_url": "https://work-collab-19f97-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "work-collab-19f97",
+    "storage_bucket": "work-collab-19f97.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:292161351614:android:6296820e9d4b78e58013ef",
+        "android_client_info": {
+          "package_name": "com.example.workcollab"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "292161351614-v8pjmqfishfh3idi49t7rcis8vaoec47.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBOiyg94Vf3jtRknnJS465pU3bUfDLrYqc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "292161351614-v8pjmqfishfh3idi49t7rcis8vaoec47.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

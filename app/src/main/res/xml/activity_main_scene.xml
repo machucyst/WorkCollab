@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:motion="http://schemas.android.com/apk/res-auto">
+
+    <Transition
+        motion:constraintSetStart="@id/start"
+        motion:constraintSetEnd="@+id/login"
+        motion:duration="1000"
+        motion:motionInterpolator="cubic(0.52,0,0.31,1)">
+       <KeyFrameSet>
+       </KeyFrameSet>
+        <OnSwipe motion:maxAcceleration="0.1" />
+    </Transition>
+
+    <Transition
+        motion:constraintSetStart="@id/start"
+        motion:constraintSetEnd="@+id/signup"
+        motion:duration="1000">
+        <KeyFrameSet>
+        </KeyFrameSet>
+        <OnSwipe motion:maxAcceleration="0.1"/>
+    </Transition>
+
+    <Transition
+        motion:constraintSetStart="@id/login"
+        motion:constraintSetEnd="@+id/signup"
+        motion:duration="1200">
+        <KeyFrameSet>
+        </KeyFrameSet>
+    </Transition>
+
+    <ConstraintSet>
+    </ConstraintSet>
+
+    <ConstraintSet android:id="@+id/login">
+        <Constraint
+            android:id="@+id/imageView"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintVertical_bias="0.089999974"
+            motion:layout_constraintHorizontal_bias="0.5"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:scaleX="0.7"
+            android:scaleY="0.7" />
+        <Constraint
+            android:elevation="20dp"
+            motion:layout_constraintEnd_toStartOf="@+id/toSignUp"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            motion:layout_constraintHorizontal_chainStyle="packed"
+            motion:layout_constraintTop_toBottomOf="@+id/imageView"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="800dp"
+            android:id="@+id/toLogIn" />
+        <Constraint
+            android:elevation="20dp"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintStart_toEndOf="@+id/toLogIn"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            motion:layout_constraintTop_toBottomOf="@+id/imageView"
+            android:layout_marginTop="800dp"
+            android:id="@+id/toSignUp" />
+        <Constraint
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="350dp"
+            android:id="@+id/logInLayout"
+            motion:transitionEasing="cubic(0.35,0,0.75,1)" />
+        <Constraint
+            android:id="@+id/signUpLayout"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="1200dp"
+            motion:transitionEasing="cubic(0.46,0,0.8,0.8)" />
+        <Constraint
+            android:id="@+id/signUpLayout"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="1200dp"
+            motion:transitionEasing="cubic(0.46,0,0.47,1)" />
+    </ConstraintSet>
+
+    <ConstraintSet android:id="@+id/signup">
+        <Constraint
+            android:id="@+id/imageView"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintVertical_bias="0.089999974"
+            motion:layout_constraintHorizontal_bias="0.5"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:scaleX="0.7"
+            android:scaleY="0.7" />
+        <Constraint
+            android:elevation="20dp"
+            motion:layout_constraintEnd_toStartOf="@+id/toSignUp"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            motion:layout_constraintHorizontal_chainStyle="packed"
+            motion:layout_constraintTop_toBottomOf="@+id/imageView"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="800dp"
+            android:id="@+id/toLogIn" />
+        <Constraint
+            android:elevation="20dp"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintStart_toEndOf="@+id/toLogIn"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            motion:layout_constraintTop_toBottomOf="@+id/imageView"
+            android:layout_marginTop="800dp"
+            android:id="@+id/toSignUp" />
+        <Constraint
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="300dp"
+            android:id="@+id/signUpLayout"
+            motion:transitionEasing="cubic(0.38,0,0.69,1)" />
+        <Constraint
+            android:id="@+id/logInLayout"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="1200dp"
+            motion:transitionEasing="cubic(0.2,0.2,0.64,1)" />
+        <Constraint
+            android:id="@+id/logInLayout"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="1200dp"
+            motion:transitionEasing="cubic(0.5,0,0.64,1)" />
+    </ConstraintSet>
+</MotionScene>
