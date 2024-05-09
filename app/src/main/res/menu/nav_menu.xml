@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/menu_home"
+            android:checkable="true"
+            android:icon="@drawable/ic_home_black_24dp"
+            android:title="Home"></item>
+        <item
+            android:id="@+id/menu_groups"
+            android:checkable="true"
+            android:icon="@drawable/baseline_group_24"
+            android:title="Groups"></item>
+        <item
+            android:id="@+id/menu_tasks"
+            android:checkable="true"
+            android:icon="@drawable/ic_username"
+            android:title="Tasks"></item>
+        <item
+            android:id="@+id/menu_profile"
+            android:checkable="false"
+            android:icon="@drawable/ic_username"
+            android:title="Account Details">
+        </item>
+        <item
+            android:id="@+id/menu_aboutUs"
+            android:checkable="true"
+            android:icon="@drawable/icon_test"
+            android:title="About Us"></item>
+        <item
+            android:id="@+id/menu_logOut"
+            android:checkable="true"
+            android:icon="@drawable/ic_username"
+            android:title="Log Out">
+        </item>
+    </group>
+</menu>

@@ -24,12 +24,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class SetupAccountActivity extends AppCompatActivity {
     DatabaseFuncs db = new DatabaseFuncs();
-    UsersDatabase userDb = new UsersDatabase(this);
     String userEmail,userPassword,userName;
-    String[] groups = {"null"};
     ActivitySetupAccountBinding b;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,59 +36,28 @@ public class SetupAccountActivity extends AppCompatActivity {
         FirebaseApp.initializeApp(this);
         b = DataBindingUtil.setContentView(this,R.layout.activity_setup_account);
 
-        User user = null;
         Intent intent = getIntent();
         Bundle bu = intent.getExtras();
 
-        if (bu != null) {
-            userEmail = (String) bu.get("user-email");               // this
-            userPassword = bu.getString("user-password");
-            userName = bu.getString("user-name");
-            incomplete(userEmail);
-            user = userDb.findUserByEmail(userEmail);
-        }
 
 
         b.btnShowPass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    if (isEmptyField(b.etFN)||isEmptyField(b.etLN)||isEmptyField(b.etMI)||isEmptyField(b.etAGE)||isEmptyField(b.etCN)||isEmptyField(b.etAD)){
-                        Toast.makeText(SetupAccountActivity.this, "Please Fill In All Text Fields", Toast.LENGTH_SHORT).show();
-                    }else{
-//                        try{
-                            String test = b.etAGE.getText().toString();
-                            int x = Integer.valueOf(test);
-                            User user = null;
-                            Intent intent = getIntent();
-                            user = userDb.findUserByEmail(userEmail);
 
-                            if (userEmail.equals("")) userEmail = incompleteSignUp();
-                            db.InitDB();
-                            db.CreateAccount(userName,userPassword,userEmail,Integer.valueOf(StrValOf(b.etCN)), groups);
-//                            User userB = new User(user.getName(),userEmail,user.getPassword(),StrValOf(b.etFN),StrValOf(b.etLN),StrValOf(b.etMI),Integer.parseInt(StrValOf(b.etAGE)),StrValOf(b.etCN),null,StrValOf(b.etAD),null);
-//                            userB.setProfile(null);
-//                            userDb.updateUser(userB);
-//                            userDb.addUser(userB);
-//                            FirebaseAuth.getInstance().createUserWithEmailAndPassword(userEmail,user.getPassword());
-//                            DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("users");
-//                            dbRef.child("users").setValue(userB);
-                            Intent toMenu = new Intent(SetupAccountActivity.this, MainMenuActivity.class);
-                            stayLogIn(userEmail);
-                            complete();
-                            startActivity(toMenu);
-                            finish();
-//
-//                        } catch (Exception ex){
-//                            Toast.makeText(SetupAccountActivity.this, "Invalid Age", Toast.LENGTH_SHORT).show();
-//                            System.out.println(ex);
-//                        }
+                db.CreateAccount(bu.getString("user-name"), bu.getString("user-password"), bu.getString("user-email"), StrValOf(b.etCN), new DatabaseFuncs.UpdateListener() {
+                    @Override
+                    public void onUpdate(Map user) {
+                        Intent toMenu = new Intent(SetupAccountActivity.this, MainMenuActivity.class);
+                        stayLogIn(user.get("Email").toString());
+                        complete();
+                        startActivity(toMenu);
+                        finish();
 
                     }
-
-
+                });
             }
         });
-
     }
     private void stayLogIn(String email) {
         SharedPreferences sharedPreferences = getSharedPreferences("UserLogInPreferences", Context.MODE_PRIVATE);
@@ -120,3 +88,4 @@ public class SetupAccountActivity extends AppCompatActivity {
         return view.getText().toString();
     }
 }
+

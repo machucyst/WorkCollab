@@ -1,0 +1,61 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@drawable/background_default">
+
+        <TextView
+            android:id="@+id/edit_account"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/DefaultTextStyle"
+            android:text="Edit Account" />
+
+        <EditText
+            android:id="@+id/editText"
+            style="@style/TextHolder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Enter Text"
+            android:inputType="text"
+            android:paddingLeft="20dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="150dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/Cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/SecondTextStyle"
+                android:background="@drawable/button_default"
+                android:layout_weight="1"
+                android:layout_marginEnd="5dp"
+                android:textAlignment="center"
+                android:text="Cancel" />
+
+            <TextView
+                android:id="@+id/Ok"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:background="@drawable/button_default"
+                style="@style/SecondTextStyle"
+                android:layout_weight="1"
+                android:text="Ok" />
+        </LinearLayout>
+
+    </LinearLayout>
+</layout>

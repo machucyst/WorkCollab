@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="oval">
+            <stroke android:width="2dp"
+                android:color="@color/deviceTheme"/>
+            <size android:width="50dp"
+                android:height="50dp"/>
+            <gradient android:startColor="@color/deviceTheme"
+                android:endColor="@color/deviceTheme"
+                android:centerColor="@color/deviceTheme"
+                android:angle="-90"/>
+        </shape>
+    </item>
+    <item android:drawable="@drawable/ic_baseline_add_24"
+        android:gravity="center"/>
+</selector>

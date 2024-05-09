@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".AccountEditFragment" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/deviceTheme2"
+                android:orientation="horizontal"
+                android:padding="5dp">
+
+                <ImageView
+                    android:id="@+id/backbtn"
+                    app:tint="@color/deviceThemeInverted"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_back_arrow" />
+
+                <TextView
+                    android:id="@+id/editHeader"
+                    style="@style/SecondTextStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="5dp"
+                    android:layout_weight="1"
+                    android:text="Account"
+                    android:textColor="@color/deviceThemeInverted" />
+
+                <TextView
+                    android:id="@+id/saveEdit"
+                    style="@style/SecondTextStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="5dp"
+                    android:layout_weight="1"
+                    android:textAlignment="viewEnd"
+                    android:paddingRight="15dp"
+                    android:visibility="gone"
+                    android:text="Save"
+                    android:textColor="@color/deviceThemeInverted" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_helper"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:text="value" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/deviceTheme2">
+
+                <EditText
+                    android:id="@+id/editTextText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/SecondTextStyle"
+                    android:textColor="@color/deviceThemeInverted"
+                    android:padding="10dp"
+                    android:textSize="28dp"
+                    android:background="@color/fui_transparent"
+                    android:ems="10"
+                    android:inputType="text"
+                    android:text="Name" />
+            </FrameLayout>
+
+        </LinearLayout>
+    </FrameLayout>
+</layout>

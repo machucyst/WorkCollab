@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainFragment"
+        android:background="@color/fui_transparent">
+
+        <!-- TODO: Update blank fragment layout -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:elevation="20dp"
+                android:background="@color/deviceTheme2"
+                android:layout_margin="20dp">
+
+                <TextView
+                    android:id="@+id/tv_dashboard"
+                    style="@style/SecondTextStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:paddingRight="10dp"
+                    android:text="Deadlines"
+                    android:textAlignment="textEnd"
+                    android:textColor="@color/deviceThemeInverted"
+                    android:textSize="34sp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_deadlines"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="10dp"
+                    android:background="@color/white" >
+
+                </androidx.recyclerview.widget.RecyclerView>
+
+            </LinearLayout>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_G"
+                style="@style/TextHolder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:padding="5dp"
+                android:text="Groups"
+                android:textSize="48sp" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_nG"
+                style="@style/TextHolder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:padding="5dp"
+                android:text="New Group"
+                android:textSize="48sp" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+</layout>

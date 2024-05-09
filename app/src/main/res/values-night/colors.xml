@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="deviceTheme">#2E2E2E</color>
+    <color name="deviceThemeInverted">#F1E9E9</color>
+    <color name="deviceTheme2">#403C3C</color>
+    <color name="deviceThemeInverted2">#FFF1E9E9</color>
+    <color name="appThemeInverted">#D082ED</color>
+    <color name="appTheme">#6418EA</color>
+    <color name="appTheme2">#503E70</color>
+    <color name="appThemeInverted2">#CB95DF</color>
+</resources>

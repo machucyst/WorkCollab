@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/additionalText"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+
+            android:layout_marginEnd="10dp"
+            android:layout_weight="1"
+            android:padding="3dp"
+            android:text="Loading..."
+            android:gravity="end|center"
+            android:fontFamily="@font/bahnschrift"
+            android:textColor="@color/deviceThemeInverted"
+            android:textSize="13dp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_kb_right_24"
+            app:tint="@color/deviceThemeInverted" />
+    </LinearLayout>
+</layout>

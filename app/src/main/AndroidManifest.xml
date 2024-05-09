@@ -24,15 +24,18 @@
         android:theme="@style/Theme.WorkCollab"
         tools:targetApi="31">
         <activity
+            android:name=".menu_custom_layout"
+            android:exported="false" />
+        <activity
             android:name=".ChatRoom"
             android:exported="false" />
         <activity
             android:name=".MainMenuActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".CropperActivity"
-            android:exported="false"
-            android:theme="@style/Theme.WorkCollab" />
+            android:exported="false" />
         <activity
             android:name=".SetupAccountActivity"
             android:exported="false"
@@ -40,7 +43,9 @@
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/Theme.WorkCollab"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
