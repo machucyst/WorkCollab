@@ -2,7 +2,9 @@ package com.example.workcollab;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -12,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
+import androidx.palette.graphics.Palette;
 
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,6 +24,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.example.workcollab.databinding.DialogLogoutConfirmBinding;
 import com.example.workcollab.databinding.DialogTextInputBinding;
 import com.example.workcollab.databinding.FragmentSettingsBinding;
@@ -97,47 +102,44 @@ public class SettingsFragment extends Fragment{
 
         // Inflate the layout for this fragment
         b = FragmentSettingsBinding.inflate(inflater,container,false);
-//        b.btnEditAc.setOnClickListener(v->{
-//            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-//            dtb = DialogTextInputBinding.inflate(getLayoutInflater().from(requireContext()));
-//            builder.setView(dtb.getRoot());
-//            AlertDialog dialog = builder.create();
-//            dtb.editAccount.setText("Edit Username");
-//            dtb.Cancel.setOnClickListener(k->{
-//                dialog.dismiss();;
-//            });
-//            dtb.Ok.setOnClickListener(k ->{
-//                db.UpdateAccount(user.get("Email").toString(), dtb.editText.getText().toString(),"Username",new DatabaseFuncs.UpdateListener(){
-//                    @Override
-//                    public void onUpdate(Map user){
-//                        Toast.makeText(requireContext(),"Updated Username",Toast.LENGTH_SHORT).show();
-//                        db.InitDB(user.get("Email").toString(), new DatabaseFuncs.DataListener() {
-//                            @Override
-//                            public void onDataFound(Map user) {
-//                                b.u.setText(user.get("Username").toString());
-//                            }
-//
-//                            @Override
-//                            public void noDuplicateUser() {
-//
-//                            }
-//                        });
-//                        dialog.dismiss();
-//                    }
-//
-//
-//                });
-//            });
-//            dialog.show();
-//        });
+
 
         db.InitDB(user.get("Email").toString(), new DatabaseFuncs.DataListener() {
             @Override
             public void onDataFound(Map user) {
                 b.tvUsername.setText(user.get("Username").toString());
                 b.tvAccount.setText(user.get("Email").toString());
+                b.profileImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        MainMenuActivity.selected = "NotProfile";
+                        requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), ProfileAccountEditFragment.newInstance(user)).addToBackStack(null).commit();
+
+                    }
+                });
                 try{
                     Glide.with(getContext()).asBitmap().load(Uri.parse(user.get("Profile").toString())).into(b.profileImage);
+                    CustomTarget<Bitmap> bitmap = Glide.with(requireContext()).asBitmap().load(user.get("Profile").toString()).into(new CustomTarget<Bitmap>() {
+
+                        @Override
+                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                            Palette p = Palette.from(resource).generate();
+                            int colorWhite = getResources().getColor(R.color.white, getActivity().getTheme());
+                            switch (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK){
+                                case Configuration.UI_MODE_NIGHT_YES:
+                                    b.profileBackgroundView.setBackgroundColor(p.getDarkVibrantColor(colorWhite));
+                                    break;
+                                case Configuration.UI_MODE_NIGHT_NO:
+                                    b.profileBackgroundView.setBackgroundColor(p.getVibrantColor(colorWhite));
+                                    break;
+                            }
+                        }
+
+                        @Override
+                        public void onLoadCleared(@Nullable Drawable placeholder) {
+
+                        }
+                    });
                 } catch (Exception ex){
                     ex.printStackTrace();
                 }

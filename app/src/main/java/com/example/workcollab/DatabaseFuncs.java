@@ -32,8 +32,6 @@ public class DatabaseFuncs {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseStorage fbs = FirebaseStorage.getInstance();
     StorageReference reference = fbs.getReference();
-    DocumentReference docAccRef = db.document("Account");
-
     CollectionReference account = db.collection("Account");
     CollectionReference groups = db.collection("Groups");
     Map user;
@@ -48,7 +46,7 @@ public class DatabaseFuncs {
         void onDataFound(Map user);
         void noDuplicateUser();
     }
-    public void SaveProfile(Map user, Uri value){
+    public void SaveProfile(Map user, Uri value, UpdateListener listener){
         reference.child("AccountProfiles/"+user.get("Id").toString()+"/Profile.png").putFile(value)
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -60,11 +58,11 @@ public class DatabaseFuncs {
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        reference.child("Account/"+user.get("Id").toString()+"/Profile").getDownloadUrl().addOnSuccessListener(uri->{
+                        reference.child("AccountProfiles/"+user.get("Id").toString()+"/Profile.png").getDownloadUrl().addOnSuccessListener(uri->{
                             UpdateAccount(user.get("Email").toString(), uri.toString(), "Profile", new UpdateListener() {
                                 @Override
                                 public void onUpdate(Map user) {
-                                    System.out.println("Saved Profile");
+                                   listener.onUpdate(user);
                                 }
                             });
                         });

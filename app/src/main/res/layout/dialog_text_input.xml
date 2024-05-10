@@ -9,24 +9,36 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp"
-        android:background="@drawable/background_default">
+        android:background="@color/deviceTheme">
 
         <TextView
             android:id="@+id/edit_account"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/DefaultTextStyle"
+            style="@style/SecondTextStyle"
+            android:textSize="25dp"
+            android:textColor="@color/deviceThemeInverted"
+            android:fontFamily="@font/bahnschrift"
             android:text="Edit Account" />
 
-        <EditText
-            android:id="@+id/editText"
-            style="@style/TextHolder"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Enter Text"
-            android:inputType="text"
-            android:paddingLeft="20dp" />
+            style="@style/TextHolder"
+            android:layout_height="match_parent">
+
+            <EditText
+                android:id="@+id/editText"
+                style="@style/TextHolder"
+                android:fontFamily="@font/bahnschrift"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/fui_transparent"
+                android:ems="10"
+                android:hint="Enter Text"
+                android:inputType="text"
+
+                android:paddingLeft="20dp" />
+        </FrameLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -40,6 +52,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/SecondTextStyle"
+                android:fontFamily="@font/bahnschrift"
                 android:background="@drawable/button_default"
                 android:layout_weight="1"
                 android:layout_marginEnd="5dp"
@@ -53,6 +66,7 @@
                 android:textAlignment="center"
                 android:background="@drawable/button_default"
                 style="@style/SecondTextStyle"
+                android:fontFamily="@font/bahnschrift"
                 android:layout_weight="1"
                 android:text="Ok" />
         </LinearLayout>

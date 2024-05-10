@@ -30,7 +30,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Map;
 
-public class MainMenuActivity extends AppCompatActivity implements SettingsFragment.ButtonListeners,AccountEditFragment.UpdateListener{
+public class MainMenuActivity extends AppCompatActivity implements SettingsFragment.ButtonListeners,AccountEditFragment.UpdateListener,ProfileAccountEditFragment.ButtonListeners{
     ActivityMainMenuBinding b;
     DialogLogoutConfirmBinding bl;
     ActivityResultLauncher<String> mGetCont;
@@ -119,9 +119,16 @@ public class MainMenuActivity extends AppCompatActivity implements SettingsFragm
             Uri resultUri = null;
             if(result!=null){
                 resultUri = Uri.parse(result);
+
             }
             try{
-               db.SaveProfile(user,resultUri);
+               db.SaveProfile(user, resultUri, new DatabaseFuncs.UpdateListener() {
+                   @Override
+                   public void onUpdate(Map user) {
+                       replaceFragment(ProfileAccountEditFragment.newInstance(user),"Profile");
+                   }
+               });
+
             } catch (Exception e){
                 e.printStackTrace();
             }
@@ -140,9 +147,9 @@ public class MainMenuActivity extends AppCompatActivity implements SettingsFragm
         sharedPreferences.edit().remove("user-email").apply();
     }
     public void replaceFragment(Fragment fragment, String condition){
-        if(selected!=condition){
+        if(!selected.equals(condition)){
             selected = condition;
-            getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(),fragment).commit();
+            getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(),fragment).addToBackStack(null).commit();
         }
     }
     public void logOutConfirm(){
@@ -181,5 +188,10 @@ public class MainMenuActivity extends AppCompatActivity implements SettingsFragm
     public void onUpdatedEmail(Map user) {
         stayLogIn(user.get("Email").toString());
         this.user = user;
+    }
+
+    @Override
+    public void onPressChangePFP() {
+        mGetCont.launch("image/*");
     }
 }

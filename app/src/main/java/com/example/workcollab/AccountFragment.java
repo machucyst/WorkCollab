@@ -26,11 +26,6 @@ import com.google.gson.Gson;
 
 import java.util.Map;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link AccountFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class AccountFragment extends Fragment{
 
     public AccountFragment() {
@@ -75,11 +70,11 @@ public class AccountFragment extends Fragment{
         db.InitDB(user.get("Email").toString(), new DatabaseFuncs.DataListener() {
             @Override
             public void onDataFound(Map user) {
-//                listener.onUpdatedEmail(user.get("Email").toString());
                 menuTextChange(R.id.menu_username,user.get("Username").toString());
                 menuTextChange(R.id.menu_password,"");
                 menuTextChange(R.id.menu_contactNumber,user.get("ContactNumber").toString());
                 menuTextChange(R.id.menu_email,user.get("Email").toString());
+                menuTextChange(R.id.menu_profilePicture,"");
             }
 
             @Override
@@ -127,6 +122,9 @@ public class AccountFragment extends Fragment{
                         }
                         if (a == R.id.menu_contactNumber){
                             requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), AccountEditFragment.newInstance(user, "ContactNumber")).addToBackStack(null).commit();
+                        }
+                        if (a == R.id.menu_profilePicture){
+                            requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), ProfileAccountEditFragment.newInstance(user)).addToBackStack(null).commit();
 
                         }
                     }

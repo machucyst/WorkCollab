@@ -71,6 +71,7 @@ public class CropperActivity extends AppCompatActivity {
             finish();
         }else if(resultCode == UCrop.RESULT_ERROR){
             final Throwable cropError = UCrop.getError(data);
+            finish();
         }
     }
 }

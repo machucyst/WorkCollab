@@ -21,6 +21,7 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:background="@color/deviceTheme2"
+                android:id="@+id/profileBackgroundView"
                 android:layout_height="wrap_content">
 
                 <LinearLayout

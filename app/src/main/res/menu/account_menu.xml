@@ -32,4 +32,11 @@
             app:showAsAction="always"
             app:actionLayout="@layout/menu_custom_layout"
         />
+        <item
+            android:id="@+id/menu_profilePicture"
+            android:checkable="true"
+            android:title="Profile"
+            app:showAsAction="always"
+            app:actionLayout="@layout/menu_custom_layout"
+        />
 </menu>
