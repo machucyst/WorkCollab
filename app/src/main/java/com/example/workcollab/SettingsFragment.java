@@ -128,9 +128,13 @@ public class SettingsFragment extends Fragment{
                             switch (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK){
                                 case Configuration.UI_MODE_NIGHT_YES:
                                     b.profileBackgroundView.setBackgroundColor(p.getDarkVibrantColor(colorWhite));
+                                    b.tvUsername.setTextColor(p.getLightMutedColor(colorWhite));
+                                    b.tvAccount.setTextColor(p.getLightMutedColor(colorWhite));
                                     break;
                                 case Configuration.UI_MODE_NIGHT_NO:
                                     b.profileBackgroundView.setBackgroundColor(p.getVibrantColor(colorWhite));
+                                    b.tvUsername.setTextColor(p.getDarkMutedColor(colorWhite));
+                                    b.tvAccount.setTextColor(p.getDarkMutedColor(colorWhite));
                                     break;
                             }
                         }
