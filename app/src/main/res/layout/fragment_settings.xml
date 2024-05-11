@@ -79,13 +79,13 @@
             </FrameLayout>
 
             <com.google.android.material.navigation.NavigationView
+                android:id="@+id/nv_accountInfo"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@color/deviceTheme"
                 app:itemBackground="@color/deviceTheme"
                 app:itemTextAppearance="@style/menuText"
-                android:background="@color/deviceTheme"
-                app:menu="@menu/profile_menu"
-                android:id="@+id/nv_accountInfo"/>
+                app:menu="@menu/profile_menu" />
         </LinearLayout>
 
     </FrameLayout>

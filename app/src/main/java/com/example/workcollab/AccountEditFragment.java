@@ -2,9 +2,6 @@ package com.example.workcollab;
 
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -13,7 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.example.workcollab.databinding.FragmentAccountBinding;
+import androidx.fragment.app.Fragment;
+
 import com.example.workcollab.databinding.FragmentAccountEditBinding;
 import com.google.gson.Gson;
 
@@ -43,7 +41,7 @@ public class AccountEditFragment extends Fragment {
         if (context instanceof AccountEditFragment.UpdateListener) {
             listener = (AccountEditFragment.UpdateListener) context;
         } else {
-            throw new RuntimeException(context.toString()
+            throw new RuntimeException(context
                     + " must implement OnFragmentInteractionListener");
         }
     }
@@ -66,7 +64,7 @@ public class AccountEditFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            System.out.println(getArguments().getString("user").toString() + "awjgoiaehgoaeig");
+            System.out.println(getArguments().getString("user") + "awjgoiaehgoaeig");
             user = gson.fromJson(getArguments().getString("user"), Map.class);
             condition = getArguments().getString("condition");
             conditionValue = condition;
@@ -110,7 +108,8 @@ public class AccountEditFragment extends Fragment {
         b.saveEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (condition.equals("Email")){
+                if (condition.equals("Emai" +
+                        "l")) {
                     System.out.println(condition+"awhjfgaoiehgaoi");
                     db.InitDB(b.editTextText.getText().toString(), new DatabaseFuncs.DataListener() {
                         @Override

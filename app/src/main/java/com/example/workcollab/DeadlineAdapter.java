@@ -32,6 +32,11 @@ public class DeadlineAdapter extends RecyclerView.Adapter<DeadlineAdapter.MyHand
         holder.groups().setText((deadlines.get(position).get("GroupName")).toString());
         db.GetDeadlines(deadlines.get(position).get("GroupId").toString(), new DatabaseFuncs.GroupListener() {
             @Override
+            public void onReceive(List<Map> groups, List<Map> groupLeaders) {
+
+            }
+
+            @Override
             public void onReceive(List<Map> groups) {
 
             }
@@ -40,7 +45,7 @@ public class DeadlineAdapter extends RecyclerView.Adapter<DeadlineAdapter.MyHand
             public void getDeadline(com.google.firebase.Timestamp timestamp) {
                 SimpleDateFormat sdf = new SimpleDateFormat("M/dd hh:mm a",Locale.getDefault());
                 Date d = timestamp.toDate();
-                holder.deadlines().setText(sdf.format(d).toString());
+                holder.deadlines().setText(sdf.format(d));
             }
 
         });

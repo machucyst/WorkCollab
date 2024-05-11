@@ -77,9 +77,9 @@
                 android:layout_height="25sp"
                 android:layout_marginHorizontal="50dp"
                 android:elevation="20dp"
-                android:fontFamily="@font/rubik_regular"
+                android:fontFamily="@font/bahnschrift"
                 android:text="Email:"
-                android:textColor="@color/black"
+                android:textColor="@color/deviceThemeInverted"
                 android:textSize="18sp" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -88,7 +88,7 @@
                 android:layout_marginHorizontal="50dp"
                 android:layout_marginVertical="0dp"
                 android:elevation="30dp"
-                app:endIconTint="@color/black"
+                app:endIconTint="@color/deviceThemeInverted"
                 app:hintEnabled="false"
                 app:startIconDrawable="@drawable/ic_email"
                 app:startIconTint="@color/black">
@@ -98,16 +98,16 @@
                     android:layout_width="300dp"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
-                    android:background="@drawable/button_default"
-                    android:drawableTint="@color/black"
-                    android:fontFamily="@font/rubik_regular"
+                    android:background="@drawable/textholder"
+                    android:drawableTint="@color/white"
+                    android:fontFamily="@font/bahnschrift"
                     android:hint="example@email.com"
                     android:imeOptions="actionNext"
                     android:inputType="textEmailAddress"
                     android:outlineProvider="bounds"
                     android:padding="8dp"
                     android:paddingStart="45dp"
-                    android:textColor="@color/black"
+                    android:textColor="@color/deviceTheme2"
                     android:textColorHint="#A8A8A8"
                     android:textSize="15sp" />
 
@@ -118,9 +118,9 @@
                 android:layout_height="25sp"
                 android:layout_marginHorizontal="50dp"
                 android:elevation="20dp"
-                android:fontFamily="@font/rubik_regular"
+                android:fontFamily="@font/bahnschrift"
                 android:text="Password:"
-                android:textColor="@color/black"
+                android:textColor="@color/deviceThemeInverted"
                 android:textSize="18sp" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -143,9 +143,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="0dp"
-                    android:background="@drawable/button_default"
+                    android:background="@drawable/textholder"
                     android:drawableTint="@color/black"
-                    android:fontFamily="@font/rubik_regular"
+                    android:fontFamily="@font/bahnschrift"
                     android:hint="*************"
                     android:imeOptions="actionDone"
                     android:inputType="textPassword"
@@ -154,7 +154,6 @@
                     android:paddingStart="45dp"
                     android:textColor="@color/black"
                     android:textColorHint="#A8A8A8" />
-
             </com.google.android.material.textfield.TextInputLayout>
 
             <androidx.appcompat.widget.AppCompatCheckBox
@@ -162,7 +161,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-
+                android:textColor="@color/deviceThemeInverted"
                 android:checked="true"
                 android:text="@string/stay_signed_in"
                 android:textSize="15sp"
@@ -175,21 +174,21 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="30dp"
                 android:elevation="20dp"
-                android:fontFamily="@font/rubik_regular"
+                android:fontFamily="@font/bahnschrift"
                 android:onClick="toggleButtons"
                 android:text="@string/sign_up_instead"
-                android:textColor="@color/black"
+                android:textColor="@color/deviceThemeInverted"
                 android:textSize="15sp" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_submitLogIn"
-                style="@style/DefaultButton"
+                style="@style/TextHolder"
+                android:onClick="submitLogIn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="30dp"
                 android:layout_marginBottom="20dp"
-                android:onClick="submitLogIn"
                 android:paddingHorizontal="50dp"
                 android:text="Log In" />
 
@@ -209,10 +208,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="25sp"
                 android:elevation="20dp"
-                android:fontFamily="@font/rubik_regular"
+                android:fontFamily="@font/bahnschrift"
                 android:paddingHorizontal="50dp"
                 android:text="Username:"
-                android:textColor="@color/black"
+                android:textColor="@color/deviceThemeInverted"
                 android:textSize="18sp" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -231,8 +230,8 @@
                     android:layout_width="300dp"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
-                    android:background="@drawable/button_default"
-                    android:fontFamily="@font/rubik_regular"
+                    android:background="@drawable/textholder"
+                    android:fontFamily="@font/bahnschrift"
                     android:hint="Juan Dela Cruz"
                     android:outlineProvider="bounds"
                     android:padding="8dp"
@@ -249,16 +248,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="25sp"
                 android:elevation="20dp"
-                android:fontFamily="@font/rubik_regular"
+                android:fontFamily="@font/bahnschrift"
                 android:paddingHorizontal="50dp"
                 android:text="Email:"
-                android:textColor="@color/black"
+                android:textColor="@color/deviceThemeInverted"
                 android:textSize="18sp" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
                 android:layout_marginHorizontal="50dp"
+                android:background="@drawable/textholder"
+                android:fontFamily="@font/bahnschrift"
                 app:endIconTint="@color/black"
                 app:startIconTint="@color/black"
                 android:layout_marginVertical="0dp"
@@ -270,9 +272,8 @@
                     android:id="@+id/et_emailSignUp"
                     android:layout_width="300dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:background="@drawable/button_default"
-                    android:fontFamily="@font/rubik_regular"
+                    android:background="@drawable/textholder"
+                    android:fontFamily="@font/bahnschrift"
                     android:hint="example@email.com"
                     android:textColor="@color/black"
                     android:inputType="textEmailAddress"
@@ -290,10 +291,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="25sp"
                 android:elevation="20dp"
-                android:fontFamily="@font/rubik_regular"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/bahnschrift"
                 android:paddingHorizontal="50dp"
                 android:text="Password:"
-                android:textColor="@color/black"
+                android:textColor="@color/deviceThemeInverted"
                 android:textSize="18sp" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -304,6 +306,7 @@
                 android:layout_marginVertical="0dp"
                 android:elevation="30dp"
                 app:endIconTint="@color/black"
+                android:background="@drawable/textholder"
                 app:startIconTint="@color/black"
                 app:hintEnabled="false"
                 app:startIconDrawable="@drawable/ic_password"
@@ -316,8 +319,8 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
                     android:layout_margin="0dp"
-                    android:background="@drawable/button_default"
-                    android:fontFamily="@font/rubik_regular"
+                    android:background="@drawable/textholder"
+                    android:fontFamily="@font/bahnschrift"
                     android:hint="*************"
                     android:inputType="textPassword"
                     android:paddingVertical="7dp"
@@ -335,6 +338,7 @@
                 android:layout_height="wrap_content"
                 android:text="Stay Signed In?"
                 style="@style/DefaultTextStyle"
+                android:textColor="@color/deviceThemeInverted"
                 android:textSize="15sp"
                 android:layout_gravity="center"
                 android:checked="true"
@@ -350,12 +354,12 @@
                 android:fontFamily="@font/rubik_regular"
                 android:onClick="toggleButtons"
                 android:text="@string/already_have_an_account"
-                android:textColor="@color/black"
+                android:textColor="@color/deviceThemeInverted"
                 android:textSize="15sp" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_submitSignUp"
-                style="@style/DefaultButton"
+                style="@style/TextHolder"
                 android:onClick="submitSignUp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

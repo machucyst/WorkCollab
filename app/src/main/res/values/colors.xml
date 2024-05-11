@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="black">#FF000000</color>
+    <color name="whiteTint">#4FFFFFFF</color>
     <color name="tint">#8D000000</color>
     <color name="text_black">#232323</color>
     <color name="white">#FFFFFFFF</color>
@@ -12,7 +13,7 @@
     <color name="blue_dark">#1B66BD</color>
     <color name="stroke_blue">#9AD1FF</color>
     <color name="bg_light">#6921dc</color>
-    <color name="bg_medium">#7894f5</color>
+    <color name="bg_dark">#7894f5</color>
     <color name="buttonBg">#7a95f5</color>
     <color name="buttonBgPressed">#637CC6</color>
     <color name="buttonBgBorder">#9b80eb</color>

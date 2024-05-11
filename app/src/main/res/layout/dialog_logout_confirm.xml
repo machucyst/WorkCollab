@@ -13,9 +13,11 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/deviceTheme2"
+            android:background="@drawable/background_default"
             android:orientation="vertical"
             android:padding="16dp"
+            android:backgroundTint="@color/whiteTint"
+            android:backgroundTintMode="src_over"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -26,12 +28,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/bahnschrift"
-                android:textColor="@color/deviceThemeInverted"
-                android:text="Are you sure you want to log out?" />
+                android:text="Are you sure you want to log out?"
+                android:textColor="@color/deviceThemeInverted" />
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="150dp"
                 android:layout_marginTop="5dp"
                 android:orientation="horizontal">
@@ -41,11 +43,12 @@
                     style="@style/SecondTextStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/button_default"
-                    android:text="Cancel"
                     android:layout_marginEnd="5dp"
-                    android:textAlignment="center" />
+                    android:layout_weight="1"
+                    android:background="@drawable/textholder"
+                    android:text="Cancel"
+                    android:textAlignment="center"
+                    android:textColor="@color/black" />
 
                 <TextView
                     android:id="@+id/Ok"
@@ -53,9 +56,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@drawable/button_default"
+                    android:background="@drawable/textholder"
                     android:text="Ok"
-                    android:textAlignment="center" />
+                    android:textAlignment="center"
+                    android:textColor="@color/black" />
             </LinearLayout>
 
         </LinearLayout>

@@ -1,23 +1,16 @@
 package com.example.workcollab;
 
-import android.content.Context;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.core.view.MenuHost;
-import androidx.core.view.MenuProvider;
-import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
 
 import com.example.workcollab.databinding.DialogTextInputBinding;
 import com.example.workcollab.databinding.FragmentAccountBinding;
@@ -55,7 +48,7 @@ public class AccountFragment extends Fragment{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(getArguments() != null) {
-            System.out.println(getArguments().getString("user").toString() + "awjgoiaehgoaeig");
+            System.out.println(getArguments().getString("user") + "awjgoiaehgoaeig");
             user = gson.fromJson(getArguments().getString("user"), Map.class);
         }
 
@@ -89,6 +82,7 @@ public class AccountFragment extends Fragment{
                 db.InitDB(user.get("Email").toString(), new DatabaseFuncs.DataListener() {
                     @Override
                     public void onDataFound(Map user) {
+                        //TODO: Delete account
                         int a = menuItem.getItemId();
                         if (a == R.id.menu_username) {
                             requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), AccountEditFragment.newInstance(user, "Username")).addToBackStack(null).commit();

@@ -9,17 +9,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyHandler>{
 
-    private final List<Map> groups;
+    public final List<Map> groups;
     DatabaseFuncs db = new DatabaseFuncs();
-    private GroupsFragment.PositionListener listener;
+    private final GroupsFragment.PositionListener listener;
 
 
     @NonNull

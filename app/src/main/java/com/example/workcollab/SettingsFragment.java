@@ -7,28 +7,24 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.palette.graphics.Palette;
-
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.workcollab.databinding.DialogLogoutConfirmBinding;
 import com.example.workcollab.databinding.DialogTextInputBinding;
-import com.example.workcollab.databinding.FragmentSettingsBinding;
 import com.example.workcollab.databinding.FragmentSettingsBinding;
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
@@ -60,7 +56,7 @@ public class SettingsFragment extends Fragment{
         if (context instanceof ButtonListeners) {
             listener = (ButtonListeners) context;
         } else {
-            throw new RuntimeException(context.toString()
+            throw new RuntimeException(context
                     + " must implement OnFragmentInteractionListener");
         }
     }
@@ -83,7 +79,7 @@ public class SettingsFragment extends Fragment{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(user == null || (user != null && getArguments() != null)) {
-            System.out.println(getArguments().getString("user").toString() + "awjgoiaehgoaeig");
+            System.out.println(getArguments().getString("user") + "awjgoiaehgoaeig");
             user = gson.fromJson(getArguments().getString("user"), Map.class);
 
         }
@@ -167,6 +163,12 @@ public class SettingsFragment extends Fragment{
                 if (a == R.id.menu_logOut){
                     listener.onLogOutPress();
                     return true;
+                }
+                if (a == R.id.menu_settings) {
+                    //TODO:
+                }
+                if (a == R.id.menu_appearance) {
+                    //TODO: change themes
                 }
                 if (a == R.id.menu_account){
                     MainMenuActivity.selected ="NotAccount";

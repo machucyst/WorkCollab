@@ -1,14 +1,13 @@
 package com.example.workcollab;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.example.workcollab.databinding.FragmentSelectedGroupBinding;
 import com.google.gson.Gson;
@@ -22,7 +21,7 @@ import java.util.Map;
  */
 public class SelectedGroupFragment extends Fragment {
 
-    Map group;
+    static Map group;
     DatabaseFuncs db = new DatabaseFuncs();
     FragmentSelectedGroupBinding b;
     public SelectedGroupFragment() {
@@ -43,7 +42,7 @@ public class SelectedGroupFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(group == null || (group != null && getArguments() != null)){
-            System.out.println(getArguments().getString("user").toString()+"awjgoiaehgoaeig");
+            System.out.println(getArguments().getString("user") + "awjgoiaehgoaeig");
             Gson gson = new Gson();
             group = gson.fromJson(getArguments().getString("user"),Map.class);
 
@@ -54,6 +53,7 @@ public class SelectedGroupFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        //TODO: Edit Group, Add Tasks!!!!!!!!!!, Leave Group.
         b = FragmentSelectedGroupBinding.inflate(inflater,container,false);
         b.tvGroupName.setText(group.get("GroupName").toString());
         return b.getRoot();

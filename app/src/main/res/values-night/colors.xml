@@ -8,4 +8,7 @@
     <color name="appTheme">#6418EA</color>
     <color name="appTheme2">#503E70</color>
     <color name="appThemeInverted2">#CB95DF</color>
+    <color name="bg_light">#3F1780</color>
+    <color name="bg_dark">#3C4A7A</color>
+    <color name="whiteTint">#00000000</color>
 </resources>

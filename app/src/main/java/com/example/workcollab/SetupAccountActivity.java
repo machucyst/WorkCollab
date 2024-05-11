@@ -3,32 +3,29 @@ package com.example.workcollab;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
+import com.bumptech.glide.Glide;
 import com.example.workcollab.databinding.ActivitySetupAccountBinding;
-import com.google.firebase.Firebase;
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 public class SetupAccountActivity extends AppCompatActivity {
     DatabaseFuncs db = new DatabaseFuncs();
     String userEmail,userPassword,userName;
+    ActivityResultLauncher<String> mGetCont;
+    Uri resultUri = null;
     ActivitySetupAccountBinding b;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +36,17 @@ public class SetupAccountActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Bundle bu = intent.getExtras();
 
-
+        mGetCont = registerForActivityResult(new ActivityResultContracts.GetContent(), o -> {
+            Intent a = new Intent(SetupAccountActivity.this, CropperActivity.class);
+            a.putExtra("DATA", o.toString());
+            startActivityForResult(a, 101);
+        });
+        b.profileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mGetCont.launch("image/*");
+            }
+        });
 
         b.btnShowPass.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -48,8 +55,27 @@ public class SetupAccountActivity extends AppCompatActivity {
                 db.CreateAccount(bu.getString("user-name"), bu.getString("user-password"), bu.getString("user-email"), StrValOf(b.etCN), new DatabaseFuncs.UpdateListener() {
                     @Override
                     public void onUpdate(Map user) {
+                        db.SaveProfile(user, resultUri, new DatabaseFuncs.UpdateListener() {
+                            @Override
+                            public void onUpdate(Map user) {
+                                System.out.println("Profile saved");
+                            }
+                        });
+
+                        String[] Machu = new String[1];
+                        Machu[0] = user.get("Id").toString();
+                        db.CreateGroup(user.get("Username").toString() + "'s Group", Arrays.asList(Machu), new DatabaseFuncs.UpdateListener() {
+                            @Override
+                            public void onUpdate(Map user) {
+                                System.out.println("Group Created");
+                            }
+                        });
+
                         Intent toMenu = new Intent(SetupAccountActivity.this, MainMenuActivity.class);
-                        stayLogIn(user.get("Email").toString());
+                        toMenu.putExtra("Email", user.get("Email").toString());
+                        if (bu.getBoolean("StayLogIn")) {
+                            stayLogIn(user.get("Email").toString());
+                        }
                         complete();
                         startActivity(toMenu);
                         finish();
@@ -59,30 +85,28 @@ public class SetupAccountActivity extends AppCompatActivity {
             }
         });
     }
+
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        System.out.println(resultCode + " " + requestCode);
+        if (resultCode == -1 && requestCode == 101) {
+            String result = data.getStringExtra("RESULT");
+            resultUri = null;
+            if (result != null) {
+                resultUri = Uri.parse(result);
+                Glide.with(this).asBitmap().load(resultUri).into(b.profileImage);
+
+            }
+        }
+    }
+
     private void stayLogIn(String email) {
         SharedPreferences sharedPreferences = getSharedPreferences("UserLogInPreferences", Context.MODE_PRIVATE);
         sharedPreferences.edit().putString("user-email", email).apply();
     }
-    private void incomplete(String email) {
-        SharedPreferences sharedPreferences = getSharedPreferences("UserLogInPreferences", Context.MODE_PRIVATE);
-        sharedPreferences.edit().putString("incomplete", email).apply();                            // ah nevermind
-    }
     private void complete(){
         SharedPreferences sharedPreferences = getSharedPreferences("UserLogInPreferences", Context.MODE_PRIVATE);
         sharedPreferences.edit().remove("incomplete").apply();
-    }
-    private String incompleteSignUp(){
-        SharedPreferences sharedPreferences = getSharedPreferences("UserLogInPreferences", Context.MODE_PRIVATE);
-        return sharedPreferences.getString("incomplete", "");
-    }
-    public boolean isEmptyField(TextView tv){
-       if (tv.getText().toString().equals("")) {
-
-           return true;
-       }else{
-           return false;
-       }
-
     }
     private String StrValOf(TextView view){
         return view.getText().toString();

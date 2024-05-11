@@ -9,8 +9,8 @@
     </item>
     <item>
         <shape android:shape="rectangle">
-            <solid android:color="@color/deviceTheme2" />
-            <stroke android:color="@color/deviceThemeInverted" android:width="2dp"/>
+            <solid android:color="@color/deviceThemeInverted" />
+            <stroke android:width="2dp" android:color="@color/deviceTheme" />
             <corners android:radius="2dp" />
         </shape>
     </item>

@@ -1,17 +1,14 @@
 package com.example.workcollab;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.example.workcollab.databinding.FragmentMainBinding;
 import com.google.firebase.Timestamp;
@@ -48,7 +45,7 @@ public class MainFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (user == null || (user != null && getArguments() != null)) {
-            System.out.println(getArguments().getString("user").toString() + "awjgoiaehgoaeig");
+            System.out.println(getArguments().getString("user") + "awjgoiaehgoaeig");
             user = gson.fromJson(getArguments().getString("user"), Map.class);
 
         }
@@ -62,6 +59,11 @@ public class MainFragment extends Fragment {
         // Inflate the layout for this fragment
         b = FragmentMainBinding.inflate(inflater, container, false);
         db.GetProjects(user.get("Id").toString(), new DatabaseFuncs.GroupListener() {
+            @Override
+            public void onReceive(List<Map> groups, List<Map> groupLeaders) {
+
+            }
+
             @Override
             public void onReceive(List<Map> groups) {
                 DeadlineAdapter deadlineAdapter = new DeadlineAdapter(groups);

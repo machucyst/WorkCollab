@@ -9,7 +9,9 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp"
-        android:background="@color/deviceTheme">
+        android:background="@drawable/background_default"
+        android:backgroundTint="@color/whiteTint"
+        android:backgroundTintMode="src_over">
 
         <TextView
             android:id="@+id/edit_account"
@@ -36,8 +38,8 @@
                 android:ems="10"
                 android:hint="Enter Text"
                 android:inputType="text"
-
-                android:paddingLeft="20dp" />
+                android:padding="2dp"
+                android:paddingStart="15dp" />
         </FrameLayout>
 
         <LinearLayout
@@ -53,7 +55,7 @@
                 android:layout_height="wrap_content"
                 style="@style/SecondTextStyle"
                 android:fontFamily="@font/bahnschrift"
-                android:background="@drawable/button_default"
+                android:background="@drawable/textholder"
                 android:layout_weight="1"
                 android:layout_marginEnd="5dp"
                 android:textAlignment="center"
@@ -64,7 +66,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:background="@drawable/button_default"
+                android:background="@drawable/textholder"
                 style="@style/SecondTextStyle"
                 android:fontFamily="@font/bahnschrift"
                 android:layout_weight="1"

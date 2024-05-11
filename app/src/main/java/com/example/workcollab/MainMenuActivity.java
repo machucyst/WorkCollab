@@ -7,8 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.window.OnBackInvokedDispatcher;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -16,17 +14,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
 import com.example.workcollab.databinding.ActivityMainMenuBinding;
 import com.example.workcollab.databinding.DialogLogoutConfirmBinding;
-import com.example.workcollab.databinding.NavHeaderBinding;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Map;
 
@@ -37,54 +31,72 @@ public class MainMenuActivity extends AppCompatActivity implements SettingsFragm
     MainFragment mf;
     GroupsFragment gf;
     SettingsFragment sf;
+    public static Map selectedgroup;
     int x = 1;
+
     public static String selected = "main";
+    Bundle bu = new Bundle();
     private Map user;
 
     DatabaseFuncs db = new DatabaseFuncs();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
         b = DataBindingUtil.setContentView(this, R.layout.activity_main_menu);
-
-        b.btnFab.setBackground(getDrawable(R.drawable.customfab));
+        String email;
+        System.out.println(getUserEmail() + "EmailBeLike2");
+        if (!getUserEmail().equals("")) {
+            email = getUserEmail();
+        } else {
+            email = bu.getString("user-email");
+        }
         FirebaseApp.initializeApp(this);
         mGetCont=registerForActivityResult(new ActivityResultContracts.GetContent(), o ->{
             Intent intent = new Intent(MainMenuActivity.this, CropperActivity.class);
             intent.putExtra("DATA",o.toString());
             startActivityForResult(intent,101);
         });
-
-        db.InitDB(getUserEmail(), new DatabaseFuncs.DataListener() {
+        System.out.println(email + "whaiohgoeihaoieug aogoiaea");
+        db.InitDB(email, new DatabaseFuncs.DataListener() {
 
             @Override
             public void onDataFound(Map user) {
                 MainMenuActivity.this.user = user;
-                 mf = MainFragment.newInstance(user);
-                 gf = GroupsFragment.newInstance(user);
-                 sf = SettingsFragment.newInstance(user);
                 if(selected.equals("main")){
-                    getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), mf).commit();
+                    getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), MainFragment.newInstance(user)).commitAllowingStateLoss();
                     b.bottomNavView.setSelectedItemId(R.id.menu_home);
                     return;
                 }
                 if(selected.equals("groups")){
-                    getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), gf).commit();
-                    b.bottomNavView.setSelectedItemId(R.id.menu_groups);
+                    getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), MainFragment.newInstance(user)).commitAllowingStateLoss();
+                    b.bottomNavView.setSelectedItemId(R.id.menu_home);
                     return;
                 }
                 if(selected.equals("profile")){
-                    getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), sf).commit();
+                    getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), SettingsFragment.newInstance(user)).commit();
                     b.bottomNavView.setSelectedItemId(R.id.menu_account);
                     return;
+                }
+                if (selected.equals("creategroups")) {
+                    getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), CreateGroupFragment.newInstance(user)).commit();
+                }
+                if (selected.equals("selectgroup")) {
+                    getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), SelectedGroupFragment.newInstance(selectedgroup)).commit();
                 }
             }
 
             @Override
             public void noDuplicateUser() {
 
+            }
+        });
+        b.btnFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (selected.equals("groups")) {
+                    replaceFragment(CreateGroupFragment.newInstance(user), "creategroups");
+                }
             }
         });
         b.bottomNavView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
@@ -95,8 +107,7 @@ public class MainMenuActivity extends AppCompatActivity implements SettingsFragm
                 System.out.println(user.get("Email").toString());
                 if(a == R.id.menu_home){
                     replaceFragment(MainFragment.newInstance(user),"main");
-                }else if (a == R.id.menu_groups){
-                    System.out.println(user);
+                } else if (a == R.id.menu_groups) {
                     replaceFragment(GroupsFragment.newInstance(user),"groups");
                 }else if (a == R.id.menu_tasks){
 
@@ -109,6 +120,7 @@ public class MainMenuActivity extends AppCompatActivity implements SettingsFragm
         });
 
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -134,13 +146,15 @@ public class MainMenuActivity extends AppCompatActivity implements SettingsFragm
             }
         }
     }
-    public void stayLogIn(String email) {
-        SharedPreferences sharedPreferences = getSharedPreferences("UserLogInPreferences", Context.MODE_PRIVATE);
-        sharedPreferences.edit().putString("user-email", email).apply();
-    }
+
     private String getUserEmail() {
         SharedPreferences sharedPreferences = getSharedPreferences("UserLogInPreferences", Context.MODE_PRIVATE);
         return sharedPreferences.getString("user-email", "");
+    }
+
+    public void stayLogIn(String email) {
+        SharedPreferences sharedPreferences = getSharedPreferences("UserLogInPreferences", Context.MODE_PRIVATE);
+        sharedPreferences.edit().putString("user-email", email).apply();
     }
     void complete(){
         SharedPreferences sharedPreferences = getSharedPreferences("UserLogInPreferences", Context.MODE_PRIVATE);
@@ -160,7 +174,7 @@ public class MainMenuActivity extends AppCompatActivity implements SettingsFragm
         builder.setView(bl.getRoot());
         AlertDialog dialog = builder.create();
         bl.Cancel.setOnClickListener(k->{
-            dialog.cancel();;
+            dialog.cancel();
         });
         bl.Ok.setOnClickListener(k ->{
             dialog.cancel();
@@ -174,6 +188,15 @@ public class MainMenuActivity extends AppCompatActivity implements SettingsFragm
 
 
     }
+
+    @Override
+    public void onBackPressed() {
+        if (false) {
+            super.onBackPressed();
+        }
+        replaceFragment(MainFragment.newInstance(user), "main");
+    }
+
     @Override
     public void onPress() {
         mGetCont.launch("image/*");

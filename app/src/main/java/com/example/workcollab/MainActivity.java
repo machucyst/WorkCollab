@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -42,7 +41,6 @@ public class MainActivity extends AppCompatActivity {
                     toMenu.putExtra("user-email", user.get("Email").toString());
                     startActivity(toMenu);
                     finish();
-                    return;
                 }
             }
 
@@ -87,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
                     Intent toMenu = new Intent(MainActivity.this, MainMenuActivity.class);
                     toMenu.putExtra("user-name", user.get("Username").toString());
                     toMenu.putExtra("user-email", user.get("Email").toString());
-                    if (b.cbStaySignedInLogIn.isChecked()) stayLogIn(email);
+                    if (b.cbStaySignedInLogIn.isChecked()) stayLogIn(user.get("Email").toString());
                     startActivity(toMenu);
                     finish();
                 }
@@ -109,15 +107,12 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onDataFound(Map user) {
-                Toast.makeText(MainActivity.this,"User already exists",Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Email already exists", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void noDuplicateUser() {
-//                if (email.equals(userEmail)) {
-//                    Toast.makeText(MainActivity.this, "Email already exists", Toast.LENGTH_SHORT).show();
-//                    return;
-//                }
+
                 if (username.equals("") || email.equals("") || password.equals("")) {
                     Toast.makeText(MainActivity.this, "Please fill in all text fields", Toast.LENGTH_SHORT).show();
                     return;
@@ -126,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
                 toMenu.putExtra("user-name", username);
                 toMenu.putExtra("user-email", email);
                 toMenu.putExtra("user-password",password);
+                toMenu.putExtra("StayLogIn", b.cbStaySignedInSignUp.isChecked());
                 startActivity(toMenu);
                 finish();
             }
@@ -169,10 +165,6 @@ public class MainActivity extends AppCompatActivity {
     private String checkLoggedIn() {
         SharedPreferences sharedPreferences = getSharedPreferences("UserLogInPreferences", Context.MODE_PRIVATE);
         return sharedPreferences.getString("user-email", "");
-    }
-    private String incompleteSignUp(){
-        SharedPreferences sharedPreferences = getSharedPreferences("UserLogInPreferences", Context.MODE_PRIVATE);
-        return sharedPreferences.getString("incomplete", "");
     }
 
 }
