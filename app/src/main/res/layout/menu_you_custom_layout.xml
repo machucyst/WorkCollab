@@ -16,18 +16,17 @@
             android:id="@+id/additionalText"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-
-            android:layout_marginEnd="13dp"
+            android:layout_marginStart="0dp"
             android:layout_weight="1"
-
-            android:text="Loading..."
-            android:gravity="end|center"
             android:fontFamily="@font/bahnschrift"
+            android:gravity="center|start"
+            android:text="Loading..."
             android:textColor="@color/deviceThemeInverted"
-            android:textSize="15dp" />
+            android:textFontWeight="2"
+            android:textSize="15dp"
+            android:textStyle="bold" />
 
         <ImageView
-            android:id="@+id/nextMenuArrow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_kb_right_24"

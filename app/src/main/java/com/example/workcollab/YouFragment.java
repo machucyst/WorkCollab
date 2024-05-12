@@ -1,7 +1,6 @@
 package com.example.workcollab;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -12,9 +11,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -25,18 +24,18 @@ import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.workcollab.databinding.DialogLogoutConfirmBinding;
 import com.example.workcollab.databinding.DialogTextInputBinding;
-import com.example.workcollab.databinding.FragmentSettingsBinding;
+import com.example.workcollab.databinding.FragmentYouBinding;
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
 
 import java.util.Map;
 
 
-public class SettingsFragment extends Fragment{
+public class YouFragment extends Fragment {
 
     Map user;
     Menu menu;
-    FragmentSettingsBinding b;
+    FragmentYouBinding b;
     DialogTextInputBinding dtb;
     ActivityResultLauncher<String> mGetCont;
     Bitmap bitmap;
@@ -62,15 +61,16 @@ public class SettingsFragment extends Fragment{
     }
 
     DatabaseFuncs db = new DatabaseFuncs();
-    public SettingsFragment() {
+
+    public YouFragment() {
 
     }
 
-    public static SettingsFragment newInstance(Map user) {
+    public static YouFragment newInstance(Map user) {
         Bundle args = new Bundle();
         Gson gson = new Gson();
         args.putString("user", gson.toJson(user));
-        SettingsFragment f = new SettingsFragment();
+        YouFragment f = new YouFragment();
         f.setArguments(args);
         return f;
     }
@@ -83,12 +83,6 @@ public class SettingsFragment extends Fragment{
             user = gson.fromJson(getArguments().getString("user"), Map.class);
 
         }
-        mGetCont=registerForActivityResult(new ActivityResultContracts.GetContent(), o ->{
-            Intent intent = new Intent(getActivity(), CropperActivity.class);
-            intent.putExtra("DATA",o.toString());
-            startActivityForResult(intent,101);
-        });
-
     }
 
 
@@ -97,7 +91,11 @@ public class SettingsFragment extends Fragment{
                              Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        b = FragmentSettingsBinding.inflate(inflater,container,false);
+        b = FragmentYouBinding.inflate(inflater, container, false);
+        menuTextChange(R.id.menu_settings, "Settings");
+        menuTextChange(R.id.menu_account, "Account");
+        menuTextChange(R.id.menu_appearance, "Appearance");
+        menuTextChange(R.id.menu_logOut, "Log Out");
 
 
         db.InitDB(user.get("Email").toString(), new DatabaseFuncs.DataListener() {
@@ -165,7 +163,7 @@ public class SettingsFragment extends Fragment{
                     return true;
                 }
                 if (a == R.id.menu_settings) {
-                    //TODO:
+                    //TODO: idk yet
                 }
                 if (a == R.id.menu_appearance) {
                     //TODO: change themes
@@ -182,5 +180,10 @@ public class SettingsFragment extends Fragment{
     }
     public void onButtonPress(MainMenuActivity acty){
         this.acty = acty;
+    }
+
+    private void menuTextChange(int ItemId, String text) {
+        TextView a = (b.nvAccountInfo.getMenu().findItem(ItemId).getActionView().findViewById(R.id.additionalText));
+        a.setText(text);
     }
 }

@@ -88,6 +88,8 @@ public class MainActivity extends AppCompatActivity {
                     if (b.cbStaySignedInLogIn.isChecked()) stayLogIn(user.get("Email").toString());
                     startActivity(toMenu);
                     finish();
+                } else {
+                    Toast.makeText(MainActivity.this, "User not found", Toast.LENGTH_SHORT).show();
                 }
             }
 

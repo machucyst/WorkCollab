@@ -38,6 +38,25 @@ public class DatabaseFuncs {
         void onUpdate(Map user);
     }
 
+    public void DeleteAccount(String id, DeleteListener listener) {
+        account.document(id).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                System.out.println("bai bai");
+                listener.onDelete();
+            }
+        });
+    }
+
+    public interface DeleteListener {
+        void onDelete();
+    }
+
+    public interface DataListener {
+        void onDataFound(Map user);
+
+        void noDuplicateUser();
+    }
     public void CreateAccount(String username, String password, String email, String ContactNumber, UpdateListener listener) {
         Map<String, Object> user = new HashMap<>();
         user.put("Username", username);
@@ -57,10 +76,6 @@ public class DatabaseFuncs {
                         Log.w(TAG, "Error adding document", e);
                     }
                 });
-    }
-    public interface DataListener {
-        void onDataFound(Map user);
-        void noDuplicateUser();
     }
     public void SaveProfile(Map user, Uri value, UpdateListener listener){
         reference.child("AccountProfiles/"+user.get("Id").toString()+"/Profile.png").putFile(value)
@@ -314,6 +329,7 @@ public class DatabaseFuncs {
                 });
 
     }
+
 
     public interface GroupListener {
         void onReceive(List<Map> groups, List<Map> groupLeaders);

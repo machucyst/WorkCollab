@@ -8,20 +8,26 @@
         <item
             android:id="@+id/menu_account"
             android:checkable="true"
-            android:title="Account" />
+            app:actionLayout="@layout/menu_you_custom_layout"
+            app:showAsAction="always"
+            tools:ignore="MenuTitle" />
         <item
             android:id="@+id/menu_settings"
             android:checkable="true"
-            android:title="Settings" />
+            app:actionLayout="@layout/menu_you_custom_layout"
+            app:showAsAction="always"
+            tools:ignore="MenuTitle" />
         <item
             android:id="@+id/menu_appearance"
             android:checkable="true"
-            android:title="Appearance"/>
+            app:actionLayout="@layout/menu_you_custom_layout"
+            app:showAsAction="always"
+            tools:ignore="MenuTitle" />
         <item
             android:id="@+id/menu_logOut"
             android:checkable="true"
             app:showAsAction="always"
-            android:title="Log Out">
-        </item>
+            app:actionLayout="@layout/menu_you_custom_layout"
+            tools:ignore="MenuTitle" />
     </group>
 </menu>

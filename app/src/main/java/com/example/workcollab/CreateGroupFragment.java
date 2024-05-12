@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -51,9 +52,13 @@ public class CreateGroupFragment extends Fragment {
                     public void onReceive(List<Map> groups) {
                         System.out.println(groups);
                         for (int i = 0; i < groups.size(); i++) {
-                            if (b.etAdd.getText().toString().equals(groups.get(i).get("Username"))) {
+                            if (b.etAdd.getText().toString().equals(groups.get(i).get("Email"))) {
                                 System.out.println(filteredgroups);
+                                if (!filteredgroups.contains(groups.get(i)) && !user.get("Email").toString().equals(groups.get(i).get("Email").toString())) {
                                 filteredgroups.add(groups.get(i));
+                                } else {
+                                    Toast.makeText(requireContext(), "User already selected", Toast.LENGTH_SHORT);
+                                }
                             }
                         }
                         CreateGroupsUsersAdapter ad = new CreateGroupsUsersAdapter(requireContext(), filteredgroups);
@@ -72,7 +77,6 @@ public class CreateGroupFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 System.out.println("Public Static my beloved" + amabatuhavefun);
-                //TODO: prevent duplicate adding, prevent self adding, prevent multi-adding
                 try {
                     for (int i = 0; i < amabatuhavefun.size(); i++) {
                         filteredIds.add(amabatuhavefun.get(i).get("Id").toString());

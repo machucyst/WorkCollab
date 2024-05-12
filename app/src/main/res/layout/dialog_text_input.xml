@@ -25,17 +25,18 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            style="@style/TextHolder"
+            android:layout_marginHorizontal="2dp"
             android:layout_height="match_parent">
 
             <EditText
                 android:id="@+id/editText"
-                style="@style/TextHolder"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="2dp"
                 android:fontFamily="@font/bahnschrift"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/fui_transparent"
-                android:ems="10"
+                android:background="@drawable/textholder"
+                android:textColor="@color/deviceThemeInverted"
+                android:textSize="20dp"
                 android:hint="Enter Text"
                 android:inputType="text"
                 android:padding="2dp"

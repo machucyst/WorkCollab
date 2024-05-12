@@ -1,23 +1,13 @@
 package com.example.workcollab;
 
-import android.app.Activity;
-import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
-import android.view.ViewGroup;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.yalantis.ucrop.UCrop;
-import com.yalantis.ucrop.UCropActivity;
-import com.yalantis.ucrop.view.UCropView;
 
 import java.io.File;
 import java.util.UUID;
@@ -33,7 +23,7 @@ public class CropperActivity extends AppCompatActivity {
         readIntent();
 
 
-        String dest_uri= new StringBuilder(UUID.randomUUID().toString()).append(".png").toString();
+        String dest_uri = UUID.randomUUID().toString() + ".png";
 
         UCrop.Options options = new UCrop.Options();
         options.setContrastEnabled(false);
@@ -64,13 +54,15 @@ public class CropperActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode==RESULT_OK&&requestCode==UCrop.REQUEST_CROP) {
             final Uri resultUri = UCrop.getOutput(data);
-            System.out.println(data.toString());
+            System.out.println(data);
             Intent returnIntent = new Intent();
             returnIntent.putExtra("RESULT", resultUri + "");
             setResult(-1, returnIntent);
             finish();
         }else if(resultCode == UCrop.RESULT_ERROR){
             final Throwable cropError = UCrop.getError(data);
+            finish();
+        } else {
             finish();
         }
     }

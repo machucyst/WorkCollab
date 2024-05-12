@@ -39,4 +39,10 @@
             app:showAsAction="always"
             app:actionLayout="@layout/menu_custom_layout"
         />
+        <item
+            android:id="@+id/menu_deleteAccount"
+            android:checkable="true"
+            android:title="Delete Account"
+            app:actionLayout="@layout/menu_custom_layout" />
+
 </menu>

@@ -14,6 +14,7 @@ public class LoadingActivity extends AppCompatActivity {
 
     DatabaseFuncs db = new DatabaseFuncs();
 
+    //TODO: design this
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +38,9 @@ public class LoadingActivity extends AppCompatActivity {
                 }
             });
         }
+        Intent intent = new Intent(LoadingActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
 
     }
 

@@ -24,13 +24,13 @@ import com.google.firebase.FirebaseApp;
 
 import java.util.Map;
 
-public class MainMenuActivity extends AppCompatActivity implements SettingsFragment.ButtonListeners,AccountEditFragment.UpdateListener,ProfileAccountEditFragment.ButtonListeners{
+public class MainMenuActivity extends AppCompatActivity implements YouFragment.ButtonListeners, AccountEditFragment.UpdateListener, ProfileAccountEditFragment.ButtonListeners, AccountFragment.ButtonListeners {
     ActivityMainMenuBinding b;
     DialogLogoutConfirmBinding bl;
     ActivityResultLauncher<String> mGetCont;
     MainFragment mf;
     GroupsFragment gf;
-    SettingsFragment sf;
+    YouFragment sf;
     public static Map selectedgroup;
     int x = 1;
 
@@ -74,7 +74,7 @@ public class MainMenuActivity extends AppCompatActivity implements SettingsFragm
                     return;
                 }
                 if(selected.equals("profile")){
-                    getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), SettingsFragment.newInstance(user)).commit();
+                    getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), YouFragment.newInstance(user)).commit();
                     b.bottomNavView.setSelectedItemId(R.id.menu_account);
                     return;
                 }
@@ -104,7 +104,6 @@ public class MainMenuActivity extends AppCompatActivity implements SettingsFragm
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 
                 int a = menuItem.getItemId();
-                System.out.println(user.get("Email").toString());
                 if(a == R.id.menu_home){
                     replaceFragment(MainFragment.newInstance(user),"main");
                 } else if (a == R.id.menu_groups) {
@@ -112,7 +111,7 @@ public class MainMenuActivity extends AppCompatActivity implements SettingsFragm
                 }else if (a == R.id.menu_tasks){
 
                 }else if (a == R.id.menu_profile){
-                    replaceFragment(SettingsFragment.newInstance(user),"profile");
+                    replaceFragment(YouFragment.newInstance(user), "profile");
                 }
                 return true;
             }
@@ -216,5 +215,13 @@ public class MainMenuActivity extends AppCompatActivity implements SettingsFragm
     @Override
     public void onPressChangePFP() {
         mGetCont.launch("image/*");
+    }
+
+    @Override
+    public void onDeletedAccount() {
+        complete();
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

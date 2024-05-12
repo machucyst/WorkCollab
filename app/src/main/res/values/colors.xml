@@ -9,6 +9,7 @@
     <color name="stroke_gray">#575757</color>
     <color name="light_gray">#D3D3D3</color>
     <color name="blue">#3592FF</color>
+    <color name="warning">#7C0505</color>
     <color name="blue_light">#52A2FF</color>
     <color name="blue_dark">#1B66BD</color>
     <color name="stroke_blue">#9AD1FF</color>
