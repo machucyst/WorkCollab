@@ -2,74 +2,75 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ChatActivity"
-        android:background="@color/deviceTheme">
+        android:background="@drawable/background_default"
+        tools:context=".ChatActivity">
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:id="@+id/recyclerView"
-            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginBottom="5dp"
             app:layout_constraintBottom_toTopOf="@id/wrapper"
-            android:layout_marginBottom="5dp" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
             android:id="@+id/wrapper"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/deviceTheme2"
             android:orientation="horizontal"
-            app:layout_constraintBottom_toTopOf="@id/bottomPadding"
             android:paddingVertical="10dp"
-            android:background="@color/deviceTheme2">
+            app:layout_constraintBottom_toTopOf="@id/bottomPadding">
 
             <ImageView
                 android:id="@+id/attachFile"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/ic_attach_file"
-                android:rotation="45"
+                android:layout_height="match_parent"
                 android:layout_gravity="bottom"
-                android:padding="16dp"
                 android:layout_marginHorizontal="7dp"
-                android:backgroundTint="@color/deviceThemeInverted" />
+                android:background="@drawable/ic_attach_file"
+                android:backgroundTint="@color/deviceThemeInverted"
+                android:padding="16dp"
+                android:rotation="45" />
 
             <EditText
                 android:id="@+id/chat"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
                 style="@style/TextHolder"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:elevation="0dp"
                 android:hint="Message"
-                android:textColorHint="@color/light_gray"
+                android:padding="6dp"
                 android:textColor="@color/black"
-                android:textSize="17dp"
-                android:padding="6dp" />
+                android:textColorHint="@color/light_gray"
+                android:textSize="17dp" />
 
 
             <ImageView
                 android:id="@+id/send"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/ic_send"
+                android:layout_height="match_parent"
                 android:layout_gravity="bottom"
-                android:padding="16dp"
                 android:layout_marginHorizontal="7dp"
-                android:backgroundTint="@color/deviceThemeInverted" />
+                android:background="@drawable/ic_send"
+                android:backgroundTint="@color/deviceThemeInverted"
+                android:padding="16dp" />
 
         </LinearLayout>
 
 
         <LinearLayout
+            android:id="@+id/bottomPadding"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/bottomPadding"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent">
 
         </LinearLayout>
 
