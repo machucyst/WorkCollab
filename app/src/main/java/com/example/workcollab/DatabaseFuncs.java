@@ -437,7 +437,7 @@ public class DatabaseFuncs {
         Log.e("uwuwu", "uwuwu");
         this.messages
                 .whereEqualTo("groupId", groupId)
-//                .orderBy("timestamp")
+                .orderBy("timestamp")
                 .get().addOnSuccessListener(queryDocumentSnapshots -> {
             for (DocumentSnapshot d: queryDocumentSnapshots) {
                 messages.add(new Message(d.getId(), d.get("message").toString(), d.get("senderId").toString(), d.get("senderUsername").toString(), d.get("groupId").toString(), Uri.parse(d.get("file").toString()), d.get("fileType").toString(), (Timestamp) d.get("timestamp")));
