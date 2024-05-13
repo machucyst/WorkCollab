@@ -61,7 +61,7 @@ public class GroupsFragment extends Fragment {
                     public void itemClicked(Map group) {
                         PositionListener.super.itemClicked(group);
                         MainMenuActivity.selected = "groups";
-                        requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup)(getView().getParent())).getId(),SelectedGroupFragment.newInstance(group)).addToBackStack(null).commit();
+                        requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup)(getView().getParent())).getId(),SelectedGroupFragment.newInstance(user,group)).addToBackStack(null).commit();
                     }
                 });
                 try {
