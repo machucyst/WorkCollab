@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:id="@+id/menu_drawer"
         tools:context=".MainMenuActivity"
-        android:background="@color/deviceTheme"
+        android:background="@drawable/background_default"
         android:backgroundTintMode="src_atop">
 
         <androidx.constraintlayout.widget.ConstraintLayout

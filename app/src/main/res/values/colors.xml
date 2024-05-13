@@ -19,7 +19,7 @@
     <color name="buttonBgPressed">#637CC6</color>
     <color name="buttonBgBorder">#9b80eb</color>
     <color name="noBgTextColor">#eeeefc</color>
-    <color name="appTheme">#D082ED</color>
+    <color name="appTheme">#CC64F3</color>
     <color name="appThemeInverted">#6418EA</color>
     <color name="appTheme2">#CB95DF</color>
     <color name="appThemeInverted2">#503E70</color>
