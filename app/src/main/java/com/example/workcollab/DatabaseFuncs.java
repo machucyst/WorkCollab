@@ -382,6 +382,16 @@ public class DatabaseFuncs {
 
     public void sendMessage(Message message, Uri attachedFile, MessageSentListener listener) {
         StorageReference messagesFiles = reference.child("Messages" + message.getId());
+
+
+
+        if (attachedFile == null) {
+            message.setFile(Uri.parse(""));
+            messages.document().set(message.toMap());
+            listener.onMessageSent();
+            return;
+        }
+
         messagesFiles.putFile(attachedFile).addOnSuccessListener(taskSnapshot -> messagesFiles.getDownloadUrl().addOnSuccessListener(uri -> {
             message.setFile(uri);
             messages.document().set(message.toMap());
@@ -404,7 +414,7 @@ public class DatabaseFuncs {
                 QueryDocumentSnapshot d = dc.getDocument();
                 if (userId.equals(d.getId())) continue;
                 if (((Timestamp)d.get("timestamp")).compareTo(listener.getCurrentTimestamp()) > 0 ) {
-                    Message message = new Message(d.getId(), d.get("message").toString(), d.get("senderId").toString(), d.get("groupId").toString(), Uri.parse(d.get("file").toString()), d.get("fileType").toString(), (Timestamp) d.get("timestamp"));
+                    Message message = new Message(d.getId(), d.get("message").toString(), d.get("senderId").toString(), d.get("senderUsername").toString(), d.get("groupId").toString(), Uri.parse(d.get("file").toString()), d.get("fileType").toString(), (Timestamp) d.get("timestamp"));
 
                     switch (dc.getType()) {
                         case ADDED:
@@ -419,6 +429,31 @@ public class DatabaseFuncs {
 
             listener.onMessageReceived(newMessages, updatedMessages);
         });
+    }
+    public interface AllMessagesReceivedListener {
+        void sendAllReceivedMessages(List<Message> messages);
+    }
+
+    public void setAllMessagesReceivedListener(String groupId, AllMessagesReceivedListener listener) {
+        List<Message> messages = new ArrayList<>();
+        Log.e("uwuwu", "uwuwu");
+        this.messages
+                .whereEqualTo("groupId", groupId)
+//                .orderBy("timestamp")
+                .get().addOnSuccessListener(queryDocumentSnapshots -> {
+            for (DocumentSnapshot d: queryDocumentSnapshots) {
+                messages.add(new Message(d.getId(), d.get("message").toString(), d.get("senderId").toString(), d.get("senderUsername").toString(), d.get("groupId").toString(), Uri.parse(d.get("file").toString()), d.get("fileType").toString(), (Timestamp) d.get("timestamp")));
+            }
+
+            Log.e("textest", "wadadawdawdawd");
+
+            listener.sendAllReceivedMessages(messages);
+        }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("uwu", e.toString());
+                    }
+                });
     }
 }
 

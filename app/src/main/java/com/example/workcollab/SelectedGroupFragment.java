@@ -61,7 +61,10 @@ public class SelectedGroupFragment extends Fragment {
         System.out.println("Selected Group"+user);
         b.button4.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), ChatActivity.class);
-//            intent.putExtra()
+            Gson gson = new Gson();
+            intent.putExtra("user", gson.toJson(user));
+            intent.putExtra("group", gson.toJson(group));
+            startActivity(intent);
         });
 
         return b.getRoot();

@@ -23,9 +23,11 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             app:layout_constraintBottom_toTopOf="@id/bottomPadding"
-            android:layout_margin="5dp">
+            android:paddingVertical="10dp"
+            android:background="@color/deviceTheme2">
 
             <ImageView
+                android:id="@+id/attachFile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/ic_attach_file"
@@ -36,6 +38,7 @@
                 android:backgroundTint="@color/deviceThemeInverted" />
 
             <EditText
+                android:id="@+id/chat"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
@@ -43,11 +46,13 @@
                 android:elevation="0dp"
                 android:hint="Message"
                 android:textColorHint="@color/light_gray"
-                android:textColor="@color/deviceThemeInverted"
+                android:textColor="@color/black"
                 android:textSize="17dp"
                 android:padding="6dp" />
 
+
             <ImageView
+                android:id="@+id/send"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/ic_send"
@@ -59,11 +64,14 @@
         </LinearLayout>
 
 
-        <View
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="wrap_content"
             android:id="@+id/bottomPadding"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:orientation="horizontal" >
+
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
