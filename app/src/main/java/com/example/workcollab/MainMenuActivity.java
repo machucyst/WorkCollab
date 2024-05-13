@@ -82,7 +82,7 @@ public class MainMenuActivity extends AppCompatActivity implements YouFragment.B
                     getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), CreateGroupFragment.newInstance(user)).commit();
                 }
                 if (selected.equals("selectgroup")) {
-                    getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), SelectedGroupFragment.newInstance(selectedgroup)).commit();
+                    getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), SelectedGroupFragment.newInstance(user, selectedgroup)).commit();
                 }
             }
 
