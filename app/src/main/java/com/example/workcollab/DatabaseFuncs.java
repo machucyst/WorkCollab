@@ -378,6 +378,16 @@ public class DatabaseFuncs {
                 });
     }
 
+    public void getUserById(String id, DataListener dataListener) {
+        final String[] b = {""};
+        account.document(id).get().addOnCompleteListener(task -> {
+            DocumentSnapshot d = task.getResult();
+            Map<String, Object> user = d.getData();
+            user.put("Id", d.getId());
+            dataListener.onDataFound(user);
+        });
+    }
+
     public void sendMessage(Message message, Uri attachedFile, MessageSentListener listener) {
         StorageReference messagesFiles = reference.child("Messages" + message.getId());
 
