@@ -85,9 +85,9 @@ public class CreateGroupFragment extends Fragment {
                     if (a.equals("")) a = user.get("Username").toString() + "'s Group";
                     db.CreateGroup(a, leader, filteredIds, new DatabaseFuncs.UpdateListener() {
                         @Override
-                        public void onUpdate(Map user) {
+                        public void onUpdate(Map group) {
                             System.out.println("It worked probably");
-                            requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), SelectedGroupFragment.newInstance(user)).addToBackStack(null).commit();
+                            requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), SelectedGroupFragment.newInstance(user,group)).addToBackStack(null).commit();
 
                         }
                     });
