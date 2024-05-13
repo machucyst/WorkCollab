@@ -46,7 +46,7 @@ public class SelectedGroupFragment extends Fragment {
         if(group == null || (group != null && getArguments() != null)){
             System.out.println(getArguments().getString("user") + "awjgoiaehgoaeig");
             Gson gson = new Gson();
-            group = gson.fromJson(getArguments().getString("user"),Map.class);
+            group = gson.fromJson(getArguments().getString("group"),Map.class);
             user = gson.fromJson(getArguments().getString("user"),Map.class);
         }
     }
@@ -58,7 +58,7 @@ public class SelectedGroupFragment extends Fragment {
         //TODO: Edit Group, Add Tasks!!!!!!!!!!, Leave Group.
         b = FragmentSelectedGroupBinding.inflate(inflater,container,false);
         b.tvGroupName.setText(group.get("GroupName").toString());
-
+        System.out.println("Selected Group"+user);
         b.button4.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), ChatActivity.class);
 //            intent.putExtra()
