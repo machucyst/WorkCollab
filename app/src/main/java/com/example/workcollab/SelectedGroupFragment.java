@@ -1,5 +1,6 @@
 package com.example.workcollab;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,6 +57,12 @@ public class SelectedGroupFragment extends Fragment {
         //TODO: Edit Group, Add Tasks!!!!!!!!!!, Leave Group.
         b = FragmentSelectedGroupBinding.inflate(inflater,container,false);
         b.tvGroupName.setText(group.get("GroupName").toString());
+
+        b.button4.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), ChatActivity.class);
+//            intent.putExtra()
+        });
+
         return b.getRoot();
     }
 

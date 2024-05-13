@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ChatActivity"
+        android:background="@color/deviceTheme">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:id="@+id/recyclerView"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/wrapper"
+            android:layout_marginBottom="5dp" />
+
+        <LinearLayout
+            android:id="@+id/wrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@id/bottomPadding"
+            android:layout_margin="5dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_attach_file"
+                android:rotation="45"
+                android:layout_gravity="bottom"
+                android:padding="16dp"
+                android:layout_marginHorizontal="7dp"
+                android:backgroundTint="@color/deviceThemeInverted" />
+
+            <EditText
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                style="@style/TextHolder"
+                android:elevation="0dp"
+                android:hint="Message"
+                android:textColorHint="@color/light_gray"
+                android:textColor="@color/deviceThemeInverted"
+                android:textSize="17dp"
+                android:padding="6dp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_send"
+                android:layout_gravity="bottom"
+                android:padding="16dp"
+                android:layout_marginHorizontal="7dp"
+                android:backgroundTint="@color/deviceThemeInverted" />
+
+        </LinearLayout>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:id="@+id/bottomPadding"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -13,14 +14,18 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -33,6 +38,7 @@ public class DatabaseFuncs {
     StorageReference reference = fbs.getReference();
     CollectionReference account = db.collection("Account");
     CollectionReference groups = db.collection("Groups");
+    CollectionReference messages = db.collection("Messages");
     Map user;
     public interface UpdateListener{
         void onUpdate(Map user);
@@ -56,6 +62,9 @@ public class DatabaseFuncs {
         void onDataFound(Map user);
 
         void noDuplicateUser();
+    }
+    public interface MessageSentListener {
+        void onMessageSent();
     }
     public void CreateAccount(String username, String password, String email, String ContactNumber, UpdateListener listener) {
         Map<String, Object> user = new HashMap<>();
@@ -213,7 +222,10 @@ public class DatabaseFuncs {
                                     });
 
                                 }
+
                             });
+
+
 
                         }
                     }
@@ -251,6 +263,7 @@ public class DatabaseFuncs {
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         if (oldEmail.equals(document.get("Email"))) {
                             DocumentReference docRef = account.document(document.getId());
+                            System.out.println(document.getId()+"id shit or some shit");
                             Map<String, Object> user = new HashMap<>();
                             user.put("Email", newEmail);
 
@@ -275,8 +288,10 @@ public class DatabaseFuncs {
 
                                         }
                                     });
+
                                 }
                             });
+
                         }
                     }
 
@@ -286,6 +301,7 @@ public class DatabaseFuncs {
                 }
             }
         });
+
     }
 
     public void GetJoinedGroups(String id, GroupListener listener){
@@ -362,6 +378,47 @@ public class DatabaseFuncs {
                         }
                     }
                 });
+    }
+
+    public void sendMessage(Message message, Uri attachedFile, MessageSentListener listener) {
+        StorageReference messagesFiles = reference.child("Messages" + message.getId());
+        messagesFiles.putFile(attachedFile).addOnSuccessListener(taskSnapshot -> messagesFiles.getDownloadUrl().addOnSuccessListener(uri -> {
+            message.setFile(uri);
+            messages.document().set(message.toMap());
+            listener.onMessageSent();
+        }));
+    }
+    public interface MessagesReceivedListener {
+        void onMessageReceived(List<Message> newMessages, List<Message> updatedMessages);
+        Timestamp getCurrentTimestamp();
+    }
+
+    public void setReceivedMessagesListener(String userId, String groupId, MessagesReceivedListener listener) {
+        messages.whereEqualTo("groupId", groupId).addSnapshotListener((queryDocumentSnapshots, error) -> {
+            if (error != null) return;
+
+            List<Message> newMessages = new ArrayList<>();
+            List<Message> updatedMessages = new ArrayList<>();
+
+            for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
+                QueryDocumentSnapshot d = dc.getDocument();
+                if (userId.equals(d.getId())) continue;
+                if (((Timestamp)d.get("timestamp")).compareTo(listener.getCurrentTimestamp()) > 0 ) {
+                    Message message = new Message(d.getId(), d.get("message").toString(), d.get("senderId").toString(), d.get("groupId").toString(), Uri.parse(d.get("file").toString()), d.get("fileType").toString(), (Timestamp) d.get("timestamp"));
+
+                    switch (dc.getType()) {
+                        case ADDED:
+                            newMessages.add(message);
+                            break;
+                        case MODIFIED:
+                            updatedMessages.add(message);
+                            break;
+                    }
+                }
+            }
+
+            listener.onMessageReceived(newMessages, updatedMessages);
+        });
     }
 }
 
