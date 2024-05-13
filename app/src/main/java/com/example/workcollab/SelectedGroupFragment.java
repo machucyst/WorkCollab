@@ -21,7 +21,7 @@ import java.util.Map;
  * create an instance of this fragment.
  */
 public class SelectedGroupFragment extends Fragment {
-
+    Map user;
     static Map group;
     DatabaseFuncs db = new DatabaseFuncs();
     FragmentSelectedGroupBinding b;
@@ -29,11 +29,12 @@ public class SelectedGroupFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static SelectedGroupFragment newInstance(Map group) {
+    public static SelectedGroupFragment newInstance(Map user, Map group) {
         SelectedGroupFragment fragment = new SelectedGroupFragment();
         Bundle args = new Bundle();
         Gson gson = new Gson();
-        args.putString("user", gson.toJson(group));
+        args.putString("user", gson.toJson(user));
+        args.putString("group", gson.toJson(group));
         SelectedGroupFragment f = new SelectedGroupFragment();
         f.setArguments(args);
         return f;
@@ -46,7 +47,7 @@ public class SelectedGroupFragment extends Fragment {
             System.out.println(getArguments().getString("user") + "awjgoiaehgoaeig");
             Gson gson = new Gson();
             group = gson.fromJson(getArguments().getString("user"),Map.class);
-
+            user = gson.fromJson(getArguments().getString("user"),Map.class);
         }
     }
 
