@@ -107,7 +107,7 @@ public class ChatActivity extends AppCompatActivity {
 
         DatabaseFuncs db = new DatabaseFuncs();
         db.setAllMessagesReceivedListener(group.get("Id").toString(), messages -> {
-            adapter = new ChatAdapter(messages, ChatActivity.this, user);
+            adapter = new ChatAdapter(messages, ChatActivity.this, user, db);
             LinearLayoutManager layoutManager = new LinearLayoutManager(ChatActivity.this);
             layoutManager.setStackFromEnd(true);
             bind.recyclerView.setLayoutManager(layoutManager);

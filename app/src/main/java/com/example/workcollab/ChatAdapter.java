@@ -1,8 +1,11 @@
 package com.example.workcollab;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.net.Uri;
 import android.os.Handler;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,24 +17,30 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     List<Message> messages;
     Context context;
     Map currentUser;
+    List<UserData> data = new ArrayList<>();
+    DatabaseFuncs db;
 
     public static int TYPE_SELF = 1;
     public static int TYPE_OTHER = 2;
 
-    public ChatAdapter(List<Message> messages, Context context, Map user) {
+    public ChatAdapter(List<Message> messages, Context context, Map user, DatabaseFuncs db) {
         this.messages = messages;
         this.context = context;
         this.currentUser = user;
+        this.db = db;
     }
 
     @NonNull
@@ -45,12 +54,38 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     }
 
     @Override
+    @SuppressLint("RecyclerView")
     public void onBindViewHolder(@NonNull ChatAdapter.ViewHolder holder, int position) {
         holder.tv.setText(messages.get(position).getMessage());
-        holder.sender.setText(messages.get(position).getSenderUsername());
 
         holder.sender.setVisibility(View.GONE);
         holder.imageWrapper.setVisibility(View.INVISIBLE);
+
+        Optional<UserData> searchUserData = data.stream().filter(user -> user.getId().equals(messages.get(position).getSenderId())).findFirst();
+
+        if (!searchUserData.isPresent()) {
+            db.getUserById(messages.get(position).getSenderId(), new DatabaseFuncs.DataListener() {
+                @Override
+                public void onDataFound(Map user) {
+                    Message m = messages.get(position);
+                    UserData d = new UserData(m.getSenderId(), user.get("Username").toString(), Uri.parse(user.get("Profile").toString()));
+                    data.add(d);
+                    Glide.with(context).asBitmap().load(d.getUri()).into(holder.image);
+                    holder.image.setImageURI(d.getUri());
+                    holder.sender.setText(d.getUsername());
+
+                    notifyDataSetChanged();
+                }
+
+                @Override
+                public void noDuplicateUser() {
+
+                }
+            });
+        } else {
+            Glide.with(context).asBitmap().load(searchUserData.get().getUri()).into(holder.image);
+            holder.sender.setText(searchUserData.get().getUsername());
+        }
 
         if (position > 0) {
             if (!messages.get(position).getSenderId().equals(messages.get(position-1).getSenderId())) {
