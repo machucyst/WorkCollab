@@ -87,7 +87,7 @@ public class CreateGroupFragment extends Fragment {
                         @Override
                         public void onUpdate(Map group) {
                             System.out.println("It worked probably");
-                            requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), SelectedGroupFragment.newInstance(CreateGroupFragment.this.user,user)).addToBackStack(null).commit();
+                            requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), SelectedGroupFragment.newInstance(CreateGroupFragment.this.user,group)).addToBackStack(null).commit();
 
                         }
                     });

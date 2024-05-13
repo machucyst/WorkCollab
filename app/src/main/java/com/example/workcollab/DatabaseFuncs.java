@@ -64,7 +64,7 @@ public class DatabaseFuncs {
         void noDuplicateUser();
     }
     public interface MessageSentListener {
-        void onMessageSent();
+        void onMessageSent(String newId);
     }
     public void CreateAccount(String username, String password, String email, String ContactNumber, UpdateListener listener) {
         Map<String, Object> user = new HashMap<>();
@@ -397,15 +397,18 @@ public class DatabaseFuncs {
 
         if (attachedFile == null) {
             message.setFile(Uri.parse(""));
-            messages.document().set(message.toMap());
-            listener.onMessageSent();
+            messages.add(message.toMap()).addOnCompleteListener(task -> {
+                listener.onMessageSent(task.getResult().getId());
+            });
             return;
         }
 
+
         messagesFiles.putFile(attachedFile).addOnSuccessListener(taskSnapshot -> messagesFiles.getDownloadUrl().addOnSuccessListener(uri -> {
             message.setFile(uri);
-            messages.document().set(message.toMap());
-            listener.onMessageSent();
+            messages.add(message.toMap()).addOnCompleteListener(task -> {
+                listener.onMessageSent(task.getResult().getId());
+            });
         }));
     }
     public interface MessagesReceivedListener {
@@ -425,7 +428,7 @@ public class DatabaseFuncs {
                 if (userId.equals(d.getId())) continue;
                 if (((Timestamp)d.get("timestamp")).compareTo(listener.getCurrentTimestamp()) > 0 ) {
                     Message message = new Message(d.getId(), d.get("message").toString(), d.get("senderId").toString(), d.get("senderUsername").toString(), d.get("groupId").toString(), Uri.parse(d.get("file").toString()), d.get("fileType").toString(), (Timestamp) d.get("timestamp"));
-
+                    message.setReplyId(d.get("replyId").toString());
                     switch (dc.getType()) {
                         case ADDED:
                             newMessages.add(message);
@@ -452,7 +455,9 @@ public class DatabaseFuncs {
                 .orderBy("timestamp")
                 .get().addOnSuccessListener(queryDocumentSnapshots -> {
             for (DocumentSnapshot d: queryDocumentSnapshots) {
-                messages.add(new Message(d.getId(), d.get("message").toString(), d.get("senderId").toString(), d.get("senderUsername").toString(), d.get("groupId").toString(), Uri.parse(d.get("file").toString()), d.get("fileType").toString(), (Timestamp) d.get("timestamp")));
+                Message message = new Message(d.getId(), d.get("message").toString(), d.get("senderId").toString(), d.get("senderUsername").toString(), d.get("groupId").toString(), Uri.parse(d.get("file").toString()), d.get("fileType").toString(), (Timestamp) d.get("timestamp"));
+                message.setReplyId(d.get("replyId").toString());
+                messages.add(message);
             }
 
             Log.e("textest", "wadadawdawdawd");

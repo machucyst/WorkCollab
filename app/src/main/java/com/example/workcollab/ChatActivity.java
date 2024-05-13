@@ -6,23 +6,23 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.ViewTreeObserver;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.workcollab.databinding.ActivityChatBinding;
 import com.google.firebase.Timestamp;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -40,6 +40,7 @@ public class ChatActivity extends AppCompatActivity {
     List<Message> backlog = new ArrayList<>();
     Uri attachedFile;
     String fileType;
+    String replyId = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,11 +108,26 @@ public class ChatActivity extends AppCompatActivity {
 
         DatabaseFuncs db = new DatabaseFuncs();
         db.setAllMessagesReceivedListener(group.get("Id").toString(), messages -> {
-            adapter = new ChatAdapter(messages, ChatActivity.this, user, db);
+            adapter = new ChatAdapter(messages, ChatActivity.this, user, db, ((message, messageId, replyTo) -> {
+                bind.replyWrapper.setVisibility(View.VISIBLE);
+                ConstraintSet cs = new ConstraintSet();
+                cs.clone(bind.main);
+
+                cs.connect(bind.recyclerView.getId(), ConstraintSet.BOTTOM, bind.replyWrapper.getId(), ConstraintSet.TOP);
+
+                bind.main.setConstraintSet(cs);
+                bind.reply.setText(message);
+                bind.replyTo.setText("Replying to: " + replyTo);
+                ChatActivity.this.replyId = messageId;
+            }));
             LinearLayoutManager layoutManager = new LinearLayoutManager(ChatActivity.this);
             layoutManager.setStackFromEnd(true);
             bind.recyclerView.setLayoutManager(layoutManager);
             bind.recyclerView.setAdapter(adapter);
+
+            ItemTouchHelper.Callback callback = new ChatAdapter.SwipeReplyCallback(adapter);
+            ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
+            itemTouchHelper.attachToRecyclerView(bind.recyclerView);
 
             Toast.makeText(this, "awdjaljdalwkdjlakwdj", Toast.LENGTH_SHORT).show();
             db.setReceivedMessagesListener(user.get("Id").toString(), group.get("Id").toString(), new DatabaseFuncs.MessagesReceivedListener() {
@@ -142,9 +158,37 @@ public class ChatActivity extends AppCompatActivity {
 
             bind.chat.setText("");
 
-            db.sendMessage(message, attachedFile, () -> {
+            if (!replyId.isEmpty()) message.setReplyId(replyId);
+
+            db.sendMessage(message, attachedFile, (id) -> {
+                message.setId(id);
                 adapter.addMessage(message, bind.recyclerView);
+                bind.replyWrapper.setVisibility(View.GONE);
+                ConstraintSet cs = new ConstraintSet();
+                cs.clone(bind.main);
+
+                cs.connect(bind.recyclerView.getId(), ConstraintSet.BOTTOM, bind.wrapper.getId(), ConstraintSet.TOP);
+
+                bind.main.setConstraintSet(cs);
+
+                ChatActivity.this.replyId = "";
             });
+        });
+
+        bind.cancelReply.setOnClickListener(v -> {
+            bind.replyWrapper.setVisibility(View.GONE);
+            ConstraintSet cs = new ConstraintSet();
+            cs.clone(bind.main);
+
+            cs.connect(bind.recyclerView.getId(), ConstraintSet.BOTTOM, bind.wrapper.getId(), ConstraintSet.TOP);
+
+            bind.main.setConstraintSet(cs);
+
+            replyId = "";
+        });
+
+        bind.attachFile.setOnClickListener(v -> {
+            adapter.notifyDataSetChanged();
         });
     }
 }
