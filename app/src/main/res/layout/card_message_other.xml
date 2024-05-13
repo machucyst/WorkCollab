@@ -3,75 +3,83 @@
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_gravity="end"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:id="@+id/parent">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/sender"
+        app:layout_constraintBottom_toTopOf="@id/wrapper"
+        android:text="Sender"
+        android:textColor="@color/deviceThemeInverted"
+        app:layout_constraintLeft_toLeftOf="@id/wrapper"
+        android:layout_marginStart="15dp"
+        android:layout_marginVertical="5dp"/>
 
-        <LinearLayout
+    <androidx.cardview.widget.CardView
+        android:id="@+id/wrapper1"
+        app:layout_constraintLeft_toLeftOf="@id/wrapper"
+        app:layout_constraintBottom_toBottomOf="@id/wrapper"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        app:cardCornerRadius="10dp">
+        <TextView
+            android:minWidth="75dp"
+            android:id="@+id/reply"
+            android:maxWidth="275dp"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:text="asjdaksjdhaksdh"
+            android:background="@color/light_gray"
+            android:paddingHorizontal="8dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="20dp"
+            android:textColor="@color/deviceTheme"
+            android:textSize="15sp" />
+    </androidx.cardview.widget.CardView>
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/imageWrapper"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginBottom="5dp"
-                android:layout_gravity="bottom"
-                app:cardBackgroundColor="@color/deviceTheme"
-                app:cardCornerRadius="50dp">
+    <androidx.cardview.widget.CardView
+        android:id="@+id/wrapper"
+        app:layout_constraintLeft_toRightOf="@id/imageWrapper"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="3dp"
+        app:cardCornerRadius="10dp">
+        <TextView
+            android:minWidth="75dp"
+            android:id="@+id/message"
+            android:maxWidth="275dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="asjdaksjdhaksdh"
+            android:background="@color/deviceThemeInverted2"
+            android:padding="8dp"
+            android:textColor="@color/deviceTheme"
+            android:textSize="15sp" />
 
-                <ImageView
-                    android:id="@+id/image"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
+    </androidx.cardview.widget.CardView>
 
-                    android:scaleType="centerCrop" />
+    <androidx.cardview.widget.CardView
+        android:layout_marginLeft="5dp"
+        app:cardCornerRadius="50dp"
+        android:id="@+id/imageWrapper"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/wrapper"
+        app:cardBackgroundColor="@color/deviceTheme">
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:scaleType="centerCrop"/>
 
-            </androidx.cardview.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/sender"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginVertical="5dp"
-                    android:layout_marginStart="5dp"
-                    android:text="Sender"
-                    android:textColor="@color/deviceThemeInverted" />
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/wrapper"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginBottom="3dp"
-                    app:cardCornerRadius="10dp">
-
-                    <TextView
-                        android:id="@+id/message"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@color/deviceThemeInverted2"
-                        android:maxWidth="275dp"
-                        android:padding="8dp"
-                        android:text="asjdaksjdhaksdh"
-                        android:textColor="@color/deviceTheme"
-                        android:textSize="15sp" />
-
-                </androidx.cardview.widget.CardView>
-            </LinearLayout>
-
-        </LinearLayout>
-    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

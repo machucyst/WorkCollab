@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -51,6 +52,11 @@ public class SetupAccountActivity extends AppCompatActivity {
         b.btnShowPass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if (resultUri == null) {
+                    Toast.makeText(SetupAccountActivity.this, "Pick a profile image", Toast.LENGTH_SHORT).show();
+                    return; // TODO: if uri is null, itll crash
+                }
 
                 db.CreateAccount(bu.getString("user-name"), bu.getString("user-password"), bu.getString("user-email"), StrValOf(b.etCN), new DatabaseFuncs.UpdateListener() {
                     @Override
