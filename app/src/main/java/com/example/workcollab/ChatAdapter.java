@@ -38,8 +38,8 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     DatabaseFuncs db;
     ReplyListener replyListener;
 
-    public static int TYPE_SELF = 1;
-    public static int TYPE_OTHER = 2;
+    public final static int TYPE_SELF = 1;
+    public final static int TYPE_OTHER = 2;
     public interface ReplyListener {
         void onReplySwiped(String message, String messageId, String replyTo);
     }
@@ -273,6 +273,26 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
                 onSwiped(viewHolder, ItemTouchHelper.LEFT);
             }
             super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+        }
+
+        @Override
+        public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+            int viewType = viewHolder.getItemViewType();
+            int swipeFlags;
+
+            switch (viewType) {
+                case TYPE_SELF:
+                    swipeFlags = ItemTouchHelper.LEFT; // Allow only left swipe
+                    break;
+                case TYPE_OTHER:
+                    swipeFlags = ItemTouchHelper.RIGHT; // Allow only right swipe
+                    break;
+                default:
+                    swipeFlags = 0; // No swipe for other view types
+                    break;
+            }
+
+            return makeMovementFlags(0, swipeFlags);
         }
 
         @Override
