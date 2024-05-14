@@ -256,22 +256,38 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-            int position = viewHolder.getAdapterPosition();
+            int position = viewHolder.getAbsoluteAdapterPosition();
             adapter.replyChat(position);
-            adapter.notifyItemChanged(viewHolder.getAbsoluteAdapterPosition());
         }
 
         @Override
         public float getSwipeThreshold(@NonNull RecyclerView.ViewHolder viewHolder) {
-            return 0.25f;
+            return 1f;
         }
 
         @Override
         public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-            if (dX > 400f) dX = 400f;
-            if (dX < -400f) dX = -400f;
-
+            if (dX > 200 && !isCurrentlyActive) {
+                onSwiped(viewHolder, ItemTouchHelper.RIGHT);
+            } else if (dX < -200 && !isCurrentlyActive) {
+                onSwiped(viewHolder, ItemTouchHelper.LEFT);
+            }
             super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+        }
+
+        @Override
+        public float getSwipeVelocityThreshold(float defaultValue) {
+            return 2f;
+        }
+
+        @Override
+        public float getSwipeEscapeVelocity(float defaultValue) {
+            return 2f;
+        }
+
+        @Override
+        public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+
         }
     }
 }
