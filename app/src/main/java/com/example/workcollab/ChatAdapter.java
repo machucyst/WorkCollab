@@ -118,10 +118,10 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
 
                 Message r = reply.get();
-                holder.sender.setText(sender + " replied to " + r.getSenderUsername());
+                holder.sender.setText( sender + " replied to " + (!sender.equals(r.getSenderUsername()) ? r.getSenderUsername() : "themself"));
                 Optional<UserData> m = data.stream().filter(user -> user.getId().equals(reply.get().getSenderId())).findFirst();
                 if (m.isPresent()) {
-                    holder.sender.setText(sender + " replied to " + m.get().getUsername());
+                    holder.sender.setText(sender + " replied to " + (!sender.equals(m.get().getUsername()) ? m.get().getUsername() : "themself"));
                 }
                 holder.reply.setText(r.getMessage());
             } else {

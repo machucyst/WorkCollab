@@ -14,7 +14,6 @@
         android:text="Sender"
         android:textColor="@color/deviceThemeInverted"
         app:layout_constraintLeft_toLeftOf="@id/wrapper"
-        android:layout_marginStart="15dp"
         android:layout_marginVertical="5dp"/>
 
     <androidx.cardview.widget.CardView
