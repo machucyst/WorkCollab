@@ -1,4 +1,4 @@
-package com.example.workcollab;
+package com.example.workcollab.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +16,8 @@ import androidx.constraintlayout.motion.widget.MotionLayout;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.databinding.DataBindingUtil;
 
+import com.example.workcollab.DatabaseFuncs;
+import com.example.workcollab.R;
 import com.example.workcollab.databinding.ActivityMainBinding;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -30,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        b = DataBindingUtil.setContentView(this,R.layout.activity_main);
+        b = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
         userDb.InitDB(checkLoggedIn(), new DatabaseFuncs.DataListener() {
             @Override

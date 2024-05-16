@@ -1,4 +1,4 @@
-package com.example.workcollab;
+package com.example.workcollab.fragments;
 
 import android.content.Context;
 import android.content.res.Configuration;
@@ -22,6 +22,9 @@ import androidx.palette.graphics.Palette;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.example.workcollab.DatabaseFuncs;
+import com.example.workcollab.R;
+import com.example.workcollab.activities.MainMenuActivity;
 import com.example.workcollab.databinding.DialogLogoutConfirmBinding;
 import com.example.workcollab.databinding.DialogTextInputBinding;
 import com.example.workcollab.databinding.FragmentYouBinding;

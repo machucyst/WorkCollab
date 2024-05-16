@@ -1,4 +1,4 @@
-package com.example.workcollab;
+package com.example.workcollab.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,6 +10,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.example.workcollab.DatabaseFuncs;
+import com.example.workcollab.DeadlineAdapter;
 import com.example.workcollab.databinding.FragmentMainBinding;
 import com.google.firebase.Timestamp;
 import com.google.gson.Gson;

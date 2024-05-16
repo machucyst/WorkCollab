@@ -1,4 +1,4 @@
-package com.example.workcollab;
+package com.example.workcollab.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.workcollab.R;
 import com.example.workcollab.databinding.FragmentGroupsBinding;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.gson.Gson;

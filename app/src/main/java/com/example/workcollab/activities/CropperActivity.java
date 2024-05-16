@@ -1,4 +1,4 @@
-package com.example.workcollab;
+package com.example.workcollab.activities;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.workcollab.R;
 import com.yalantis.ucrop.UCrop;
 
 import java.io.File;

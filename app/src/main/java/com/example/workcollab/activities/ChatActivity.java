@@ -1,4 +1,4 @@
-package com.example.workcollab;
+package com.example.workcollab.activities;
 
 import android.app.Activity;
 import android.app.Application;
@@ -21,6 +21,10 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.example.workcollab.ChatAdapter;
+import com.example.workcollab.DatabaseFuncs;
+import com.example.workcollab.Message;
+import com.example.workcollab.R;
 import com.example.workcollab.databinding.ActivityChatBinding;
 import com.google.firebase.Timestamp;
 import com.google.gson.Gson;

@@ -1,4 +1,4 @@
-package com.example.workcollab;
+package com.example.workcollab.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.workcollab.DatabaseFuncs;
+import com.example.workcollab.activities.ChatActivity;
 import com.example.workcollab.databinding.FragmentSelectedGroupBinding;
 import com.google.gson.Gson;
 

@@ -1,4 +1,4 @@
-package com.example.workcollab;
+package com.example.workcollab.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,14 +17,26 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
+import com.example.workcollab.DatabaseFuncs;
+import com.example.workcollab.R;
 import com.example.workcollab.databinding.ActivityMainMenuBinding;
 import com.example.workcollab.databinding.DialogLogoutConfirmBinding;
+import com.example.workcollab.fragments.AccountEditFragment;
+import com.example.workcollab.fragments.AccountFragment;
+import com.example.workcollab.fragments.CreateGroupFragment;
+import com.example.workcollab.fragments.GroupsFragment;
+import com.example.workcollab.fragments.InvitesSubFragment;
+import com.example.workcollab.fragments.JoinedGroupsSubFragment;
+import com.example.workcollab.fragments.MainFragment;
+import com.example.workcollab.fragments.ProfileAccountEditFragment;
+import com.example.workcollab.fragments.SelectedGroupFragment;
+import com.example.workcollab.fragments.YouFragment;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.FirebaseApp;
 
 import java.util.Map;
 
-public class MainMenuActivity extends AppCompatActivity implements YouFragment.ButtonListeners, AccountEditFragment.UpdateListener, ProfileAccountEditFragment.ButtonListeners, AccountFragment.ButtonListeners,JoinedGroupsSubFragment.PositionListener, InvitesSubFragment.PositionListener {
+public class MainMenuActivity extends AppCompatActivity implements YouFragment.ButtonListeners, AccountEditFragment.UpdateListener, ProfileAccountEditFragment.ButtonListeners, AccountFragment.ButtonListeners, JoinedGroupsSubFragment.PositionListener, InvitesSubFragment.PositionListener {
     ActivityMainMenuBinding b;
     DialogLogoutConfirmBinding bl;
     ActivityResultLauncher<String> mGetCont;
@@ -43,6 +55,10 @@ public class MainMenuActivity extends AppCompatActivity implements YouFragment.B
     protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
         b = DataBindingUtil.setContentView(this, R.layout.activity_main_menu);
+//        Intent a = new Intent(this, NotifiationsService.class);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            startForegroundService(a);
+//        }
         String email;
         System.out.println(getUserEmail() + "EmailBeLike2");
         if (!getUserEmail().equals("")) {

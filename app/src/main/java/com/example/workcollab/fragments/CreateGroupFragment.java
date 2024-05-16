@@ -1,5 +1,6 @@
-package com.example.workcollab;
+package com.example.workcollab.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.example.workcollab.CreateGroupsUsersAdapter;
+import com.example.workcollab.DatabaseFuncs;
 import com.example.workcollab.databinding.FragmentCreateGroupBinding;
 import com.google.firebase.Timestamp;
 import com.google.gson.Gson;
@@ -83,10 +86,13 @@ public class CreateGroupFragment extends Fragment {
                     }
                     String a = b.etGN.getText().toString();
                     if (a.equals("")) a = user.get("Username").toString() + "'s Group";
+
                     db.CreateGroup(a, leader, filteredIds, new DatabaseFuncs.UpdateListener() {
                         @Override
                         public void onUpdate(Map group) {
                             System.out.println("It worked probably");
+                            Context context = requireContext();
+
                             requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), SelectedGroupFragment.newInstance(CreateGroupFragment.this.user,group)).addToBackStack(null).commit();
 
                         }

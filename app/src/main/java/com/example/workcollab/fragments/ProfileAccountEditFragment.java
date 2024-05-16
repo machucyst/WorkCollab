@@ -1,25 +1,25 @@
-package com.example.workcollab;
+package com.example.workcollab.fragments;
 
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.palette.graphics.Palette;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.example.workcollab.DatabaseFuncs;
+import com.example.workcollab.R;
 import com.example.workcollab.databinding.FragmentProfileAccountEditBinding;
 import com.google.gson.Gson;
 
@@ -52,7 +52,7 @@ public class ProfileAccountEditFragment extends Fragment {
         if (context instanceof ProfileAccountEditFragment.ButtonListeners) {
             listener = (ProfileAccountEditFragment.ButtonListeners) context;
         } else {
-            throw new RuntimeException(context.toString()
+            throw new RuntimeException(context
                     + " must implement OnFragmentInteractionListener");
         }
     }
@@ -62,7 +62,7 @@ public class ProfileAccountEditFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(user == null || (user != null && getArguments() != null)) {
-            System.out.println(getArguments().getString("user").toString() + "awjgoiaehgoaeig");
+            System.out.println(getArguments().getString("user") + "awjgoiaehgoaeig");
             user = gson.fromJson(getArguments().getString("user"), Map.class);
 
         }

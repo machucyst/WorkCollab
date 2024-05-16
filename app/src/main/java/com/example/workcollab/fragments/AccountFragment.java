@@ -1,4 +1,4 @@
-package com.example.workcollab;
+package com.example.workcollab.fragments;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -20,6 +20,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.workcollab.DatabaseFuncs;
+import com.example.workcollab.R;
 import com.example.workcollab.databinding.DialogLogoutConfirmBinding;
 import com.example.workcollab.databinding.DialogTextInputBinding;
 import com.example.workcollab.databinding.FragmentAccountBinding;
@@ -76,7 +78,7 @@ public class AccountFragment extends Fragment{
         menuTextChange(R.id.menu_password, "");
         menuTextChange(R.id.menu_profilePicture, "");
         menuTextChange(R.id.menu_deleteAccount, "");
-        ImageView v = (ImageView) b.nvAccountMenu.getMenu().findItem(R.id.menu_deleteAccount).getActionView().findViewById(R.id.nextMenuArrow);
+        ImageView v = b.nvAccountMenu.getMenu().findItem(R.id.menu_deleteAccount).getActionView().findViewById(R.id.nextMenuArrow);
         v.setColorFilter(ContextCompat.getColor(getContext(), R.color.warning));
         Spannable s = new SpannableString(b.nvAccountMenu.getMenu().findItem(R.id.menu_deleteAccount).getTitle().toString());
         s.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.warning)), 0, s.length(), 0);

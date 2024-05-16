@@ -1,4 +1,4 @@
-package com.example.workcollab;
+package com.example.workcollab.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +16,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
 import com.bumptech.glide.Glide;
+import com.example.workcollab.DatabaseFuncs;
+import com.example.workcollab.R;
 import com.example.workcollab.databinding.ActivitySetupAccountBinding;
 import com.google.firebase.FirebaseApp;
 
@@ -32,7 +34,7 @@ public class SetupAccountActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FirebaseApp.initializeApp(this);
-        b = DataBindingUtil.setContentView(this,R.layout.activity_setup_account);
+        b = DataBindingUtil.setContentView(this, R.layout.activity_setup_account);
 
         Intent intent = getIntent();
         Bundle bu = intent.getExtras();

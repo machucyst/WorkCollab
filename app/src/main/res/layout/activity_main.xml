@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:background="@drawable/background_default"
         app:layoutDescription="@xml/activity_main_scene"
-        tools:context=".MainActivity"
+        tools:context=".activities.MainActivity"
         android:id="@+id/parentLayout">
 
         <ImageView

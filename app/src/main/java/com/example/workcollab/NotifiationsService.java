@@ -14,14 +14,11 @@ import android.os.IBinder;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationManagerCompat;
 
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.ListenerRegistration;
-import com.google.firebase.firestore.QuerySnapshot;
+import com.example.workcollab.activities.MainMenuActivity;
 
 public class NotifiationsService extends Service {
-    ListenerRegistration listener;
-    DatabaseFuncs df;
+    DatabaseFuncs df = new DatabaseFuncs();
+
 
     /**
         For implementing this on the activity, you will need to do:
@@ -35,7 +32,7 @@ public class NotifiationsService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         // TODO: implement notification on receive document (the fucking addSnapshotListener you do it
-        df = new DatabaseFuncs();
+
 
 //        listener = df.account.addSnapshotListener(new EventListener<QuerySnapshot>() {
 //            @Override
@@ -60,7 +57,7 @@ public class NotifiationsService extends Service {
             NotificationChannel channel = new NotificationChannel("channel-notifier", "channelNotifier", NotificationManager.IMPORTANCE_HIGH);
             manager.createNotificationChannel(channel);
 
-            Intent intent = new Intent(this, MainActivity.class);
+            Intent intent = new Intent(this, MainMenuActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 

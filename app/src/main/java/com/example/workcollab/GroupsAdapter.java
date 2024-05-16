@@ -9,6 +9,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.workcollab.activities.MainMenuActivity;
+import com.example.workcollab.fragments.JoinedGroupsSubFragment;
+
 import java.util.List;
 import java.util.Map;
 
