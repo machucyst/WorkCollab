@@ -15,17 +15,22 @@ import java.util.Map;
 public class LoadingActivity extends AppCompatActivity {
 
     DatabaseFuncs db = new DatabaseFuncs();
+    boolean y = false;
 
     //TODO: design this
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (!getUserEmail().equals("")) {
-            System.out.println(getUserEmail() + "Emailbelike");
-            db.InitDB(getUserEmail(), new DatabaseFuncs.DataListener() {
+        if(getUserEmail().equals("")){
+            Intent intent = new Intent(LoadingActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }else{
+                db.InitDB(getUserEmail(), new DatabaseFuncs.DataListener() {
                 @Override
                 public void onDataFound(Map user) {
                     Intent intent = new Intent(LoadingActivity.this, MainMenuActivity.class);
+                    y = true;
                     startActivity(intent);
                     finish();
                 }
@@ -40,9 +45,6 @@ public class LoadingActivity extends AppCompatActivity {
                 }
             });
         }
-        Intent intent = new Intent(LoadingActivity.this, MainActivity.class);
-        startActivity(intent);
-        finish();
 
     }
 

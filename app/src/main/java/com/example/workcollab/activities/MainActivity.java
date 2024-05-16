@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         rubikFont = ResourcesCompat.getFont(this, R.font.rubik_regular);
-        setupPasswordToggle(findViewById(R.id.passwordLayoutLogIn), b.etEmailSignUp);
+        setupPasswordToggle(findViewById(R.id.passwordLayoutLogIn), b.etPasswordLogIn);
         setupPasswordToggle(findViewById(R.id.passwordLayoutSignUp), b.etPasswordSignUp);
     }
 
