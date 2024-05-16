@@ -55,10 +55,7 @@ public class MainMenuActivity extends AppCompatActivity implements YouFragment.B
     protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
         b = DataBindingUtil.setContentView(this, R.layout.activity_main_menu);
-//        Intent a = new Intent(this, NotifiationsService.class);
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            startForegroundService(a);
-//        }
+
         String email;
         System.out.println(getUserEmail() + "EmailBeLike2");
         if (!getUserEmail().equals("")) {

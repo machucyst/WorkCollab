@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
@@ -17,7 +18,9 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.databinding.DataBindingUtil;
 
 import com.example.workcollab.DatabaseFuncs;
+import com.example.workcollab.NotifiationsService;
 import com.example.workcollab.R;
+import com.example.workcollab.Utils;
 import com.example.workcollab.databinding.ActivityMainBinding;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -28,12 +31,16 @@ public class MainActivity extends AppCompatActivity {
     MotionLayout parentLayout;
     Typeface rubikFont;
     DatabaseFuncs userDb = new DatabaseFuncs();
-    ActivityMainBinding b;
+    ActivityMainBinding  b;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         b = DataBindingUtil.setContentView(this, R.layout.activity_main);
-
+        Intent a = new Intent(this, NotifiationsService.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !Utils.isServiceRunning(this, NotifiationsService.class)) {
+            Toast.makeText(this, "waaaa", Toast.LENGTH_SHORT).show();
+            startForegroundService(a);
+        }
         userDb.InitDB(checkLoggedIn(), new DatabaseFuncs.DataListener() {
             @Override
             public void onDataFound(Map user) {
