@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.content.ContentUris;
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -70,7 +69,7 @@ public class NotificationUtils {
                     .setSmallIcon(iconDrawableId)
                     .setContentTitle(title)
                     .setGroup(group)
-                    .setStyle(new Notification.BigPictureStyle().bigPicture(ConverterUtils.getBitmapFromUri(context, image)))
+                    .setStyle(new Notification.BigPictureStyle().bigPicture(Utils.getBitmapFromUri(context, image)))
                     .setContentText(message)
                     .build();
 

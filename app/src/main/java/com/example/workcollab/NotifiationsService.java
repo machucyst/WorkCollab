@@ -5,6 +5,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -26,6 +27,8 @@ public class NotifiationsService extends Service {
         For implementing this on the activity, you will need to do:
         Intent intent = new Intent(context, NotificationsService.class);
         startForegroundAService(intent);
+
+        Do the mentioned above after checking if the service is already running {@link Utils#isServiceRunning(Context, Class)}
 
         I havent tested any of the shits here yet so say if there are bugs ok adios
     **/
