@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -17,15 +16,14 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -42,6 +40,9 @@ public class DatabaseFuncs {
     Map user;
     public interface UpdateListener{
         void onUpdate(Map user);
+    }
+    public interface OptionListener{
+        void onOptionPicked();
     }
 
     public void DeleteAccount(String id, DeleteListener listener) {
@@ -319,13 +320,36 @@ public class DatabaseFuncs {
                                     a.put("Id",document.getId());
                                     documentList.add(a);
                             }
+                            groups
+                                    .whereArrayContains("Leaders", id)
+                                    .get()
+                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                                    Map a = document.getData();
+                                                    a.put("Id", document.getId());
+                                                    leaderList.add(a);
+                                                }
+                                                listener.onReceive(documentList, leaderList);
+
+                                            } else {
+                                                Log.d(TAG, "Error getting documents: ", task.getException());
+                                            }
+                                        }
+                                    });
+
                         } else {
                             Log.d(TAG, "Error getting documents: ", task.getException());
                         }
                     }
                 });
-        groups
-                .whereArrayContains("Leaders", id)
+
+    }
+    public void GetInvites(String id, GroupListener listener){
+        List<Map> documentList = new ArrayList<>();
+        groups.whereArrayContains("Invites",id)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -333,17 +357,16 @@ public class DatabaseFuncs {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Map a = document.getData();
-                                a.put("Id", document.getId());
-                                leaderList.add(a);
+                                a.put("Id",document.getId());
+                                documentList.add(a);
                             }
-                            listener.onReceive(documentList, leaderList);
+                            listener.onReceive(documentList);
 
                         } else {
                             Log.d(TAG, "Error getting documents: ", task.getException());
                         }
                     }
                 });
-
     }
 
 
@@ -469,6 +492,28 @@ public class DatabaseFuncs {
                         Log.e("uwu", e.toString());
                     }
                 });
+    }
+    public void denyInvite(String id,String groupId, OptionListener listener){
+        groups.document(groupId).update("Invites", FieldValue.arrayRemove(id)).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                listener.onOptionPicked();
+            }
+        });
+    }
+    public void acceptInvite(String id,String groupId, OptionListener listener){
+        groups.document(groupId).update("Invites", FieldValue.arrayRemove(id)).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+
+            }
+        });
+        groups.document(groupId).update("Members",FieldValue.arrayUnion(id)).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                listener.onOptionPicked();
+            }
+        });
     }
 }
 

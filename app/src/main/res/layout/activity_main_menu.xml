@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:id="@+id/menu_drawer"
         tools:context=".MainMenuActivity"
-        android:background="@color/deviceTheme"
+        android:background="@drawable/background_default"
         android:backgroundTintMode="src_atop">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -66,6 +66,7 @@
                     android:background="@drawable/background_transparent"
                     app:itemIconTint="@drawable/bottom_nav_color"
                     app:itemTextColor="@drawable/bottom_nav_color"
+                    app:itemTextAppearance="@style/menuText"
                     app:labelVisibilityMode="labeled"
                     app:itemRippleColor="@color/fui_transparent"
                     app:menu="@menu/bottom_nav_menu">
