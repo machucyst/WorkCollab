@@ -114,9 +114,9 @@ public class ChatActivity extends AppCompatActivity {
                 cs.clone(bind.main);
 
                 cs.connect(bind.recyclerView.getId(), ConstraintSet.BOTTOM, bind.replyWrapper.getId(), ConstraintSet.TOP);
-
                 bind.main.setConstraintSet(cs);
                 bind.reply.setText(message);
+                if(replyTo.equals(user.get("Username").toString())) replyTo = "Yourself";
                 bind.replyTo.setText("Replying to: " + replyTo);
                 ChatActivity.this.replyId = messageId;
             }));

@@ -19,7 +19,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:background="@color/fui_transparent"
+                android:background="@color/deviceTheme"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
@@ -43,8 +43,11 @@
                 <TextView
                     android:id="@+id/tv_groupName"
                     style="@style/SecondTextStyle"
+                    android:autoSizeTextType="uniform"
                     android:layout_width="wrap_content"
                     android:textSize="30dp"
+                    android:padding="10dp"
+                    android:paddingStart="2dp"
                     android:textColor="@color/deviceThemeInverted"
                     android:layout_height="match_parent"
                     android:layout_marginStart="20dp"

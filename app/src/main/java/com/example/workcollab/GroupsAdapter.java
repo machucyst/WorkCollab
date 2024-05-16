@@ -16,14 +16,14 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyHandler>
 
     public final List<Map> groups;
     DatabaseFuncs db = new DatabaseFuncs();
-    private final GroupsFragment.PositionListener listener;
+    private final JoinedGroupsSubFragment.PositionListener listener;
 
 
     @NonNull
     @Override
     public GroupsAdapter.MyHandler onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater =LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.card_groups,parent,false);
+        View view = inflater.inflate(R.layout.card_joined_groups,parent,false);
         return new GroupsAdapter.MyHandler(view);
     }
 
@@ -43,7 +43,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyHandler>
     public int getItemCount() {
         return groups.size();
     }
-    public GroupsAdapter(List<Map> groups, GroupsFragment.PositionListener listener){
+    public GroupsAdapter(List<Map> groups, JoinedGroupsSubFragment.PositionListener listener){
         this.groups = groups;
         this.listener = listener;
     }

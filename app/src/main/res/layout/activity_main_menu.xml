@@ -66,6 +66,7 @@
                     android:background="@drawable/background_transparent"
                     app:itemIconTint="@drawable/bottom_nav_color"
                     app:itemTextColor="@drawable/bottom_nav_color"
+                    app:itemTextAppearance="@style/menuText"
                     app:labelVisibilityMode="labeled"
                     app:itemRippleColor="@color/fui_transparent"
                     app:menu="@menu/bottom_nav_menu">

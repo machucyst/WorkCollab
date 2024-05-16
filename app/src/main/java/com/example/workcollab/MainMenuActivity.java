@@ -24,12 +24,11 @@ import com.google.firebase.FirebaseApp;
 
 import java.util.Map;
 
-public class MainMenuActivity extends AppCompatActivity implements YouFragment.ButtonListeners, AccountEditFragment.UpdateListener, ProfileAccountEditFragment.ButtonListeners, AccountFragment.ButtonListeners {
+public class MainMenuActivity extends AppCompatActivity implements YouFragment.ButtonListeners, AccountEditFragment.UpdateListener, ProfileAccountEditFragment.ButtonListeners, AccountFragment.ButtonListeners,JoinedGroupsSubFragment.PositionListener, InvitesSubFragment.PositionListener {
     ActivityMainMenuBinding b;
     DialogLogoutConfirmBinding bl;
     ActivityResultLauncher<String> mGetCont;
     MainFragment mf;
-    GroupsFragment gf;
     YouFragment sf;
     public static Map selectedgroup;
     int x = 1;
@@ -223,5 +222,21 @@ public class MainMenuActivity extends AppCompatActivity implements YouFragment.B
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    public void itemClicked(Map group) {
+        JoinedGroupsSubFragment.PositionListener.super.itemClicked(group);
+        getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(),SelectedGroupFragment.newInstance(user,group)).commit();
+    }
+
+    @Override
+    public void onDeny(Map group) {
+        InvitesSubFragment.PositionListener.super.onDeny(group);
+    }
+
+    @Override
+    public void onAccept(Map group) {
+        InvitesSubFragment.PositionListener.super.onAccept(group);
     }
 }
