@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.workcollab.DatabaseFuncs;
 import com.example.workcollab.DeadlineAdapter;
+import com.example.workcollab.activities.MainMenuActivity;
 import com.example.workcollab.databinding.FragmentMainBinding;
 import com.google.firebase.Timestamp;
 import com.google.gson.Gson;
@@ -85,7 +87,8 @@ public class MainFragment extends Fragment {
         b.btnNG.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Toast.makeText(getContext(), "wdawda", Toast.LENGTH_SHORT).show();
+                MainMenuActivity.backFlow.push("creategroups");
                 requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), CreateGroupFragment.newInstance(user)).addToBackStack(null).commit();
 
             }
@@ -93,6 +96,7 @@ public class MainFragment extends Fragment {
         b.btnG.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                MainMenuActivity.backFlow.push("creategroups");
                 requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), CreateGroupFragment.newInstance(user)).addToBackStack(null).commit();
             }
         });

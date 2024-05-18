@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".fragments.SettingsFragment">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/deviceTheme"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:background="@color/deviceTheme2"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/backbtn"
+                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
+                    android:src="@drawable/ic_back_arrow"
+                    app:tint="@color/deviceThemeInverted" />
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    style="@style/SecondTextStyle"
+                    android:layout_marginStart="5dp"
+                    android:textColor="@color/deviceThemeInverted"
+                    android:layout_weight="1"
+                    android:text="Settings" />
+            </LinearLayout>
+
+            <com.google.android.material.navigation.NavigationView
+                android:id="@+id/nv_accountMenu"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/deviceTheme"
+                app:itemBackground="@color/deviceTheme"
+                app:itemTextAppearance="@style/menuText"
+                app:menu="@menu/settings_menu" />
+        </LinearLayout>
+
+    </FrameLayout>
+</layout>

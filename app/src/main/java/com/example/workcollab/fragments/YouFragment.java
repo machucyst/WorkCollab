@@ -166,13 +166,17 @@ public class YouFragment extends Fragment {
                     return true;
                 }
                 if (a == R.id.menu_settings) {
-                    //TODO: idk yet
+                    MainMenuActivity.selected ="settings";
+                    MainMenuActivity.backFlow.push("settings");
+                    requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), new SettingsFragment(user)).addToBackStack(null).commit();
+                    return true;
                 }
                 if (a == R.id.menu_appearance) {
                     //TODO: change themes
                 }
                 if (a == R.id.menu_account){
                     MainMenuActivity.selected ="NotAccount";
+                    MainMenuActivity.backFlow.push("NotAccount");
                     requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), AccountFragment.newInstance(user)).addToBackStack(null).commit();
                     return true;
                 }

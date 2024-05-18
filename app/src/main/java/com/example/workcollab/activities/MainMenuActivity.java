@@ -3,9 +3,11 @@ package com.example.workcollab.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -16,6 +18,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -42,6 +46,7 @@ import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.FirebaseApp;
 
 import java.util.Map;
+import java.util.Stack;
 
 public class MainMenuActivity extends AppCompatActivity implements YouFragment.ButtonListeners, AccountEditFragment.UpdateListener, ProfileAccountEditFragment.ButtonListeners, AccountFragment.ButtonListeners, JoinedGroupsSubFragment.PositionListener, InvitesSubFragment.PositionListener {
     ActivityMainMenuBinding b;
@@ -49,6 +54,7 @@ public class MainMenuActivity extends AppCompatActivity implements YouFragment.B
     ActivityResultLauncher<String> mGetCont;
     MainFragment mf;
     YouFragment sf;
+    public static Stack<String> backFlow = new Stack<>();
     public static Map selectedgroup;
     int x = 1;
 
@@ -68,10 +74,19 @@ public class MainMenuActivity extends AppCompatActivity implements YouFragment.B
             return insets;
         });
 
-        Intent a = new Intent(this, NotifiationsService.class);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !Utils.isServiceRunning(this, NotifiationsService.class)) {
-            startForegroundService(a);
+        backFlow.push("main");
+
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 201);
+        } else {
+            Intent a = new Intent(this, NotifiationsService.class);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !Utils.isServiceRunning(this, NotifiationsService.class)) {
+                startForegroundService(a);
+            }
+            
         }
+
 
         String email;
         System.out.println(getUserEmail() + "EmailBeLike2");
@@ -124,6 +139,7 @@ public class MainMenuActivity extends AppCompatActivity implements YouFragment.B
             @Override
             public void onClick(View v) {
                 if (selected.equals("groups")) {
+                    backFlow.push("creategroups");
                     replaceFragment(CreateGroupFragment.newInstance(user), "creategroups");
                 }
             }
@@ -135,12 +151,18 @@ public class MainMenuActivity extends AppCompatActivity implements YouFragment.B
                 int a = menuItem.getItemId();
                 if(a == R.id.menu_home){
                     replaceFragment(MainFragment.newInstance(user),"main");
+                    backFlow.clear();
+                    backFlow.push("main");
                 } else if (a == R.id.menu_groups) {
                     replaceFragment(GroupsFragment.newInstance(user),"groups");
+                    backFlow.clear();
+                    backFlow.push("groups");
                 }else if (a == R.id.menu_tasks){
 
                 }else if (a == R.id.menu_profile){
                     replaceFragment(YouFragment.newInstance(user), "profile");
+                    backFlow.clear();
+                    backFlow.push("profile");
                 }
                 return true;
             }
@@ -222,7 +244,18 @@ public class MainMenuActivity extends AppCompatActivity implements YouFragment.B
         if (false) {
             super.onBackPressed();
         }
-        replaceFragment(MainFragment.newInstance(user), "main");
+
+        if (!backFlow.isEmpty()) {
+            backFlow.pop();
+        }
+
+//        replaceFragment(MainFragment.newInstance(user), "main");
+        if (backFlow.isEmpty()) {
+            replaceFragment(new MainFragment(user), "main");
+        } else {
+            Log.e("woah", backFlow.peek());
+            replaceFragment(changeFragment(backFlow.peek()), backFlow.peek());
+        }
     }
 
     @Override
@@ -257,6 +290,7 @@ public class MainMenuActivity extends AppCompatActivity implements YouFragment.B
     @Override
     public void itemClicked(Map group) {
         JoinedGroupsSubFragment.PositionListener.super.itemClicked(group);
+        backFlow.push("selectedgroup");
         getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(),SelectedGroupFragment.newInstance(user,group)).commit();
     }
 
@@ -268,5 +302,34 @@ public class MainMenuActivity extends AppCompatActivity implements YouFragment.B
     @Override
     public void onAccept(Map group) {
         InvitesSubFragment.PositionListener.super.onAccept(group);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 201) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Intent a = new Intent(this, NotifiationsService.class);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !Utils.isServiceRunning(this, NotifiationsService.class)) {
+                    startForegroundService(a);
+                }
+            }
+        }
+    }
+
+    public Fragment changeFragment(String fragmentTag) {
+        switch (fragmentTag) {
+            case "main":
+                return MainFragment.newInstance(user);
+            case "groups":
+                return GroupsFragment.newInstance(user);
+            case "profile":
+                return YouFragment.newInstance(user);
+            case "creategroups":
+                return CreateGroupFragment.newInstance(user);
+            case "selectgroup":
+                return SelectedGroupFragment.newInstance(user, selectedgroup);
+        }
+        return MainFragment.newInstance(user);
     }
 }
