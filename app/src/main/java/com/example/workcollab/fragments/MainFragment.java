@@ -29,6 +29,10 @@ public class MainFragment extends Fragment {
     public MainFragment() {
     }
 
+    public MainFragment(Map user) {
+        this.user = user;
+    }
+
 
     public static MainFragment newInstance(Map user) {
         Bundle args = new Bundle();

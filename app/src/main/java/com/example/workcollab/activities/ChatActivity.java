@@ -115,10 +115,10 @@ public class ChatActivity extends AppCompatActivity {
             adapter = new ChatAdapter(messages, ChatActivity.this, user, db, ((message, messageId, replyTo) -> {
                 bind.replyWrapper.setVisibility(View.VISIBLE);
                 ConstraintSet cs = new ConstraintSet();
-                cs.clone(bind.main);
+                cs.clone(bind.main1);
 
                 cs.connect(bind.recyclerView.getId(), ConstraintSet.BOTTOM, bind.replyWrapper.getId(), ConstraintSet.TOP);
-                bind.main.setConstraintSet(cs);
+                bind.main1.setConstraintSet(cs);
                 bind.reply.setText(message);
                 if(replyTo.equals(user.get("Username").toString())) replyTo = "Yourself";
                 bind.replyTo.setText("Replying to: " + replyTo);
@@ -169,11 +169,11 @@ public class ChatActivity extends AppCompatActivity {
                 adapter.addMessage(message, bind.recyclerView);
                 bind.replyWrapper.setVisibility(View.GONE);
                 ConstraintSet cs = new ConstraintSet();
-                cs.clone(bind.main);
+                cs.clone(bind.main1);
 
                 cs.connect(bind.recyclerView.getId(), ConstraintSet.BOTTOM, bind.wrapper.getId(), ConstraintSet.TOP);
 
-                bind.main.setConstraintSet(cs);
+                bind.main1.setConstraintSet(cs);
 
                 ChatActivity.this.replyId = "";
             });
@@ -182,11 +182,11 @@ public class ChatActivity extends AppCompatActivity {
         bind.cancelReply.setOnClickListener(v -> {
             bind.replyWrapper.setVisibility(View.GONE);
             ConstraintSet cs = new ConstraintSet();
-            cs.clone(bind.main);
+            cs.clone(bind.main1);
 
             cs.connect(bind.recyclerView.getId(), ConstraintSet.BOTTOM, bind.wrapper.getId(), ConstraintSet.TOP);
 
-            bind.main.setConstraintSet(cs);
+            bind.main1.setConstraintSet(cs);
 
             replyId = "";
         });

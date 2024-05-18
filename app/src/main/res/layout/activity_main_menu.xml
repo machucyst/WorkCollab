@@ -8,16 +8,16 @@
     </data>
 
     <androidx.drawerlayout.widget.DrawerLayout
+        android:background="@color/deviceTheme2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/menu_drawer"
         tools:context=".activities.MainMenuActivity"
-        android:background="@drawable/background_default"
         android:backgroundTintMode="src_atop">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/main"
             android:layout_width="match_parent"
-            android:layout_marginTop="28dp"
             android:layout_height="match_parent">
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -27,8 +27,7 @@
                     <FrameLayout
                         android:id="@+id/frame_fragment"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="10">
+                        android:layout_height="match_parent">
 
                     </FrameLayout>
 

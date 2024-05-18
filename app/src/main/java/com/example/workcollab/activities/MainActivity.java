@@ -36,11 +36,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         b = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        Intent a = new Intent(this, NotifiationsService.class);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !Utils.isServiceRunning(this, NotifiationsService.class)) {
-            Toast.makeText(this, "waaaa", Toast.LENGTH_SHORT).show();
-            startForegroundService(a);
-        }
         userDb.InitDB(checkLoggedIn(), new DatabaseFuncs.DataListener() {
             @Override
             public void onDataFound(Map user) {
