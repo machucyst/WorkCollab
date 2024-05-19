@@ -12,8 +12,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.workcollab.DatabaseFuncs;
-import com.example.workcollab.GroupsAdapter;
 import com.example.workcollab.activities.MainMenuActivity;
+import com.example.workcollab.adapters.GroupsAdapter;
 import com.example.workcollab.databinding.FragmentJoinedGroupsBinding;
 import com.google.firebase.Timestamp;
 import com.google.gson.Gson;

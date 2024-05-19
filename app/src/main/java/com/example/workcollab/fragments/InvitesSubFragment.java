@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.workcollab.DatabaseFuncs;
-import com.example.workcollab.InvitesAdapter;
+import com.example.workcollab.adapters.InvitesAdapter;
 import com.example.workcollab.databinding.FragmentInvitesBinding;
 import com.google.firebase.Timestamp;
 import com.google.gson.Gson;

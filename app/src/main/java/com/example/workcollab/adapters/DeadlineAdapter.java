@@ -1,4 +1,4 @@
-package com.example.workcollab;
+package com.example.workcollab.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +7,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.workcollab.DatabaseFuncs;
+import com.example.workcollab.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

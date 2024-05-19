@@ -16,6 +16,19 @@
         <item name="android:radius">2dp</item>
         <item name="android:fontFamily">@font/bahnschrift</item>
     </style>
+    <style name="CalenderViewCustom" parent="Theme.AppCompat">
+        <item name="colorControlActivated">@color/deviceTheme2</item>
+        <item name="android:textColorPrimary">@color/deviceThemeInverted</item>
+        <item name="android:textSize">40dp</item>
+    </style>
+    <style name="CalenderViewWeekCustomText" parent="android:TextAppearance.DeviceDefault.Small">
+        <item name="android:textColor">@color/deviceThemeInverted</item>
+        <item name="android:textSize">20dp</item>
+    </style>
+    <style name="CalenderViewDateCustomText">
+        <item name="android:textColor">@drawable/calendar_view_selector</item>
+        <item name="android:textSize">15dp</item>
+    </style>
     <style name="menuText">
         <item name="fontFamily">@font/bahnschrift</item>
     </style>

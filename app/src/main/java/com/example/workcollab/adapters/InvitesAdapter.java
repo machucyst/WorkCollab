@@ -1,4 +1,4 @@
-package com.example.workcollab;
+package com.example.workcollab.adapters;
 
 import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
@@ -10,6 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.workcollab.DatabaseFuncs;
+import com.example.workcollab.R;
 import com.example.workcollab.fragments.CreateGroupFragment;
 import com.example.workcollab.fragments.InvitesSubFragment;
 

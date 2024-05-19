@@ -24,7 +24,7 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
         buildFeatures{
-            dataBinding = true;
+            dataBinding = true
         }
     }
     compileOptions {
@@ -57,10 +57,7 @@ dependencies {
     implementation("com.android.volley:volley:1.2.1")
     implementation("com.github.krokyze:ucropnedit:2.2.6-2")
     implementation(libs.gson)
-    implementation(libs.firebase)
-    implementation(libs.firebaseAuth)
     implementation("androidx.credentials:credentials:1.3.0-alpha03")
-    implementation("com.firebaseui:firebase-ui-auth:8.0.2")
     implementation("com.google.android.material:material:1.12.0")
     implementation("com.github.bumptech.glide:glide:4.14.2")
     annotationProcessor("com.github.bumptech.glide:compiler:4.14.2")

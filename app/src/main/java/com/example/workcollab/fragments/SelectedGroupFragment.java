@@ -61,7 +61,25 @@ public class SelectedGroupFragment extends Fragment {
         b = FragmentSelectedGroupBinding.inflate(inflater,container,false);
         b.tvGroupName.setText(group.get("GroupName").toString());
         System.out.println("Selected Group"+user);
-        b.button4.setOnClickListener(v -> {
+        System.out.println(group.get("isLeader"));
+        if(Boolean.parseBoolean(group.get("isLeader").toString())){
+            b.btnTasks.setText("Assign Task");
+            b.btnTasks.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), AssignTaskFragment.newInstance(group)).addToBackStack(null).commit();
+
+                }
+            });
+        }else{
+            b.btnTasks.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+        }
+        b.btnChat.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), ChatActivity.class);
             Gson gson = new Gson();
             intent.putExtra("user", gson.toJson(user));

@@ -1,6 +1,5 @@
 package com.example.workcollab.fragments;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,8 +11,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.example.workcollab.CreateGroupsUsersAdapter;
 import com.example.workcollab.DatabaseFuncs;
+import com.example.workcollab.R;
+import com.example.workcollab.adapters.CreateGroupsUsersAdapter;
 import com.example.workcollab.databinding.FragmentCreateGroupBinding;
 import com.google.firebase.Timestamp;
 import com.google.gson.Gson;
@@ -80,6 +80,8 @@ public class CreateGroupFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 System.out.println("Public Static my beloved" + amabatuhavefun);
+                b.btnShowPass.setBackgroundDrawable(getResources().getDrawable(R.drawable.textholderdisabled));
+                b.btnShowPass.setEnabled(false);
                 try {
                     for (int i = 0; i < amabatuhavefun.size(); i++) {
                         filteredIds.add(amabatuhavefun.get(i).get("Id").toString());
@@ -91,7 +93,6 @@ public class CreateGroupFragment extends Fragment {
                         @Override
                         public void onUpdate(Map group) {
                             System.out.println("It worked probably");
-                            Context context = requireContext();
 
                             requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), SelectedGroupFragment.newInstance(CreateGroupFragment.this.user,group)).addToBackStack(null).commit();
 

@@ -44,6 +44,9 @@ public class DatabaseFuncs {
     public interface OptionListener{
         void onOptionPicked();
     }
+    public interface CreateTaskListener{
+        void onCreateTaskListener();
+    }
 
     public void DeleteAccount(String id, DeleteListener listener) {
         account.document(id).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -57,6 +60,12 @@ public class DatabaseFuncs {
 
     public interface DeleteListener {
         void onDelete();
+    }
+    public interface UserListener{
+        void onUserFound(Map user);
+    }
+    public interface MembersListener {
+        void onReceiveMembers(List<Map> members);
     }
 
     public interface DataListener {
@@ -318,6 +327,7 @@ public class DatabaseFuncs {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                     Map a = document.getData();
                                     a.put("Id",document.getId());
+                                    a.put("isLeader",false);
                                     documentList.add(a);
                             }
                             groups
@@ -330,6 +340,7 @@ public class DatabaseFuncs {
                                                 for (QueryDocumentSnapshot document : task.getResult()) {
                                                     Map a = document.getData();
                                                     a.put("Id", document.getId());
+                                                    a.put("isLeader",true);
                                                     leaderList.add(a);
                                                 }
                                                 listener.onReceive(documentList, leaderList);
@@ -369,15 +380,58 @@ public class DatabaseFuncs {
                 });
     }
 
+    public void GetMembers(String id, MembersListener listener){
+        List<Map> ids = new ArrayList<>();
+        groups.document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()){
+                    if (task.getResult().exists()){
+                        List<String> members = (List<String>) task.getResult().get("Members");
+                        System.out.println(members + "membercheck");
+                        if (members!=null){
+                            for(String id : members){
+                                getUserById(id, new DataListener() {
+                                    @Override
+                                    public void onDataFound(Map user) {
+                                        System.out.println(user+"326523");
+                                        ids.add(user);
+                                        listener.onReceiveMembers(ids);
+                                    }
 
-    public interface GroupListener {
+                                    @Override
+                                    public void noDuplicateUser() {
+                                        System.out.println("lmao error");
+                                    }
+                                });
+                            }
+
+                        }
+                    }
+
+                }
+            }
+        });
+    }
+        public interface GroupListener {
         void onReceive(List<Map> groups, List<Map> groupLeaders);
 
         void onReceive(List<Map> groups);
 
         void getDeadline(Timestamp timestamp);
     }
-
+    public void GetMembers(String id, UserListener listener) {
+        account.document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()){
+                    if(task.getResult().exists()){
+                        listener.onUserFound(task.getResult().getData());
+                    }
+                }
+            }
+        });
+    }
     public void InitDB(String email, DataListener dataListener) {
         final String[] b = {""};
         db.collection("Account")
@@ -410,6 +464,21 @@ public class DatabaseFuncs {
             Map<String, Object> user = d.getData();
             user.put("Id", d.getId());
             dataListener.onDataFound(user);
+        });
+    }
+    public void createTask(String groupId, List<String> members,String taskName, String taskDescription, long taskDeadline, CreateTaskListener listener){
+        Map taskBuilder = new HashMap<>();
+        taskBuilder.put("TaskName",taskName);
+        taskBuilder.put("TaskDescription",taskDescription);
+        taskBuilder.put("TaskCreated",new Timestamp(new Date()));
+        taskBuilder.put("TaskDeadline",new Timestamp(new Date(taskDeadline)));
+
+        groups.document(groupId).collection("Tasks").add(taskBuilder).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+            @Override
+            public void onSuccess(DocumentReference documentReference) {
+                System.out.println("ypee");
+                listener.onCreateTaskListener();
+            }
         });
     }
 

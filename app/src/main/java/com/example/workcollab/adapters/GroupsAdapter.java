@@ -1,4 +1,4 @@
-package com.example.workcollab;
+package com.example.workcollab.adapters;
 
 import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
@@ -9,6 +9,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.workcollab.DatabaseFuncs;
+import com.example.workcollab.R;
 import com.example.workcollab.activities.MainMenuActivity;
 import com.example.workcollab.fragments.JoinedGroupsSubFragment;
 

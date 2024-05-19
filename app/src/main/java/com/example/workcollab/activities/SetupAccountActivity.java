@@ -79,6 +79,7 @@ public class SetupAccountActivity extends AppCompatActivity {
                             }
                         });
 
+                        MainMenuActivity.selected = "main";
                         Intent toMenu = new Intent(SetupAccountActivity.this, MainMenuActivity.class);
                         toMenu.putExtra("Email", user.get("Email").toString());
                         if (bu.getBoolean("StayLogIn")) {

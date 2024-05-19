@@ -1,4 +1,4 @@
-package com.example.workcollab;
+package com.example.workcollab.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -14,6 +14,8 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.workcollab.DatabaseFuncs;
+import com.example.workcollab.R;
 import com.example.workcollab.fragments.CreateGroupFragment;
 
 import java.util.List;
