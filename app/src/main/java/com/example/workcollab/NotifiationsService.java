@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.IBinder;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationManagerCompat;
@@ -41,6 +42,8 @@ public class NotifiationsService extends Service {
 //            }
 //        });
 
+        Log.e("holeymoley", "running");
+
         showNotification();
         return START_STICKY;
     }
@@ -59,7 +62,7 @@ public class NotifiationsService extends Service {
 
             Intent intent = new Intent(this, MainMenuActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE);
 
             String appName = "";
             try {
@@ -74,7 +77,7 @@ public class NotifiationsService extends Service {
                     .setSmallIcon(R.drawable.ic_group)
                     .setContentIntent(pendingIntent)
                     .setContentTitle(appName)
-                    .setContentText("Service is running...")
+                    .setContentText("Notifications service is running...")
                     .setActions()
                     .build();
 

@@ -36,7 +36,7 @@ import java.util.Map;
 
 public class YouFragment extends Fragment {
 
-//    Map user;
+    Map user;
     Menu menu;
     FragmentYouBinding b;
     DialogTextInputBinding dtb;
@@ -69,10 +69,10 @@ public class YouFragment extends Fragment {
 
     }
 
-    public static YouFragment newInstance() {
+    public static YouFragment newInstance(Map user) {
         Bundle args = new Bundle();
         Gson gson = new Gson();
-//        args.putString("user", gson.toJson(user));
+        args.putString("user", gson.toJson(user));
         YouFragment f = new YouFragment();
         f.setArguments(args);
         return f;
@@ -165,13 +165,17 @@ public class YouFragment extends Fragment {
                     return true;
                 }
                 if (a == R.id.menu_settings) {
-                    //TODO: idk yet
+                    MainMenuActivity.selected ="settings";
+                    MainMenuActivity.backFlow.push("settings");
+                    requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), new SettingsFragment(user)).addToBackStack(null).commit();
+                    return true;
                 }
                 if (a == R.id.menu_appearance) {
                     //TODO: change themes
                 }
                 if (a == R.id.menu_account){
                     MainMenuActivity.selected ="NotAccount";
+                    MainMenuActivity.backFlow.push("NotAccount");
                     requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), AccountFragment.newInstance()).addToBackStack(null).commit();
                     return true;
                 }

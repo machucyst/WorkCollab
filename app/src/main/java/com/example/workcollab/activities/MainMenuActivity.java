@@ -1,11 +1,11 @@
 package com.example.workcollab.activities;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,11 +19,16 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
 import com.example.workcollab.DatabaseFuncs;
+import com.example.workcollab.NotifiationsService;
 import com.example.workcollab.R;
+import com.example.workcollab.Utils;
 import com.example.workcollab.databinding.ActivityMainMenuBinding;
 import com.example.workcollab.databinding.DialogLogoutConfirmBinding;
 import com.example.workcollab.fragments.AccountEditFragment;
@@ -45,17 +50,17 @@ import com.google.firebase.FirebaseApp;
 
 import java.io.InputStream;
 import java.util.Map;
+import java.util.Stack;
 
 public class MainMenuActivity extends AppCompatActivity implements YouFragment.ButtonListeners, AccountEditFragment.UpdateListener, ProfileAccountEditFragment.ButtonListeners, AccountFragment.ButtonListeners, JoinedGroupsSubFragment.PositionListener, InvitesSubFragment.PositionListener, TaskListFragment.PositionListener, SubmitTaskFragment.onSubmitClick, ViewMemberTasks.PositionListener {
     ActivityMainMenuBinding b;
     DialogLogoutConfirmBinding bl;
     InputStream inputStream;
     ActivityResultLauncher<String> mGetCont;
-    Map task;
-    private static final int PICK_FILE_REQUEST = 1;
-    private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 2;
     MainFragment mf;
     YouFragment sf;
+    Map task;
+    public static Stack<String> backFlow = new Stack<>();
     public static Map selectedgroup;
     int x = 1;
 
@@ -70,10 +75,26 @@ public class MainMenuActivity extends AppCompatActivity implements YouFragment.B
     protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
         b = DataBindingUtil.setContentView(this, R.layout.activity_main_menu);
-//        Intent a = new Intent(this, NotifiationsService.class);
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            startForegroundService(a);
-//        }
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+
+        backFlow.push("main");
+
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 201);
+        } else {
+            Intent a = new Intent(this, NotifiationsService.class);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !Utils.isServiceRunning(this, NotifiationsService.class)) {
+                startForegroundService(a);
+            }
+
+        }
+
+
         String email;
         System.out.println(getUserEmail() + "EmailBeLike2");
         if (!getUserEmail().equals("")) {
@@ -130,6 +151,7 @@ public class MainMenuActivity extends AppCompatActivity implements YouFragment.B
             @Override
             public void onClick(View v) {
                 if (selected.equals("groups")) {
+                    backFlow.push("creategroups");
                     replaceFragment(CreateGroupFragment.newInstance(), "creategroups");
                 }
                 if(selected.equals("tasks")){
@@ -145,12 +167,18 @@ public class MainMenuActivity extends AppCompatActivity implements YouFragment.B
                 int a = menuItem.getItemId();
                 if(a == R.id.menu_home){
                     replaceFragment(MainFragment.newInstance(),"main");
+                    backFlow.clear();
+                    backFlow.push("main");
                 } else if (a == R.id.menu_groups) {
                     replaceFragment(GroupsFragment.newInstance(),"groups");
+                    backFlow.clear();
+                    backFlow.push("groups");
                 }else if (a == R.id.menu_tasks){
                     replaceFragment(TaskListFragment.newInstance(false),"tasks");
                 }else if (a == R.id.menu_profile){
                     replaceFragment(YouFragment.newInstance(), "profile");
+                    backFlow.clear();
+                    backFlow.push("profile");
                 }
                 return true;
             }
@@ -172,21 +200,16 @@ public class MainMenuActivity extends AppCompatActivity implements YouFragment.B
 
             }
             try{
-               db.saveProfile(user, resultUri, new DatabaseFuncs.UpdateListener() {
+               db.SaveProfile(user, resultUri, new DatabaseFuncs.UpdateListener() {
                    @Override
                    public void onUpdate(Map user) {
-                       replaceFragment(ProfileAccountEditFragment.newInstance(),"Profile");
+                       replaceFragment(ProfileAccountEditFragment.newInstance(user),"Profile");
                    }
                });
 
             } catch (Exception e){
                 e.printStackTrace();
             }
-        }else if (requestCode == PICK_FILE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            System.out.println("a");
-            Uri fileUri = data.getData();
-            getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(),SubmitTaskFragment.newInstance(task,fileUri)).commit();
-            // Use the inputStream as needed
         }
     }
 
@@ -237,7 +260,18 @@ public class MainMenuActivity extends AppCompatActivity implements YouFragment.B
         if (false) {
             super.onBackPressed();
         }
-        replaceFragment(MainFragment.newInstance(), "main");
+
+        if (!backFlow.isEmpty()) {
+            backFlow.pop();
+        }
+
+//        replaceFragment(MainFragment.newInstance(user), "main");
+        if (backFlow.isEmpty()) {
+            replaceFragment(new MainFragment(MainMenuActivity.user), "main");
+        } else {
+            Log.e("woah", backFlow.peek());
+            replaceFragment(changeFragment(backFlow.peek()), backFlow.peek());
+        }
     }
 
     @Override
@@ -272,6 +306,8 @@ public class MainMenuActivity extends AppCompatActivity implements YouFragment.B
     @Override
     public void itemClicked(Map group) {
         JoinedGroupsSubFragment.PositionListener.super.itemClicked(group);
+        backFlow.push("selectedgroup");
+        getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(),SelectedGroupFragment.newInstance(user,group)).commit();
         getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(),SelectedGroupFragment.newInstance(group)).commit();
     }
     @Override
@@ -325,5 +361,34 @@ public class MainMenuActivity extends AppCompatActivity implements YouFragment.B
     @Override
     public void viewMemberTask(Map task) {
 
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 201) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Intent a = new Intent(this, NotifiationsService.class);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !Utils.isServiceRunning(this, NotifiationsService.class)) {
+                    startForegroundService(a);
+                }
+            }
+        }
+    }
+
+    public Fragment changeFragment(String fragmentTag) {
+        switch (fragmentTag) {
+            case "main":
+                return MainFragment.newInstance();
+            case "groups":
+                return GroupsFragment.newInstance(user);
+            case "profile":
+                return YouFragment.newInstance(user);
+            case "creategroups":
+                return CreateGroupFragment.newInstance(user);
+            case "selectgroup":
+                return SelectedGroupFragment.newInstance(user, selectedgroup);
+        }
+        return MainFragment.newInstance();
     }
 }

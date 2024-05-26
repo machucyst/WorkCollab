@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
@@ -18,7 +19,9 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.databinding.DataBindingUtil;
 
 import com.example.workcollab.DatabaseFuncs;
+import com.example.workcollab.NotifiationsService;
 import com.example.workcollab.R;
+import com.example.workcollab.Utils;
 import com.example.workcollab.databinding.ActivityMainBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -36,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     Typeface rubikFont;
 
     DatabaseFuncs userDb = new DatabaseFuncs();
-    ActivityMainBinding b;
+    ActivityMainBinding  b;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
