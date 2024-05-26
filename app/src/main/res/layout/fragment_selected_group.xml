@@ -13,8 +13,6 @@
         tools:context=".fragments.SelectedGroupFragment">
 
         <LinearLayout
-            android:background="@drawable/background_default"
-
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -109,12 +107,19 @@
                         android:layout_marginBottom="100dp"
                         android:orientation="horizontal">
 
-                        <androidx.appcompat.widget.AppCompatButton
+                        <ImageView
+                            android:layout_margin="5dp"
                             android:id="@+id/btnTasks"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:text="Tasks" />
+                            android:background="@drawable/textholder"
+                            android:foregroundGravity="center"
+                            android:foregroundTint="@color/deviceTheme"
+                            android:paddingVertical="80dp"
+                            app:srcCompat="@drawable/ic_task"
+                            app:tint="@color/black" />
+
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -122,19 +127,31 @@
                             android:layout_weight="1"
                             android:orientation="vertical">
 
-                            <androidx.appcompat.widget.AppCompatButton
+                            <ImageView
+                                android:layout_margin="5dp"
                                 android:id="@+id/btnSettings"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="Settings" />
+                                android:background="@drawable/textholder"
+                                android:foregroundGravity="center"
+                                android:foregroundTint="@color/deviceTheme"
+                                android:paddingVertical="25dp"
+                                app:srcCompat="@drawable/ic_gear"
+                                app:tint="@color/black" />
 
-                            <androidx.appcompat.widget.AppCompatButton
+                            <ImageView
+                                android:layout_margin="5dp"
                                 android:id="@+id/btnChat"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="Chat" />
+                                android:background="@drawable/textholder"
+                                android:foregroundGravity="center"
+                                android:foregroundTint="@color/deviceTheme"
+                                android:paddingVertical="25dp"
+                                app:srcCompat="@drawable/ic_chat"
+                                app:tint="@color/black" />
                         </LinearLayout>
 
                     </LinearLayout>

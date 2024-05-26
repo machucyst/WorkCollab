@@ -111,7 +111,11 @@ public class AccountEditFragment extends Fragment {
         }
         b.editHeader.setText("Edit "+ conditionValue);
         b.tvHelper.setText(conditionValue);
-        b.editTextText.setText(MainMenuActivity.user.get(condition).toString());
+        if(condition.equals("Password")){
+            b.editTextText.setText(DecryptPassword(MainMenuActivity.user.get(condition).toString()));
+        }else{
+            b.editTextText.setText(MainMenuActivity.user.get(condition).toString());
+        }
         b.saveEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -125,17 +129,8 @@ public class AccountEditFragment extends Fragment {
 
                         @Override
                         public void noDuplicateUser() {
-                            FirebaseAuth mAuth = FirebaseAuth.getInstance();
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            if(condition.equals("Password")) {
-                                user.updatePassword(b.editTextText.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
 
-                                    }
-                                });
-                            }
-                            db.updateEmail(MainMenuActivity.user.get("Email").toString(), b.editTextText.getText().toString(), new DatabaseFuncs.UpdateListener() {
+                            db.updateEmail(MainMenuActivity.user.get("Email").toString(), EncryptPassword(b.editTextText.getText().toString()), new DatabaseFuncs.UpdateListener() {
                                 @Override
                                 public void onUpdate(Map user) {
                                     System.out.println(user.get("Email").toString()+"2141240912");
@@ -147,9 +142,20 @@ public class AccountEditFragment extends Fragment {
                         }
                     });
                 }else{
-                    db.updateAccount(MainMenuActivity.user.get("Email").toString(), b.editTextText.getText().toString(), condition, new DatabaseFuncs.UpdateListener() {
+                    String pass = b.editTextText.getText().toString();
+                    if (condition.equals("Password")){
+                        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+                        FirebaseUser user = mAuth.getCurrentUser();
+                            user.updatePassword(EncryptPassword(pass)).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                }
+                            });
+                    }
+                    db.updateAccount(MainMenuActivity.user.get("Email").toString(), pass, condition, new DatabaseFuncs.UpdateListener() {
                         @Override
                         public void onUpdate(Map user) {
+                            MainMenuActivity.user = user;
                             requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), AccountFragment.newInstance()).addToBackStack(null).commit();
                         }
                     });
@@ -157,6 +163,26 @@ public class AccountEditFragment extends Fragment {
 
             }
         });
+
         return b.getRoot();
+    }
+
+    private String DecryptPassword(String password){
+        char[] encpass = password.toCharArray();
+        StringBuilder pass = new StringBuilder();
+        for(char c: encpass){
+            c-=7;
+            pass.append(c);
+        }
+        return pass.toString();
+    }
+    private String EncryptPassword(String password){
+        char[] encpass = password.toCharArray();
+        StringBuilder pass = new StringBuilder();
+        for(char c: encpass){
+            c+=7;
+            pass.append(c);
+        }
+        return pass.toString();
     }
 }

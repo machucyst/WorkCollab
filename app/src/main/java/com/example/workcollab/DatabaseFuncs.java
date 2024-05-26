@@ -269,6 +269,17 @@ public class DatabaseFuncs {
             }
         });
     }
+    public void inviteMembers(String groupId, List<String> toAdd, BasicListener listener){
+        for(String i: toAdd){
+            groups.document(groupId).update("Invites",FieldValue.arrayUnion(i)).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    listener.BasicListener();
+                }
+            });
+        }
+
+    }
     public void getUsers(GroupListener listener) {
         account.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override

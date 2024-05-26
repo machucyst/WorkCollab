@@ -108,7 +108,7 @@ public class YouFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         MainMenuActivity.selected = "NotProfile";
-                        requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), ProfileAccountEditFragment.newInstance()).addToBackStack(null).commit();
+                        requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), AccountFragment.newInstance()).addToBackStack(null).commit();
 
                     }
                 });

@@ -2,6 +2,10 @@ package com.example.workcollab.fragments;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.Spannable;
@@ -16,10 +20,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.palette.graphics.Palette;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.example.workcollab.DatabaseFuncs;
 import com.example.workcollab.R;
 import com.example.workcollab.activities.MainMenuActivity;
@@ -32,21 +41,14 @@ import com.google.gson.Gson;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public class AccountFragment extends Fragment{
-
+public class AccountFragment extends Fragment {
+//    Map user;
+    Gson gson = new Gson();
+    FragmentAccountBinding b;
+    DatabaseFuncs db = new DatabaseFuncs();
     public AccountFragment() {
 
     }
-
-    int x;
-    FragmentAccountBinding b;
-    DatabaseFuncs db = new DatabaseFuncs();
-    DialogTextInputBinding dtb;
-    DialogLogoutConfirmBinding dlc;
-//    Map user;
-    Gson gson = new Gson();
-    private AccountFragment.ButtonListeners listener;
-
 
     public static AccountFragment newInstance() {
         Bundle args = new Bundle();
@@ -56,7 +58,13 @@ public class AccountFragment extends Fragment{
         f.setArguments(args);
         return f;
     }
-
+    public interface ButtonListeners{
+        void onPressChangePFP();
+        void onDeletedAccount();
+    }
+    DialogTextInputBinding dtb;
+    DialogLogoutConfirmBinding dlc;
+    private AccountFragment.ButtonListeners listener;
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -68,6 +76,20 @@ public class AccountFragment extends Fragment{
         }
     }
 
+    private void menuTextChange(int ItemId,String text){
+        TextView a = (b.nvAccountMenu.getMenu().findItem(ItemId).getActionView().findViewById(R.id.additionalText));
+        a.setText(text);
+    }
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+//        if(user == null || (user != null && getArguments() != null)) {
+//            System.out.println(getArguments().getString("user") + "awjgoiaehgoaeig");
+//            user = gson.fromJson(getArguments().getString("user"), Map.class);
+//
+//        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -76,7 +98,7 @@ public class AccountFragment extends Fragment{
         menuTextChange(R.id.menu_password, "");
         menuTextChange(R.id.menu_profilePicture, "");
         menuTextChange(R.id.menu_deleteAccount, "");
-        b.nvAccountMenu.getMenu().findItem(R.id.menu_password).setEnabled(false);
+        b.nvAccountMenu.getMenu().findItem(R.id.menu_email).setEnabled(false);
         ImageView v = b.nvAccountMenu.getMenu().findItem(R.id.menu_deleteAccount).getActionView().findViewById(R.id.nextMenuArrow);
         v.setColorFilter(ContextCompat.getColor(getContext(), R.color.warning));
         Spannable s = new SpannableString(b.nvAccountMenu.getMenu().findItem(R.id.menu_deleteAccount).getTitle().toString());
@@ -117,7 +139,7 @@ public class AccountFragment extends Fragment{
 
                             });
                             dtb.Ok.setOnClickListener(k -> {
-                                if(dtb.editText.getText().toString().equals(user.get("Password"))){
+                                if(dtb.editText.getText().toString().equals(DecryptPassword(user.get("Password").toString()))){
                                     requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), AccountEditFragment.newInstance("Password")).addToBackStack(null).commit();
                                     dialog.dismiss();
                                 }else{
@@ -132,8 +154,7 @@ public class AccountFragment extends Fragment{
                             requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), AccountEditFragment.newInstance("ContactNumber")).addToBackStack(null).commit();
                         }
                         if (a == R.id.menu_profilePicture){
-                            requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), ProfileAccountEditFragment.newInstance()).addToBackStack(null).commit();
-
+                            listener.onPressChangePFP();
                         }
                         if (a == R.id.menu_deleteAccount) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
@@ -211,27 +232,47 @@ public class AccountFragment extends Fragment{
             }
 
         });
+        b.profileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onPressChangePFP();
+            }
+        });
+        try {
+            Glide.with(getContext()).asBitmap().load(Uri.parse(MainMenuActivity.user.get("Profile").toString())).into(b.profileImage);
 
+            CustomTarget<Bitmap> bitmap = Glide.with(requireContext()).asBitmap().load(MainMenuActivity.user.get("Profile").toString()).into(new CustomTarget<Bitmap>() {
+
+                @Override
+                public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                    Palette p = Palette.from(resource).generate();
+                    int colorWhite = getResources().getColor(R.color.white, getActivity().getTheme());
+                    switch (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) {
+                        case Configuration.UI_MODE_NIGHT_YES:
+                            b.profileBackgroundView.setBackgroundColor(p.getDarkVibrantColor(colorWhite));
+                            break;
+                        case Configuration.UI_MODE_NIGHT_NO:
+                            b.profileBackgroundView.setBackgroundColor(p.getVibrantColor(colorWhite));
+                            break;
+                    }
+                }
+                @Override
+                public void onLoadCleared(@Nullable Drawable placeholder) {
+
+                }
+            });
+        }catch (Exception ex){
+
+        }
         return b.getRoot();
     }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            System.out.println(getArguments().getString("user") + "awjgoiaehgoaeig");
-//            user = gson.fromJson(getArguments().getString("user"), Map.class);
+    private String DecryptPassword(String password){
+        char[] encpass = password.toCharArray();
+        StringBuilder pass = new StringBuilder();
+        for(char c: encpass){
+            c-=7;
+            pass.append(c);
         }
-
+        return pass.toString();
     }
-
-
-    public interface ButtonListeners {
-        void onDeletedAccount();
-    }
-    private void menuTextChange(int ItemId,String text){
-        TextView a = (b.nvAccountMenu.getMenu().findItem(ItemId).getActionView().findViewById(R.id.additionalText));
-        a.setText(text);
-    }
-
 }

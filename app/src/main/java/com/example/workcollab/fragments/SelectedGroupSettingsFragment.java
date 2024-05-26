@@ -2,14 +2,17 @@ package com.example.workcollab.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.workcollab.R;
 import com.example.workcollab.databinding.FragmentSelectedGroupSettingsBinding;
+import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
 
 import java.util.Map;
@@ -46,6 +49,17 @@ public class SelectedGroupSettingsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         b = FragmentSelectedGroupSettingsBinding.inflate(inflater, container, false);
+        b.nvAccountMenu.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                int a = menuItem.getItemId();
+                if(a == R.id.menu_groupmembers){
+                    requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), InviteMoreMembersFragment.newInstance(group)).addToBackStack(null).commit();
+
+                }
+                return false;
+            }
+        });
         menuTextChange(R.id.menu_groupname,group.get("GroupName").toString());
         return b.getRoot();
     }

@@ -98,13 +98,17 @@ public class MainActivity extends AppCompatActivity {
                @Override
                public void onComplete(@NonNull Task<AuthResult> task) {
                    FirebaseUser user = mAuth.getCurrentUser();
+                   if(user == null){
+                       Toast.makeText(MainActivity.this,"Account doesn't exist",Toast.LENGTH_SHORT).show();
+                       return;
+                   }
                    System.out.println(user);
                    if (user.isEmailVerified()) {
                        if (task.isSuccessful()) {
                            userDb.InitDB(email, new DatabaseFuncs.DataListener() {
                                @Override
                                public void onDataFound(Map user) {
-                                   if (email.equals(user.get("Email")) && (password.equals(user.get("Password")))) {
+                                   if (email.equals(user.get("Email")) && password.equals((DecryptPassword(String.valueOf(user.get("Password")))))) {
                                        Intent toMenu = new Intent(MainActivity.this, MainMenuActivity.class);
                                        toMenu.putExtra("user-name", user.get("Username").toString());
                                        toMenu.putExtra("user-email", user.get("Email").toString());
@@ -137,12 +141,36 @@ public class MainActivity extends AppCompatActivity {
                }
            });
     }
+    private String DecryptPassword(String password){
+        char[] encpass = password.toCharArray();
+        StringBuilder pass = new StringBuilder();
+        for(char c: encpass){
+            c-=7;
+            pass.append(c);
+        }
+        System.out.println(pass);
+        return pass.toString();
+    }
+    private String EncryptPassword(String password){
+        char[] encpass = password.toCharArray();
+        StringBuilder pass = new StringBuilder();
+        for(char c: encpass){
+            c+=7;
+            pass.append(c);
+        }
+        System.out.println(pass);
+        return pass.toString();
+    }
+
 
     public void submitSignUp(View v) {
         String username = b.etUsernameSignUp.getText().toString();
         String email = b.etEmailSignUp.getText().toString();
         String password = b.etPasswordSignUp.getText().toString();
-
+        if(password.length()<6){
+            Toast.makeText(this, "Password too short", Toast.LENGTH_SHORT).show();
+            return;
+        }
         userDb.InitDB(email, new DatabaseFuncs.DataListener() {
 
             @Override

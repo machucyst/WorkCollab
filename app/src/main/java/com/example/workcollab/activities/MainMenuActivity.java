@@ -14,7 +14,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -41,7 +40,6 @@ import com.example.workcollab.fragments.GroupsFragment;
 import com.example.workcollab.fragments.InvitesSubFragment;
 import com.example.workcollab.fragments.JoinedGroupsSubFragment;
 import com.example.workcollab.fragments.MainFragment;
-import com.example.workcollab.fragments.ProfileAccountEditFragment;
 import com.example.workcollab.fragments.SelectedGroupFragment;
 import com.example.workcollab.fragments.SubmitTaskFragment;
 import com.example.workcollab.fragments.TaskListFragment;
@@ -49,24 +47,21 @@ import com.example.workcollab.fragments.ViewMemberTasks;
 import com.example.workcollab.fragments.YouFragment;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.FirebaseApp;
+import com.yalantis.ucrop.UCrop;
 
-import java.io.InputStream;
+import java.io.File;
 import java.util.Map;
 import java.util.Stack;
 
-public class MainMenuActivity extends AppCompatActivity implements YouFragment.ButtonListeners, AccountEditFragment.UpdateListener, ProfileAccountEditFragment.ButtonListeners, AccountFragment.ButtonListeners, JoinedGroupsSubFragment.PositionListener, InvitesSubFragment.PositionListener, TaskListFragment.PositionListener, SubmitTaskFragment.onSubmitClick, ViewMemberTasks.PositionListener {
+public class MainMenuActivity extends AppCompatActivity implements YouFragment.ButtonListeners, AccountEditFragment.UpdateListener, AccountFragment.ButtonListeners, JoinedGroupsSubFragment.PositionListener, InvitesSubFragment.PositionListener, TaskListFragment.PositionListener, SubmitTaskFragment.onSubmitClick, ViewMemberTasks.PositionListener {
     private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 32;
     private static final int PICK_FILE_REQUEST = 123;
     ActivityMainMenuBinding b;
     DialogLogoutConfirmBinding bl;
-    InputStream inputStream;
     ActivityResultLauncher<String> mGetCont;
-    MainFragment mf;
-    YouFragment sf;
     Map task;
     public static Stack<String> backFlow = new Stack<>();
     public static Map selectedgroup;
-    int x = 1;
 
     public static String selected = "main";
     Bundle bu = new Bundle();
@@ -107,11 +102,12 @@ public class MainMenuActivity extends AppCompatActivity implements YouFragment.B
             email = bu.getString("user-email");
         }
         FirebaseApp.initializeApp(this);
-        mGetCont=registerForActivityResult(new ActivityResultContracts.GetContent(), o ->{
-            Intent intent = new Intent(MainMenuActivity.this, CropperActivity.class);
-            intent.putExtra("DATA",o.toString());
-            startActivityForResult(intent,101);
-        });
+//        mGetCont=registerForActivityResult(new ActivityResultContracts.GetContent(), o ->{
+//            Intent intent = new Intent(MainMenuActivity.this, CropperActivity.class);
+//            intent.setAction(Intent.ACTION_GET_CONTENT);
+//            intent.putExtra("DATA",o.toString());
+//            startActivityForResult(Intent.createChooser(intent,"Select Picture"),101);
+//        });
         System.out.println(email + "whaiohgoeihaoieug aogoiaea");
         db.InitDB(email, new DatabaseFuncs.DataListener() {
 
@@ -196,26 +192,45 @@ public class MainMenuActivity extends AppCompatActivity implements YouFragment.B
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         System.out.println(resultCode+" "+requestCode);
-        if (resultCode ==-1&&requestCode == 101){
-            String result = data.getStringExtra("RESULT");
-            Uri resultUri = null;
-            if(result!=null){
-                resultUri = Uri.parse(result);
+        if (requestCode == 101){
+            Uri sourceUri = data.getData();
 
-            }
-            try{
-               db.saveProfile(user, resultUri, new DatabaseFuncs.UpdateListener() {
-                   @Override
-                   public void onUpdate(Map user) {
-                       replaceFragment(ProfileAccountEditFragment.newInstance(),"Profile");
-                   }
-               });
+            // Destination URI
+            Uri destinationUri = Uri.fromFile(new File(getCacheDir(), "IMG_" + System.currentTimeMillis()));
 
-            } catch (Exception e){
-                e.printStackTrace();
+            // Start UCrop activity
+            UCrop.of(sourceUri, destinationUri)
+                    .withAspectRatio(1, 1)
+                    .withMaxResultSize(450, 450)
+                    .start(this);
+            } else if (requestCode == UCrop.REQUEST_CROP) {
+                if (resultCode == RESULT_OK) {
+                    final Uri resultUri = UCrop.getOutput(data);
+                    try{
+                        db.saveProfile(user, resultUri, new DatabaseFuncs.UpdateListener() {
+                            @Override
+                            public void onUpdate(Map user) {
+                                MainMenuActivity.user = user;
+                                replaceFragment(AccountFragment.newInstance(),"Profile");
+                            }
+                        });
+
+                    } catch (Exception e){
+                        e.printStackTrace();
+                    }
+                } else if (resultCode == UCrop.RESULT_ERROR) {
+                    final Throwable cropError = UCrop.getError(data);
+                    // Handle the error
+                }
             }
+//            String result = data.getStringExtra("RESULT");
+//            Uri resultUri = null;
+//            if(result!=null){
+//                resultUri = Uri.parse(result);
+//
+//            }
+
         }
-    }
 
     private String getUserEmail() {
         SharedPreferences sharedPreferences = getSharedPreferences("UserLogInPreferences", Context.MODE_PRIVATE);
@@ -280,8 +295,13 @@ public class MainMenuActivity extends AppCompatActivity implements YouFragment.B
 
     @Override
     public void onPress() {
-        mGetCont.launch("image/*");
+//        mGetCont.launch("image/*");
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), 101);
     }
+
 
     @Override
     public void onLogOutPress() {
@@ -296,7 +316,11 @@ public class MainMenuActivity extends AppCompatActivity implements YouFragment.B
 
     @Override
     public void onPressChangePFP() {
-        mGetCont.launch("image/*");
+//        mGetCont.launch("image/*");
+        Intent intent = new Intent();
+        intent.setType("image/*");  // For .doc files
+        intent.setAction(Intent.ACTION_PICK);
+        startActivityForResult(Intent.createChooser(intent,"Select Picture"), 101);
     }
 
     @Override
@@ -355,10 +379,7 @@ public class MainMenuActivity extends AppCompatActivity implements YouFragment.B
         }
     }
     public void openFilePicker(){
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("*/*");  // For .doc files
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        startActivityForResult(intent, PICK_FILE_REQUEST);
+
     }
 
     @Override

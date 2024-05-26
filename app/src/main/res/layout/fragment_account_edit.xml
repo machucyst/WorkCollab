@@ -71,19 +71,25 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="10dp"
                 android:background="@color/deviceTheme2">
-
-                <EditText
-                    android:id="@+id/editTextText"
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    style="@style/SecondTextStyle"
-                    android:textColor="@color/deviceThemeInverted"
-                    android:padding="10dp"
-                    android:textSize="28dp"
-                    android:background="@color/fui_transparent"
-                    android:ems="10"
-                    android:inputType="text"
-                    android:text="Name" />
+                    android:layout_gravity="center|bottom"
+                    android:background="@color/white"
+                    app:cardCornerRadius="50dp">
+                        <EditText
+                            android:id="@+id/editTextText"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            style="@style/SecondTextStyle"
+                            android:textColor="@color/deviceThemeInverted"
+                            android:padding="10dp"
+                            android:textSize="28dp"
+                            android:background="@color/deviceTheme"
+                            android:ems="10"
+                            android:inputType="text"
+                            android:text="Name" />
+                </androidx.cardview.widget.CardView>
             </FrameLayout>
 
         </LinearLayout>

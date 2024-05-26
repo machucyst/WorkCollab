@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -79,7 +80,8 @@
                             android:background="@drawable/textholder"
                             android:ems="10"
                             android:fontFamily="@font/bahnschrift"
-                            android:hint="Clear text...etc"
+                            android:hint="Clear text...etc \n(10 MB file only)
+"
                             android:inputType="text"
                             android:padding="2dp"
                             android:paddingStart="15dp"
@@ -113,12 +115,6 @@
                             android:layout_marginBottom="100dp"
                             android:orientation="horizontal">
 
-                            <androidx.appcompat.widget.AppCompatButton
-                                android:id="@+id/btnUpload"
-                                android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:layout_weight="1"
-                                android:text="Upload" />
 
                             <LinearLayout
                                 android:layout_width="wrap_content"
@@ -126,21 +122,47 @@
                                 android:layout_weight="1"
                                 android:orientation="vertical">
 
-                                <androidx.appcompat.widget.AppCompatButton
-                                    android:id="@+id/btnPlace"
+                                <ImageView
+                                    android:layout_margin="5dp"
+                                    android:id="@+id/btnReturn"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:text="a" />
+                                    android:layout_weight="7"
+                                    android:background="@drawable/textholder"
+                                    android:foregroundGravity="center"
+                                    android:foregroundTint="@color/deviceTheme"
+                                    android:paddingVertical="25dp"
+                                    app:srcCompat="@drawable/ic_back_arrow"
+                                    app:tint="@color/black" />
 
-                                <androidx.appcompat.widget.AppCompatButton
+                                <ImageView
+                                    android:layout_margin="5dp"
                                     android:id="@+id/btnSubmit"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:text="Submit" />
+                                    android:layout_weight="7"
+                                    android:background="@drawable/textholder"
+                                    android:foregroundGravity="center"
+                                    android:foregroundTint="@color/deviceTheme"
+                                    android:paddingVertical="25dp"
+                                    app:srcCompat="@drawable/ic_task"
+                                    app:tint="@color/black" />
                             </LinearLayout>
 
+
+
+                                <ImageView
+                                    android:layout_margin="5dp"
+                                    android:id="@+id/btnUpload"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/textholder"
+                                    android:foregroundGravity="center"
+                                    android:foregroundTint="@color/deviceTheme"
+                                    android:paddingVertical="80dp"
+                                    app:srcCompat="@drawable/ic_attach_file"
+                                    app:tint="@color/black" />
                         </LinearLayout>
                     </LinearLayout>
 

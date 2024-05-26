@@ -82,10 +82,11 @@ public class SetupAccountActivity extends AppCompatActivity {
                 b.btnShowPass.setText("Loading...");
                 b.btnShowPass.setBackgroundDrawable(AppCompatResources.getDrawable(SetupAccountActivity.this,R.drawable.textholderdisabled));
                 b.btnShowPass.setEnabled(false);
+
                 db.registerAccount(mAuth, bu.getString("user-email"), bu.getString("user-password"), getApplicationContext(), b.btnShowPass,new DatabaseFuncs.EmailAuthListener() {
                     @Override
                     public void changeLayout(boolean test) {
-                        db.createAccount(bu.getString("user-name"), bu.getString("user-password"), bu.getString("user-email"), StrValOf(b.etCN), new DatabaseFuncs.UpdateListener() {
+                        db.createAccount(bu.getString("user-name"), EncryptPassword(bu.getString("user-password")), bu.getString("user-email"), StrValOf(b.etCN), new DatabaseFuncs.UpdateListener() {
                             @Override
                             public void onUpdate(Map user) {
                                 System.out.println("tesyseys");
@@ -141,6 +142,15 @@ public class SetupAccountActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("UserLogInPreferences", Context.MODE_PRIVATE);
         sharedPreferences.edit().remove("incomplete").apply();
         mAuth.signOut();
+    }
+    private String EncryptPassword(String password){
+        char[] encpass = password.toCharArray();
+        StringBuilder pass = new StringBuilder();
+        for(char c: encpass){
+            c+=7;
+            pass.append(c);
+        }
+        return pass.toString();
     }
     private String StrValOf(TextView view){
         return view.getText().toString();

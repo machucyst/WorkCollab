@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".fragments.InviteMoreMembersFragment">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:layout_weight="2"
+                android:background="@color/deviceTheme2"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_members"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:fontFamily="@font/bahnschrift"
+                    android:text="Members:"
+                    android:textColor="@color/deviceThemeInverted"
+                    android:textSize="20dp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_members"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:background="@color/white" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginBottom="100dp"
+                android:layout_weight="2"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:background="@color/deviceTheme2"
+                    android:id="@+id/ll_addMembers"
+                    android:layout_width="match_parent"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_add"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="30dp"
+                        android:fontFamily="@font/bahnschrift"
+                        android:text="Invite Members:"
+                        android:textColor="@color/deviceThemeInverted"
+                        android:textSize="20dp" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_addUsers"
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:layout_margin="10dp"
+                        android:layout_weight="1"
+                        android:background="@color/white" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_addUsers"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="0dp"
+                        android:elevation="30dp"
+                        android:textColor="@color/black"
+                        app:endIconDrawable="@drawable/ic_baseline_add_24"
+                        app:endIconMode="custom"
+                        app:endIconTint="@color/black"
+                        app:hintEnabled="false">
+
+                        <EditText
+                            android:id="@+id/et_add"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/textholder"
+                            android:ems="10"
+                            android:fontFamily="@font/bahnschrift"
+                            android:hint="joeBiden@gmail.com"
+                            android:inputType="text"
+                            android:padding="5dp"
+                            android:paddingStart="15dp"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/stroke_gray"
+                            android:textSize="20dp" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/submit"
+                        style="@style/TextHolder"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center|bottom"
+                        android:layout_margin="20dp"
+                        android:layout_weight="0"
+                        android:paddingHorizontal="50dp"
+                        android:text="Submit"
+                        android:textColor="@color/black" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+
+    </FrameLayout>
+</layout>

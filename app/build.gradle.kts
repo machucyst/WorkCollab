@@ -54,6 +54,8 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    implementation("com.github.esafirm.android-image-picker:imagepicker:2.0.0") // Replace x.y.z with the latest version
+
     implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
     implementation("com.google.android.gms:play-services-auth:21.2.0")
     implementation("com.google.firebase:firebase-auth")

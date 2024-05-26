@@ -14,6 +14,9 @@ import com.example.workcollab.R;
 import com.example.workcollab.activities.MainMenuActivity;
 import com.example.workcollab.fragments.TaskListFragment;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -38,11 +41,16 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.MyHandler>{
         holder.tv_g.setText((tasks.get(position).get("TaskName")).toString());
         holder.parent.setOnClickListener(v -> {
             try {
-            listener.taskItemClicked(tasks.get(position));
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                Date date = sdf.parse(String.valueOf(tasks.get(position).get("TaskDeadline")));
+                long conv = date.getTime();
+                if(Calendar.getInstance().getTimeInMillis() < conv){
+                    listener.taskItemClicked(tasks.get(position));
+                }
             }catch (Exception ex){
                 System.out.println("im going to sleep");
             }
-                MainMenuActivity.selected = "Tasks";
+            MainMenuActivity.selected = "Tasks";
 
             }
 

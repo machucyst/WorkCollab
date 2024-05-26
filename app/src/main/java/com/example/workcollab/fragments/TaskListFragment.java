@@ -16,6 +16,7 @@ import com.example.workcollab.databinding.FragmentTaskListBinding;
 import com.google.firebase.Timestamp;
 import com.google.gson.Gson;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -111,6 +112,12 @@ public class TaskListFragment extends Fragment {
            db.getTasks(MainMenuActivity.user.get("Id").toString(), new DatabaseFuncs.TaskListener() {
                @Override
                public void onTaskRecieved(List<Map> tasks) {
+                   if (tasks.isEmpty()){
+                       Map<String,Object> task = new HashMap();
+                       task.put("TaskName","No tasks pending :)");
+
+                       tasks.add(task);
+                   }
                    TasksAdapter ta = new TasksAdapter(tasks);
                    b.rvTasks.setAdapter(ta);
                    b.rvTasks.setLayoutManager(new LinearLayoutManager(getContext()));
