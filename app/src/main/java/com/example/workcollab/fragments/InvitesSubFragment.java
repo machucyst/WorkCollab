@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.workcollab.DatabaseFuncs;
+import com.example.workcollab.activities.MainMenuActivity;
 import com.example.workcollab.adapters.InvitesAdapter;
 import com.example.workcollab.databinding.FragmentInvitesBinding;
 import com.google.firebase.Timestamp;
@@ -21,7 +22,7 @@ import java.util.Map;
 public class InvitesSubFragment extends Fragment  {
 
     Gson gson = new Gson();
-    Map user;
+//    Map user;
     DatabaseFuncs db = new DatabaseFuncs();
     FragmentInvitesBinding b;
     public interface PositionListener{
@@ -45,10 +46,10 @@ public class InvitesSubFragment extends Fragment  {
     }
 
 
-    public static InvitesSubFragment newInstance(Map user) {
+    public static InvitesSubFragment newInstance() {
         Bundle args = new Bundle();
         Gson gson = new Gson();
-        args.putString("user", gson.toJson(user));
+//        args.putString("user", gson.toJson(user));
         InvitesSubFragment f = new InvitesSubFragment();
         f.setArguments(args);
         return f;
@@ -57,11 +58,11 @@ public class InvitesSubFragment extends Fragment  {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(getArguments() != null){
-            System.out.println(getArguments().getString("user") + "awjgoiaehgoaeig");
-            Gson gson = new Gson();
-            user = gson.fromJson(getArguments().getString("user"),Map.class);
-        }
+//        if(getArguments() != null){
+//            System.out.println(getArguments().getString("user") + "awjgoiaehgoaeig");
+//            Gson gson = new Gson();
+//            user = gson.fromJson(getArguments().getString("user"),Map.class);
+//        }
     }
 
     @Override
@@ -69,7 +70,7 @@ public class InvitesSubFragment extends Fragment  {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         b = FragmentInvitesBinding.inflate(inflater,container,false);
-        db.GetInvites(user.get("Id").toString(), new DatabaseFuncs.GroupListener() {
+        db.getInvites(MainMenuActivity.user.get("Id").toString(), new DatabaseFuncs.GroupListener() {
             @Override
             public void onReceive(List<Map> groups, List<Map> groupLeaders) {
 
@@ -81,7 +82,7 @@ public class InvitesSubFragment extends Fragment  {
                     @Override
                     public void onDeny(Map group) {
                         PositionListener.super.onDeny(group);
-                        db.denyInvite(user.get("Id").toString(), group.get("Id").toString(), new DatabaseFuncs.OptionListener() {
+                        db.denyInvite(MainMenuActivity.user.get("Id").toString(), group.get("Id").toString(), new DatabaseFuncs.OptionListener() {
                             @Override
                             public void onOptionPicked() {
                                 System.out.println("Invite Denied");
@@ -92,7 +93,7 @@ public class InvitesSubFragment extends Fragment  {
                     @Override
                     public void onAccept(Map group) {
                         PositionListener.super.onAccept(group);
-                        db.acceptInvite(user.get("Id").toString(), group.get("Id").toString(), new DatabaseFuncs.OptionListener() {
+                        db.acceptInvite(MainMenuActivity.user.get("Id").toString(), group.get("Id").toString(), new DatabaseFuncs.OptionListener() {
                             @Override
                             public void onOptionPicked() {
                                 System.out.println("Invite to "+group.get("Id").toString()+" Accepted");

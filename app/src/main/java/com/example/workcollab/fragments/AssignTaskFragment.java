@@ -72,7 +72,7 @@ public class AssignTaskFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         b = FragmentAssignTaskBinding.inflate(inflater,container,false);
-        db.GetMembers(group.get("Id").toString(), new DatabaseFuncs.MembersListener() {
+        db.getMembers(group.get("Id").toString(), new DatabaseFuncs.MembersListener() {
             @Override
             public void onReceiveMembers(List<Map> members) {
                 System.out.println(members);
@@ -84,6 +84,7 @@ public class AssignTaskFragment extends Fragment {
                });
                b.rvMembers.setAdapter(ma);
                b.rvMembers.setLayoutManager(new LinearLayoutManager(getContext()));
+               b.rvMembers.setNestedScrollingEnabled(false);
             }
         });
         b.tilUntil.setEndIconOnClickListener(new View.OnClickListener() {

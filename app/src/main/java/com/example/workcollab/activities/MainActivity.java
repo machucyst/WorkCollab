@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.motion.widget.MotionLayout;
 import androidx.core.content.res.ResourcesCompat;
@@ -19,24 +20,31 @@ import androidx.databinding.DataBindingUtil;
 import com.example.workcollab.DatabaseFuncs;
 import com.example.workcollab.R;
 import com.example.workcollab.databinding.ActivityMainBinding;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     MotionLayout parentLayout;
     Typeface rubikFont;
+
     DatabaseFuncs userDb = new DatabaseFuncs();
     ActivityMainBinding b;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         b = DataBindingUtil.setContentView(this, R.layout.activity_main);
-
         userDb.InitDB(checkLoggedIn(), new DatabaseFuncs.DataListener() {
             @Override
             public void onDataFound(Map user) {
+                MainMenuActivity.selected = "main";
                 if (checkLoggedIn().equals(user.get("Email"))) {
                     Intent toMenu = new Intent(MainActivity.this, MainMenuActivity.class);
                     toMenu.putExtra("user-name", user.get("Username").toString());
@@ -80,26 +88,50 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Please fill in all text fields", Toast.LENGTH_SHORT).show();
             return;
         }
-        userDb.InitDB(email, new DatabaseFuncs.DataListener() {
-            @Override
-            public void onDataFound(Map user) {
-                if (email.equals(user.get("Email")) && (password.equals(user.get("Password")))) {
-                    Intent toMenu = new Intent(MainActivity.this, MainMenuActivity.class);
-                    toMenu.putExtra("user-name", user.get("Username").toString());
-                    toMenu.putExtra("user-email", user.get("Email").toString());
-                    if (b.cbStaySignedInLogIn.isChecked()) stayLogIn(user.get("Email").toString());
-                    startActivity(toMenu);
-                    finish();
-                } else {
-                    Toast.makeText(MainActivity.this, "User not found", Toast.LENGTH_SHORT).show();
-                }
-            }
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+//        if(user.isEmailVerified()){
+           mAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+               @Override
+               public void onComplete(@NonNull Task<AuthResult> task) {
+                   FirebaseUser user = mAuth.getCurrentUser();
+                   System.out.println(user);
+                   if (user.isEmailVerified()) {
+                       if (task.isSuccessful()) {
+                           userDb.InitDB(email, new DatabaseFuncs.DataListener() {
+                               @Override
+                               public void onDataFound(Map user) {
+                                   if (email.equals(user.get("Email")) && (password.equals(user.get("Password")))) {
+                                       Intent toMenu = new Intent(MainActivity.this, MainMenuActivity.class);
+                                       toMenu.putExtra("user-name", user.get("Username").toString());
+                                       toMenu.putExtra("user-email", user.get("Email").toString());
+                                       if (b.cbStaySignedInLogIn.isChecked()) {
+                                           stayLogIn(user.get("Email").toString());
+                                       }else{
+                                           mAuth.signOut();
+                                       }
+                                           startActivity(toMenu);
+                                           finish();
+                                   } else {
+                                       Toast.makeText(MainActivity.this, "User not found", Toast.LENGTH_SHORT).show();
+                                   }
+                               }
 
-            @Override
-            public void noDuplicateUser() {
-                Toast.makeText(MainActivity.this,"User not found",Toast.LENGTH_SHORT).show();
-            }
-        });
+                               @Override
+                               public void noDuplicateUser() {
+                                   Toast.makeText(MainActivity.this, "User not found", Toast.LENGTH_SHORT).show();
+                               }
+                           });
+                       }
+                   }else{
+                       Toast.makeText(MainActivity.this,"Please verify your email", Toast.LENGTH_SHORT).show();
+                   }
+               }
+           }).addOnFailureListener(new OnFailureListener() {
+               @Override
+               public void onFailure(@NonNull Exception e) {
+                   Toast.makeText(MainActivity.this, "No Account Found",Toast.LENGTH_SHORT).show();
+               }
+           });
     }
 
     public void submitSignUp(View v) {
@@ -127,7 +159,6 @@ public class MainActivity extends AppCompatActivity {
                 toMenu.putExtra("user-password",password);
                 toMenu.putExtra("StayLogIn", b.cbStaySignedInSignUp.isChecked());
                 startActivity(toMenu);
-                finish();
             }
 
         });

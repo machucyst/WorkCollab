@@ -36,7 +36,7 @@ import java.util.Map;
 
 public class YouFragment extends Fragment {
 
-    Map user;
+//    Map user;
     Menu menu;
     FragmentYouBinding b;
     DialogTextInputBinding dtb;
@@ -69,10 +69,10 @@ public class YouFragment extends Fragment {
 
     }
 
-    public static YouFragment newInstance(Map user) {
+    public static YouFragment newInstance() {
         Bundle args = new Bundle();
         Gson gson = new Gson();
-        args.putString("user", gson.toJson(user));
+//        args.putString("user", gson.toJson(user));
         YouFragment f = new YouFragment();
         f.setArguments(args);
         return f;
@@ -81,11 +81,10 @@ public class YouFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(user == null || (user != null && getArguments() != null)) {
-            System.out.println(getArguments().getString("user") + "awjgoiaehgoaeig");
-            user = gson.fromJson(getArguments().getString("user"), Map.class);
-
-        }
+//        if(user == null || (user != null && getArguments() != null)) {
+//            System.out.println(getArguments().getString("user") + "awjgoiaehgoaeig");
+//            user = gson.fromJson(getArguments().getString("user"), Map.class);
+//        }
     }
 
 
@@ -101,7 +100,7 @@ public class YouFragment extends Fragment {
         menuTextChange(R.id.menu_logOut, "Log Out");
 
 
-        db.InitDB(user.get("Email").toString(), new DatabaseFuncs.DataListener() {
+        db.InitDB(MainMenuActivity.user.get("Email").toString(), new DatabaseFuncs.DataListener() {
             @Override
             public void onDataFound(Map user) {
                 b.tvUsername.setText(user.get("Username").toString());
@@ -110,7 +109,7 @@ public class YouFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         MainMenuActivity.selected = "NotProfile";
-                        requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), ProfileAccountEditFragment.newInstance(user)).addToBackStack(null).commit();
+                        requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), ProfileAccountEditFragment.newInstance()).addToBackStack(null).commit();
 
                     }
                 });
@@ -173,7 +172,7 @@ public class YouFragment extends Fragment {
                 }
                 if (a == R.id.menu_account){
                     MainMenuActivity.selected ="NotAccount";
-                    requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), AccountFragment.newInstance(user)).addToBackStack(null).commit();
+                    requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), AccountFragment.newInstance()).addToBackStack(null).commit();
                     return true;
                 }
                 return false;

@@ -15,18 +15,16 @@ import com.example.workcollab.databinding.FragmentGroupsBinding;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.gson.Gson;
 
-import java.util.Map;
-
 
 public class GroupsFragment extends Fragment {
-    Map user;
+//    Map user;
     FragmentGroupsBinding b;
     Gson gson = new Gson();
 
-    public static GroupsFragment newInstance(Map user) {
+    public static GroupsFragment newInstance() {
         Bundle args = new Bundle();
         Gson gson = new Gson();
-        args.putString("user", gson.toJson(user));
+//        args.putString("user", gson.toJson(user));
         GroupsFragment f = new GroupsFragment();
         f.setArguments(args);
         return f;
@@ -35,10 +33,10 @@ public class GroupsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            System.out.println(getArguments().getString("user") + "awjgoiaehgoaeig");
-            user = gson.fromJson(getArguments().getString("user"), Map.class);
-        }
+//        if (getArguments() != null) {
+//            System.out.println(getArguments().getString("user") + "awjgoiaehgoaeig");
+//            user = gson.fromJson(getArguments().getString("user"), Map.class);
+//        }
     }
 
     @Override
@@ -52,16 +50,16 @@ public class GroupsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        getChildFragmentManager().beginTransaction().replace(b.groupsFragmentFrame.getId(),JoinedGroupsSubFragment.newInstance(user)).commit();
+        getChildFragmentManager().beginTransaction().replace(b.groupsFragmentFrame.getId(),JoinedGroupsSubFragment.newInstance()).commit();
         b.groupsMenu.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 int a = menuItem.getItemId();
                 if(a == R.id.menu_joined){
-                    getChildFragmentManager().beginTransaction().replace(b.groupsFragmentFrame.getId(),JoinedGroupsSubFragment.newInstance(user)).commit();
+                    getChildFragmentManager().beginTransaction().replace(b.groupsFragmentFrame.getId(),JoinedGroupsSubFragment.newInstance()).commit();
                     return true;
                 }else if(a == R.id.menu_invites){
-                    getChildFragmentManager().beginTransaction().replace(b.groupsFragmentFrame.getId(),InvitesSubFragment.newInstance(user)).commit();
+                    getChildFragmentManager().beginTransaction().replace(b.groupsFragmentFrame.getId(),InvitesSubFragment.newInstance()).commit();
                     return true;
                 }
                 return false;

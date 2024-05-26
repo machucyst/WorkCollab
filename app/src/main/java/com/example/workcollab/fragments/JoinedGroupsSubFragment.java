@@ -24,7 +24,7 @@ import java.util.Map;
 
 public class JoinedGroupsSubFragment extends Fragment {
 
-    Map user;
+//    Map user;
     DatabaseFuncs db = new DatabaseFuncs();
     FragmentJoinedGroupsBinding b;
 
@@ -48,10 +48,10 @@ public class JoinedGroupsSubFragment extends Fragment {
     }
 
 
-    public static JoinedGroupsSubFragment newInstance(Map user) {
+    public static JoinedGroupsSubFragment newInstance() {
         Bundle args = new Bundle();
         Gson gson = new Gson();
-        args.putString("user", gson.toJson(user));
+//        args.putString("user", gson.toJson(user));
         JoinedGroupsSubFragment f = new JoinedGroupsSubFragment();
         f.setArguments(args);
         return f;
@@ -60,14 +60,13 @@ public class JoinedGroupsSubFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(getArguments() != null){
-            System.out.println(getArguments().getString("user") + "awjgoiaehgoaeig");
-            Gson gson = new Gson();
-            user = gson.fromJson(getArguments().getString("user"),Map.class);
-        }
-        System.out.println(user);
-        //TODO: create Invites recycler view
-        db.GetJoinedGroups(user.get("Id").toString(), new DatabaseFuncs.GroupListener() {
+//        if(getArguments() != null){
+//            System.out.println(getArguments().getString("user") + "awjgoiaehgoaeig");
+//            Gson gson = new Gson();
+//            user = gson.fromJson(getArguments().getString("user"),Map.class);
+//        }
+//        System.out.println(user);
+        db.getJoinedGroups(MainMenuActivity.user.get("Id").toString(), new DatabaseFuncs.GroupListener() {
             @Override
             public void onReceive(List<Map> groups, List<Map> groupLeaders) {
                 List<Map> newList = new ArrayList<Map>();

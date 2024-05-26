@@ -22,6 +22,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.workcollab.DatabaseFuncs;
 import com.example.workcollab.R;
+import com.example.workcollab.activities.MainMenuActivity;
 import com.example.workcollab.databinding.DialogLogoutConfirmBinding;
 import com.example.workcollab.databinding.DialogTextInputBinding;
 import com.example.workcollab.databinding.FragmentAccountBinding;
@@ -42,18 +43,15 @@ public class AccountFragment extends Fragment{
     DatabaseFuncs db = new DatabaseFuncs();
     DialogTextInputBinding dtb;
     DialogLogoutConfirmBinding dlc;
-    Map user;
+//    Map user;
     Gson gson = new Gson();
     private AccountFragment.ButtonListeners listener;
 
-    public AccountFragment(Map user) {
-        this.user = user;
-    }
 
-    public static AccountFragment newInstance(Map user) {
+    public static AccountFragment newInstance() {
         Bundle args = new Bundle();
         Gson gson = new Gson();
-        args.putString("user", gson.toJson(user));
+//        args.putString("user", gson.toJson(user));
         AccountFragment f = new AccountFragment();
         f.setArguments(args);
         return f;
@@ -78,13 +76,14 @@ public class AccountFragment extends Fragment{
         menuTextChange(R.id.menu_password, "");
         menuTextChange(R.id.menu_profilePicture, "");
         menuTextChange(R.id.menu_deleteAccount, "");
+        b.nvAccountMenu.getMenu().findItem(R.id.menu_password).setEnabled(false);
         ImageView v = b.nvAccountMenu.getMenu().findItem(R.id.menu_deleteAccount).getActionView().findViewById(R.id.nextMenuArrow);
         v.setColorFilter(ContextCompat.getColor(getContext(), R.color.warning));
         Spannable s = new SpannableString(b.nvAccountMenu.getMenu().findItem(R.id.menu_deleteAccount).getTitle().toString());
         s.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.warning)), 0, s.length(), 0);
         b.nvAccountMenu.getMenu().findItem(R.id.menu_deleteAccount).setTitle(s);
 
-        db.InitDB(user.get("Email").toString(), new DatabaseFuncs.DataListener() {
+        db.InitDB(MainMenuActivity.user.get("Email").toString(), new DatabaseFuncs.DataListener() {
             @Override
             public void onDataFound(Map user) {
                 menuTextChange(R.id.menu_username, "\"" + user.get("Username").toString() + "\"");
@@ -99,12 +98,12 @@ public class AccountFragment extends Fragment{
         b.nvAccountMenu.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                db.InitDB(user.get("Email").toString(), new DatabaseFuncs.DataListener() {
+                db.InitDB(MainMenuActivity.user.get("Email").toString(), new DatabaseFuncs.DataListener() {
                     @Override
                     public void onDataFound(Map user) {
                         int a = menuItem.getItemId();
                         if (a == R.id.menu_username) {
-                            requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), AccountEditFragment.newInstance(user, "Username")).addToBackStack(null).commit();
+                            requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), AccountEditFragment.newInstance("Username")).addToBackStack(null).commit();
 
                         }
                         if (a == R.id.menu_password) {
@@ -119,7 +118,7 @@ public class AccountFragment extends Fragment{
                             });
                             dtb.Ok.setOnClickListener(k -> {
                                 if(dtb.editText.getText().toString().equals(user.get("Password"))){
-                                    requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), AccountEditFragment.newInstance(user, "Password")).addToBackStack(null).commit();
+                                    requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), AccountEditFragment.newInstance("Password")).addToBackStack(null).commit();
                                     dialog.dismiss();
                                 }else{
                                     Toast.makeText(requireContext(),"Incorrect Password",Toast.LENGTH_SHORT).show();
@@ -129,15 +128,11 @@ public class AccountFragment extends Fragment{
                             });
                             dialog.show();
                         }
-                        if (a == R.id.menu_email){
-                            requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), AccountEditFragment.newInstance(user, "Email")).addToBackStack(null).commit();
-
-                        }
                         if (a == R.id.menu_contactNumber){
-                            requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), AccountEditFragment.newInstance(user, "ContactNumber")).addToBackStack(null).commit();
+                            requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), AccountEditFragment.newInstance("ContactNumber")).addToBackStack(null).commit();
                         }
                         if (a == R.id.menu_profilePicture){
-                            requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), ProfileAccountEditFragment.newInstance(user)).addToBackStack(null).commit();
+                            requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), ProfileAccountEditFragment.newInstance()).addToBackStack(null).commit();
 
                         }
                         if (a == R.id.menu_deleteAccount) {
@@ -225,7 +220,7 @@ public class AccountFragment extends Fragment{
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             System.out.println(getArguments().getString("user") + "awjgoiaehgoaeig");
-            user = gson.fromJson(getArguments().getString("user"), Map.class);
+//            user = gson.fromJson(getArguments().getString("user"), Map.class);
         }
 
     }

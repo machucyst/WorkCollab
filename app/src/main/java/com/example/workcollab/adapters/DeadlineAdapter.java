@@ -33,7 +33,7 @@ public class DeadlineAdapter extends RecyclerView.Adapter<DeadlineAdapter.MyHand
     @Override
     public void onBindViewHolder(@NonNull MyHandler holder, int position) {
         holder.groups().setText((deadlines.get(position).get("GroupName")).toString());
-        db.GetDeadlines(deadlines.get(position).get("GroupId").toString(), new DatabaseFuncs.GroupListener() {
+        db.getDeadlines(deadlines.get(position).get("GroupId").toString(), new DatabaseFuncs.GroupListener() {
             @Override
             public void onReceive(List<Map> groups, List<Map> groupLeaders) {
 

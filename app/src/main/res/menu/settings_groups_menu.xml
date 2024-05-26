@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:showIn="navigation_view">
+
+        <item
+            android:id="@+id/menu_groupname"
+            android:checkable="true"
+            android:title="Group Name"
+            app:showAsAction="always"
+            app:actionLayout="@layout/menu_custom_layout"
+            />
+        <item
+            android:id="@+id/memu_groupmembers"
+            android:checkable="true"
+            android:title="Members"
+            app:showAsAction="always"
+            app:actionLayout="@layout/menu_arrow"
+            />
+        <item
+            android:id="@+id/menu_groupPicture"
+            android:checkable="true"
+            android:title="Picture"
+            app:showAsAction="always"
+            app:actionLayout="@layout/menu_arrow"
+            />
+        <item
+            android:id="@+id/menu_deletegroups"
+            android:checkable="true"
+            android:title="Delete Group"
+            app:actionLayout="@layout/menu_arrow" />
+
+</menu>

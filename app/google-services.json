@@ -13,12 +13,7 @@
           "package_name": "com.example.workcollab"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "292161351614-v8pjmqfishfh3idi49t7rcis8vaoec47.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
           "current_key": "AIzaSyBOiyg94Vf3jtRknnJS465pU3bUfDLrYqc"

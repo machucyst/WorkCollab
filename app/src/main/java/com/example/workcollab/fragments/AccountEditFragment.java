@@ -10,10 +10,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.workcollab.DatabaseFuncs;
+import com.example.workcollab.activities.MainMenuActivity;
 import com.example.workcollab.databinding.FragmentAccountEditBinding;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.gson.Gson;
 
 import java.util.Map;
@@ -25,7 +31,7 @@ import java.util.Map;
  */
 public class AccountEditFragment extends Fragment {
 
-    Map user;
+//    Map user;
     FragmentAccountEditBinding b;
     DatabaseFuncs db =new DatabaseFuncs();
     Gson gson = new Gson();
@@ -51,11 +57,11 @@ public class AccountEditFragment extends Fragment {
 
     }
 
-    public static AccountEditFragment newInstance(Map user,String condition) {
+    public static AccountEditFragment newInstance(String condition) {
         Bundle args = new Bundle();
         Gson gson = new Gson();
         args.putString("condition",condition);
-        args.putString("user", gson.toJson(user));
+//        args.putString("user", gson.toJson(user));
         AccountEditFragment f = new AccountEditFragment();
         f.setArguments(args);
         return f;
@@ -66,7 +72,7 @@ public class AccountEditFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             System.out.println(getArguments().getString("user") + "awjgoiaehgoaeig");
-            user = gson.fromJson(getArguments().getString("user"), Map.class);
+//            user = gson.fromJson(getArguments().getString("user"), Map.class);
             condition = getArguments().getString("condition");
             conditionValue = condition;
         }
@@ -88,7 +94,7 @@ public class AccountEditFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.toString().equals(user.get(condition).toString())){
+                if (s.toString().equals(MainMenuActivity.user.get(condition).toString())){
                     b.saveEdit.setVisibility(View.GONE);
                 }else{
                     b.saveEdit.setVisibility(View.VISIBLE);
@@ -105,12 +111,11 @@ public class AccountEditFragment extends Fragment {
         }
         b.editHeader.setText("Edit "+ conditionValue);
         b.tvHelper.setText(conditionValue);
-        b.editTextText.setText(user.get(condition).toString());
+        b.editTextText.setText(MainMenuActivity.user.get(condition).toString());
         b.saveEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (condition.equals("Emai" +
-                        "l")) {
+                if (condition.equals("Email")) {
                     System.out.println(condition+"awhjfgaoiehgaoi");
                     db.InitDB(b.editTextText.getText().toString(), new DatabaseFuncs.DataListener() {
                         @Override
@@ -120,22 +125,32 @@ public class AccountEditFragment extends Fragment {
 
                         @Override
                         public void noDuplicateUser() {
-                            db.UpdateEmail(user.get("Email").toString(), b.editTextText.getText().toString(), new DatabaseFuncs.UpdateListener() {
+                            FirebaseAuth mAuth = FirebaseAuth.getInstance();
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            if(condition.equals("Password")) {
+                                user.updatePassword(b.editTextText.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+
+                                    }
+                                });
+                            }
+                            db.updateEmail(MainMenuActivity.user.get("Email").toString(), b.editTextText.getText().toString(), new DatabaseFuncs.UpdateListener() {
                                 @Override
                                 public void onUpdate(Map user) {
                                     System.out.println(user.get("Email").toString()+"2141240912");
                                     listener.onUpdatedEmail(user);
-                                    requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), AccountFragment.newInstance(user)).addToBackStack(null).commit();
+                                    requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), AccountFragment.newInstance()).addToBackStack(null).commit();
 
                                 }
                             });
                         }
                     });
                 }else{
-                    db.UpdateAccount(user.get("Email").toString(), b.editTextText.getText().toString(), condition, new DatabaseFuncs.UpdateListener() {
+                    db.updateAccount(MainMenuActivity.user.get("Email").toString(), b.editTextText.getText().toString(), condition, new DatabaseFuncs.UpdateListener() {
                         @Override
                         public void onUpdate(Map user) {
-                            requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), AccountFragment.newInstance(user)).addToBackStack(null).commit();
+                            requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), AccountFragment.newInstance()).addToBackStack(null).commit();
                         }
                     });
                 }

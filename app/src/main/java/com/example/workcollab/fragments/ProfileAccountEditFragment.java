@@ -20,13 +20,12 @@ import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.workcollab.DatabaseFuncs;
 import com.example.workcollab.R;
+import com.example.workcollab.activities.MainMenuActivity;
 import com.example.workcollab.databinding.FragmentProfileAccountEditBinding;
 import com.google.gson.Gson;
 
-import java.util.Map;
-
 public class ProfileAccountEditFragment extends Fragment {
-    Map user;
+//    Map user;
     Gson gson = new Gson();
     FragmentProfileAccountEditBinding b;
     DatabaseFuncs db = new DatabaseFuncs();
@@ -34,10 +33,10 @@ public class ProfileAccountEditFragment extends Fragment {
 
     }
 
-    public static ProfileAccountEditFragment newInstance(Map user) {
+    public static ProfileAccountEditFragment newInstance() {
         Bundle args = new Bundle();
         Gson gson = new Gson();
-        args.putString("user", gson.toJson(user));
+//        args.putString("user", gson.toJson(user));
         ProfileAccountEditFragment f = new ProfileAccountEditFragment();
         f.setArguments(args);
         return f;
@@ -61,11 +60,11 @@ public class ProfileAccountEditFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(user == null || (user != null && getArguments() != null)) {
-            System.out.println(getArguments().getString("user") + "awjgoiaehgoaeig");
-            user = gson.fromJson(getArguments().getString("user"), Map.class);
-
-        }
+//        if(user == null || (user != null && getArguments() != null)) {
+//            System.out.println(getArguments().getString("user") + "awjgoiaehgoaeig");
+//            user = gson.fromJson(getArguments().getString("user"), Map.class);
+//
+//        }
     }
 
     @Override
@@ -80,9 +79,9 @@ public class ProfileAccountEditFragment extends Fragment {
             }
         });
         try {
-            Glide.with(getContext()).asBitmap().load(Uri.parse(user.get("Profile").toString())).into(b.profileImage);
+            Glide.with(getContext()).asBitmap().load(Uri.parse(MainMenuActivity.user.get("Profile").toString())).into(b.profileImage);
 
-            CustomTarget<Bitmap> bitmap = Glide.with(requireContext()).asBitmap().load(user.get("Profile").toString()).into(new CustomTarget<Bitmap>() {
+            CustomTarget<Bitmap> bitmap = Glide.with(requireContext()).asBitmap().load(MainMenuActivity.user.get("Profile").toString()).into(new CustomTarget<Bitmap>() {
 
                 @Override
                 public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {

@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.workcollab.DatabaseFuncs;
 import com.example.workcollab.R;
+import com.example.workcollab.activities.MainMenuActivity;
 import com.example.workcollab.adapters.CreateGroupsUsersAdapter;
 import com.example.workcollab.databinding.FragmentCreateGroupBinding;
 import com.google.firebase.Timestamp;
@@ -27,10 +28,11 @@ public class CreateGroupFragment extends Fragment {
     FragmentCreateGroupBinding b;
     public static List<Map> amabatuhavefun;
     DatabaseFuncs db = new DatabaseFuncs();
-    Map user;
+//    Map user;
     CreateGroupsUsersAdapter ad;
     public CreateGroupFragment() {
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -40,11 +42,11 @@ public class CreateGroupFragment extends Fragment {
         List<Map> filteredgroups = new ArrayList<>();
         List<String> filteredIds = new ArrayList<>();
         List<String> leader = new ArrayList<>();
-        leader.add(user.get("Id").toString());
+        leader.add(MainMenuActivity.user.get("Id").toString());
         b.tilAddUsers.setEndIconOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                db.GetUsers(new DatabaseFuncs.GroupListener() {
+                db.getUsers(new DatabaseFuncs.GroupListener() {
 
                     @Override
                     public void onReceive(List<Map> groups, List<Map> groupLeaders) {
@@ -57,7 +59,7 @@ public class CreateGroupFragment extends Fragment {
                         for (int i = 0; i < groups.size(); i++) {
                             if (b.etAdd.getText().toString().equals(groups.get(i).get("Email"))) {
                                 System.out.println(filteredgroups);
-                                if (!filteredgroups.contains(groups.get(i)) && !user.get("Email").toString().equals(groups.get(i).get("Email").toString())) {
+                                if (!filteredgroups.contains(groups.get(i)) && !MainMenuActivity.user.get("Email").toString().equals(groups.get(i).get("Email").toString())) {
                                 filteredgroups.add(groups.get(i));
                                 } else {
                                     Toast.makeText(requireContext(), "User already selected", Toast.LENGTH_SHORT);
@@ -87,14 +89,14 @@ public class CreateGroupFragment extends Fragment {
                         filteredIds.add(amabatuhavefun.get(i).get("Id").toString());
                     }
                     String a = b.etGN.getText().toString();
-                    if (a.equals("")) a = user.get("Username").toString() + "'s Group";
+                    if (a.equals("")) a = MainMenuActivity.user.get("Username").toString() + "'s Group";
 
-                    db.CreateGroup(a, leader, filteredIds, new DatabaseFuncs.UpdateListener() {
+                    db.createGroup(a, leader, filteredIds, new DatabaseFuncs.UpdateListener() {
                         @Override
                         public void onUpdate(Map group) {
                             System.out.println("It worked probably");
 
-                            requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), SelectedGroupFragment.newInstance(CreateGroupFragment.this.user,group)).addToBackStack(null).commit();
+                            requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), SelectedGroupFragment.newInstance(group)).addToBackStack(null).commit();
 
                         }
                     });
@@ -106,10 +108,10 @@ public class CreateGroupFragment extends Fragment {
         });
         return b.getRoot();
     }
-    public static CreateGroupFragment newInstance(Map user){
+    public static CreateGroupFragment newInstance(){
         Bundle args = new Bundle();
         Gson gson = new Gson();
-        args.putString("user", gson.toJson(user));
+//        args.putString("user", gson.toJson(user));
         CreateGroupFragment f = new CreateGroupFragment();
         f.setArguments(args);
         return f;
@@ -118,11 +120,11 @@ public class CreateGroupFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(user == null || (user != null && getArguments() != null)){
-            System.out.println(getArguments().getString("user") + "awjgoiaehgoaeig");
-            Gson gson = new Gson();
-            user = gson.fromJson(getArguments().getString("user"),Map.class);
-        }
+//        if(user == null || (user != null && getArguments() != null)){
+//            System.out.println(getArguments().getString("user") + "awjgoiaehgoaeig");
+//            Gson gson = new Gson();
+//            user = gson.fromJson(getArguments().getString("user"),Map.class);
+//        }
 
 
     }

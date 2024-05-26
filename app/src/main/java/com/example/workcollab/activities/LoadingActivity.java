@@ -9,22 +9,27 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.workcollab.DatabaseFuncs;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Map;
 
 public class LoadingActivity extends AppCompatActivity {
 
     DatabaseFuncs db = new DatabaseFuncs();
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
     boolean y = false;
 
     //TODO: design this
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if(getUserEmail().equals("")){
-            Intent intent = new Intent(LoadingActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish();
+            if(mAuth.getCurrentUser() == null){
+                Intent intent = new Intent(LoadingActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
         }else{
                 db.InitDB(getUserEmail(), new DatabaseFuncs.DataListener() {
                 @Override
@@ -41,6 +46,7 @@ public class LoadingActivity extends AppCompatActivity {
                     Intent intent = new Intent(LoadingActivity.this, MainActivity.class);
                     startActivity(intent);
                     finish();
+                    mAuth.signOut();
                     complete();
                 }
             });

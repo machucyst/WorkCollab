@@ -49,26 +49,6 @@
 
             </LinearLayout>
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_G"
-                style="@style/TextHolder"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="20dp"
-                android:padding="5dp"
-                android:text="Groups"
-                android:textSize="48sp" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_nG"
-                style="@style/TextHolder"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="20dp"
-                android:padding="5dp"
-                android:text="New Group"
-                android:textSize="48sp" />
-
         </LinearLayout>
 
     </FrameLayout>

@@ -62,7 +62,7 @@ public class MembersAdapter extends RecyclerView.Adapter<MembersAdapter.MyHandle
     public int getItemCount() {
         return user.size();
     }
-    public MembersAdapter(List<Map> user, Context context,AssignTaskFragment.PositionListener listener){
+    public MembersAdapter(List<Map> user, Context context, AssignTaskFragment.PositionListener listener){
         this.user = user;
         this.context = context;
         this.listener = listener;
