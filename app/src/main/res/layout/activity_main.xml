@@ -146,7 +146,7 @@
                     android:background="@drawable/textholder"
                     android:drawableTint="@color/black"
                     android:fontFamily="@font/bahnschrift"
-                    android:hint="*************"
+                    android:hint="6 characters minimum"
                     android:imeOptions="actionDone"
                     android:inputType="textPassword"
                     android:nextFocusDown="@id/btn_submitLogIn"

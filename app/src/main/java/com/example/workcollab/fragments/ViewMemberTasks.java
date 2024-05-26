@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.workcollab.DatabaseFuncs;
 import com.example.workcollab.adapters.MemberTaskAdapter;
 import com.example.workcollab.databinding.FragmentViewMemberTasksBinding;
+import com.google.firebase.Timestamp;
 import com.google.gson.Gson;
 
 import java.util.List;
@@ -70,6 +71,11 @@ public class ViewMemberTasks extends Fragment {
                 });
                 b.rvMemberTasks.setAdapter(mta);
                 b.rvMemberTasks.setLayoutManager(new LinearLayoutManager(getContext()));
+            }
+
+            @Override
+            public void getDeadline(Timestamp timestamp) {
+
             }
         });
         return b.getRoot();

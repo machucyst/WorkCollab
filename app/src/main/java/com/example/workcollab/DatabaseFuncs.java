@@ -2,18 +2,15 @@ package com.example.workcollab;
 
 import static android.content.ContentValues.TAG;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 
-import com.google.android.gms.auth.api.identity.BeginSignInRequest;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -43,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 
 public class DatabaseFuncs {
+    //Initializations
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseStorage fbs = FirebaseStorage.getInstance();
     FirebaseAuth fauth = FirebaseAuth.getInstance();
@@ -51,8 +49,11 @@ public class DatabaseFuncs {
     CollectionReference groups = db.collection("Groups");
     CollectionReference messages = db.collection("Messages");
     Map user;
+    //Interfaces
     public interface TaskListener{
         void onTaskRecieved(List<Map> tasks);
+
+        void getDeadline(Timestamp timestamp);
     }
     public interface UpdateListener{
         void onUpdate(Map user);
@@ -69,7 +70,7 @@ public class DatabaseFuncs {
     public interface BasicListener{
         void BasicListener();
     }
-
+    //Methods
     public void DeleteAccount(String id, DeleteListener listener) {
         account.document(id).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -79,7 +80,10 @@ public class DatabaseFuncs {
             }
         });
     }
-
+    public interface MessagesReceivedListener {
+        void onMessageReceived(List<Message> newMessages, List<Message> updatedMessages);
+        Timestamp getCurrentTimestamp();
+    }
     public interface DeleteListener {
         void onDelete();
     }
@@ -98,49 +102,17 @@ public class DatabaseFuncs {
     public interface MessageSentListener {
         void onMessageSent(String newId);
     }
-    public int getEmailOTPCode(Context context){
-        BeginSignInRequest.builder()
-                .setGoogleIdTokenRequestOptions(BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
-                        .setSupported(true)
-                        // Your server's client ID, not your Android client ID.
-                        .setServerClientId(context.getString(R.string.default_web_client_id))
-                        // Only show accounts previously used to sign in.
-                        .setFilterByAuthorizedAccounts(true)
-                        .build())
-                .build();
-        return 69;
-    }
-    public void registerEmail(String email, String password,Context context){
+    public interface GroupListener {
+        void onReceive(List<Map> groups, List<Map> groupLeaders);
 
-        fauth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()){
-                    FirebaseUser fu= fauth.getCurrentUser();
-                    if (fu != null) {
-                        fu.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()){
-                                    Toast.makeText(context,"Email sent please verify your email",Toast.LENGTH_SHORT).show();
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                                    builder.setTitle("Email Verification")
-                                            .setMessage("A verification email has been sent to your email address. Please verify your email and then log in.")
-                                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                                public void onClick(DialogInterface dialog, int id) {
-                                                    ((Activity) context).finish();
-                                                }
-                                            });
-                                    builder.create().show();
-                                }
-                            }
-                        });
-                    }
-                }
-            }
-        });
+        void onReceive(List<Map> groups);
+
+        void getDeadline(Timestamp timestamp);
     }
-    public void registerAccount(FirebaseAuth auth, String email, String password, Context c, EmailAuthListener listener){
+    public interface AllMessagesReceivedListener {
+        void sendAllReceivedMessages(List<Message> messages);
+    }
+    public void registerAccount(FirebaseAuth auth, String email, String password, Context c, Button b, EmailAuthListener listener){
         auth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -154,6 +126,12 @@ public class DatabaseFuncs {
                         }
                     });
                 }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(c,"Failed Registering Account",Toast.LENGTH_SHORT).show();
+                b.setEnabled(true);
             }
         });
     }
@@ -266,7 +244,6 @@ public class DatabaseFuncs {
 
                 });
     }
-
     public void createGroup(String name, List<String> Members, UpdateListener listener) {
         Map<String, Object> group = new HashMap<>();
         group.put("GroupName", name);
@@ -279,7 +256,6 @@ public class DatabaseFuncs {
             }
         });
     }
-
     public void createGroup(String name, List<String> Leaders, List<String> Members, UpdateListener listener) {
         Map<String, Object> group = new HashMap<>();
         group.put("GroupName", name);
@@ -293,7 +269,6 @@ public class DatabaseFuncs {
             }
         });
     }
-
     public void getUsers(GroupListener listener) {
         account.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -322,7 +297,6 @@ public class DatabaseFuncs {
             }
         });
     }
-
     public void getProjects(String userId, GroupListener listener){
         groups.whereArrayContains("Members",userId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -342,7 +316,6 @@ public class DatabaseFuncs {
             }
         });
     }
-
     public void updateAccount(String email, String value, String field, UpdateListener listener) {
         account.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -394,7 +367,6 @@ public class DatabaseFuncs {
         });
 
     }
-
     public void getDeadlines(String groupId, GroupListener listener) {
         Date today = new Date();
         System.out.println(today);
@@ -410,7 +382,6 @@ public class DatabaseFuncs {
             }
         });
     }
-
     public void updateEmail(String oldEmail, String newEmail, UpdateListener listener) {
         account.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -459,7 +430,6 @@ public class DatabaseFuncs {
         });
 
     }
-
     public void getJoinedGroups(String id, GroupListener listener){
         List<Map> documentList = new ArrayList<>();
         List<Map> leaderList = new ArrayList<>();
@@ -525,7 +495,6 @@ public class DatabaseFuncs {
                     }
                 });
     }
-
     public void getMembers(String id, MembersListener listener){
         List<Map> ids = new ArrayList<>();
         groups.document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -558,13 +527,6 @@ public class DatabaseFuncs {
                 }
             }
         });
-    }
-        public interface GroupListener {
-        void onReceive(List<Map> groups, List<Map> groupLeaders);
-
-        void onReceive(List<Map> groups);
-
-        void getDeadline(Timestamp timestamp);
     }
     public void getMembers(String id, UserListener listener) {
         account.document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -631,7 +593,7 @@ public class DatabaseFuncs {
 
 
     }
-    public void InitDB(String email, DataListener dataListener) {
+    public void InitDB(String email, DataListener dataListener){
         final String[] b = {""};
         db.collection("Account")
                 .whereEqualTo("Email", email)
@@ -655,7 +617,6 @@ public class DatabaseFuncs {
                     }
                 });
     }
-
     public void getUserById(String id, DataListener dataListener) {
         final String[] b = {""};
         account.document(id).get().addOnCompleteListener(task -> {
@@ -682,7 +643,6 @@ public class DatabaseFuncs {
             }
         });
     }
-
     public void sendMessage(Message message, Uri attachedFile, MessageSentListener listener) {
         StorageReference messagesFiles = reference.child("Messages" + message.getId());
 
@@ -704,11 +664,6 @@ public class DatabaseFuncs {
             });
         }));
     }
-    public interface MessagesReceivedListener {
-        void onMessageReceived(List<Message> newMessages, List<Message> updatedMessages);
-        Timestamp getCurrentTimestamp();
-    }
-
     public void setReceivedMessagesListener(String userId, String groupId, MessagesReceivedListener listener) {
         messages.whereEqualTo("groupId", groupId).addSnapshotListener((queryDocumentSnapshots, error) -> {
             if (error != null) return;
@@ -736,10 +691,6 @@ public class DatabaseFuncs {
             listener.onMessageReceived(newMessages, updatedMessages);
         });
     }
-    public interface AllMessagesReceivedListener {
-        void sendAllReceivedMessages(List<Message> messages);
-    }
-
     public void setAllMessagesReceivedListener(String groupId, AllMessagesReceivedListener listener) {
         List<Message> messages = new ArrayList<>();
         Log.e("uwuwu", "uwuwu");

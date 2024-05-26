@@ -1,5 +1,6 @@
 package com.example.workcollab.activities;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -7,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -53,6 +55,8 @@ import java.util.Map;
 import java.util.Stack;
 
 public class MainMenuActivity extends AppCompatActivity implements YouFragment.ButtonListeners, AccountEditFragment.UpdateListener, ProfileAccountEditFragment.ButtonListeners, AccountFragment.ButtonListeners, JoinedGroupsSubFragment.PositionListener, InvitesSubFragment.PositionListener, TaskListFragment.PositionListener, SubmitTaskFragment.onSubmitClick, ViewMemberTasks.PositionListener {
+    private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 32;
+    private static final int PICK_FILE_REQUEST = 123;
     ActivityMainMenuBinding b;
     DialogLogoutConfirmBinding bl;
     InputStream inputStream;
@@ -200,10 +204,10 @@ public class MainMenuActivity extends AppCompatActivity implements YouFragment.B
 
             }
             try{
-               db.SaveProfile(user, resultUri, new DatabaseFuncs.UpdateListener() {
+               db.saveProfile(user, resultUri, new DatabaseFuncs.UpdateListener() {
                    @Override
                    public void onUpdate(Map user) {
-                       replaceFragment(ProfileAccountEditFragment.newInstance(user),"Profile");
+                       replaceFragment(ProfileAccountEditFragment.newInstance(),"Profile");
                    }
                });
 
@@ -307,7 +311,6 @@ public class MainMenuActivity extends AppCompatActivity implements YouFragment.B
     public void itemClicked(Map group) {
         JoinedGroupsSubFragment.PositionListener.super.itemClicked(group);
         backFlow.push("selectedgroup");
-        getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(),SelectedGroupFragment.newInstance(user,group)).commit();
         getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(),SelectedGroupFragment.newInstance(group)).commit();
     }
     @Override
@@ -363,31 +366,19 @@ public class MainMenuActivity extends AppCompatActivity implements YouFragment.B
 
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 201) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Intent a = new Intent(this, NotifiationsService.class);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !Utils.isServiceRunning(this, NotifiationsService.class)) {
-                    startForegroundService(a);
-                }
-            }
-        }
-    }
 
     public Fragment changeFragment(String fragmentTag) {
         switch (fragmentTag) {
             case "main":
                 return MainFragment.newInstance();
             case "groups":
-                return GroupsFragment.newInstance(user);
+                return GroupsFragment.newInstance();
             case "profile":
-                return YouFragment.newInstance(user);
+                return YouFragment.newInstance();
             case "creategroups":
-                return CreateGroupFragment.newInstance(user);
+                return CreateGroupFragment.newInstance();
             case "selectgroup":
-                return SelectedGroupFragment.newInstance(user, selectedgroup);
+                return SelectedGroupFragment.newInstance(selectedgroup);
         }
         return MainFragment.newInstance();
     }

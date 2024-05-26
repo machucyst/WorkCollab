@@ -69,10 +69,9 @@ public class YouFragment extends Fragment {
 
     }
 
-    public static YouFragment newInstance(Map user) {
+    public static YouFragment newInstance() {
         Bundle args = new Bundle();
         Gson gson = new Gson();
-        args.putString("user", gson.toJson(user));
         YouFragment f = new YouFragment();
         f.setArguments(args);
         return f;

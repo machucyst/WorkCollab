@@ -13,6 +13,7 @@ import com.example.workcollab.DatabaseFuncs;
 import com.example.workcollab.activities.MainMenuActivity;
 import com.example.workcollab.adapters.TasksAdapter;
 import com.example.workcollab.databinding.FragmentTaskListBinding;
+import com.google.firebase.Timestamp;
 import com.google.gson.Gson;
 
 import java.util.List;
@@ -100,6 +101,11 @@ public class TaskListFragment extends Fragment {
                 b.rvTasks.setAdapter(ta);
                 b.rvTasks.setLayoutManager(new LinearLayoutManager(getContext()));
             }
+
+            @Override
+            public void getDeadline(Timestamp timestamp) {
+
+            }
         });
         }else{
            db.getTasks(MainMenuActivity.user.get("Id").toString(), new DatabaseFuncs.TaskListener() {
@@ -108,6 +114,11 @@ public class TaskListFragment extends Fragment {
                    TasksAdapter ta = new TasksAdapter(tasks);
                    b.rvTasks.setAdapter(ta);
                    b.rvTasks.setLayoutManager(new LinearLayoutManager(getContext()));
+
+               }
+
+               @Override
+               public void getDeadline(Timestamp timestamp) {
 
                }
            },true);

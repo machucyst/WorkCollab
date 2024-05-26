@@ -13,6 +13,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.databinding.DataBindingUtil;
 
 import com.bumptech.glide.Glide;
@@ -78,7 +79,10 @@ public class SetupAccountActivity extends AppCompatActivity {
                     Toast.makeText(SetupAccountActivity.this, "Invalid Phone Number", Toast.LENGTH_SHORT).show();
                     return; //TODO: kys
                 }
-                db.registerAccount(mAuth, bu.getString("user-email"), bu.getString("user-password"), getApplicationContext(), new DatabaseFuncs.EmailAuthListener() {
+                b.btnShowPass.setText("Loading...");
+                b.btnShowPass.setBackgroundDrawable(AppCompatResources.getDrawable(SetupAccountActivity.this,R.drawable.textholderdisabled));
+                b.btnShowPass.setEnabled(false);
+                db.registerAccount(mAuth, bu.getString("user-email"), bu.getString("user-password"), getApplicationContext(), b.btnShowPass,new DatabaseFuncs.EmailAuthListener() {
                     @Override
                     public void changeLayout(boolean test) {
                         db.createAccount(bu.getString("user-name"), bu.getString("user-password"), bu.getString("user-email"), StrValOf(b.etCN), new DatabaseFuncs.UpdateListener() {

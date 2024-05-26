@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
@@ -19,9 +18,7 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.databinding.DataBindingUtil;
 
 import com.example.workcollab.DatabaseFuncs;
-import com.example.workcollab.NotifiationsService;
 import com.example.workcollab.R;
-import com.example.workcollab.Utils;
 import com.example.workcollab.databinding.ActivityMainBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -89,6 +86,10 @@ public class MainActivity extends AppCompatActivity {
 
         if (email.equals("") || password.equals("")) {
             Toast.makeText(this, "Please fill in all text fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(password.length()<6){
+            Toast.makeText(this, "Password too short", Toast.LENGTH_SHORT).show();
             return;
         }
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
