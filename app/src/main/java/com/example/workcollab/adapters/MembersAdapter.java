@@ -46,10 +46,10 @@ public class MembersAdapter extends RecyclerView.Adapter<MembersAdapter.MyHandle
                 holder.k = !holder.k;
                 if (holder.k){
                    AssignTaskFragment.members.add(user.get(position).get("Id").toString());
-                   Glide.with(context).asBitmap().load(R.drawable.ic_close).into(holder.toggleBtn);
+                   Glide.with(context).load(R.drawable.ic_close).into(holder.toggleBtn);
                 }else{
                     AssignTaskFragment.members.remove(user.get(position).get("Id").toString());
-                    Glide.with(context).asBitmap().load(R.drawable.ic_baseline_add_24).into(holder.toggleBtn);
+                    Glide.with(context).load(R.drawable.ic_baseline_add_24).into(holder.toggleBtn);
                 }
                 System.out.println(AssignTaskFragment.members);
             }

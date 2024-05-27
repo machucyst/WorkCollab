@@ -41,7 +41,7 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
     @Override
     public void onBindViewHolder(@NonNull MyHandler holder, @SuppressLint("RecyclerView") int position) {
         holder.tv_g.setText((members.get(position).get("Username")).toString());
-        Glide.with(context).asBitmap().load(members.get(position).get("Profile").toString()).into(holder.iv);
+        Glide.with(context).load(members.get(position).get("Profile").toString()).into(holder.iv);
     }
 
     @Override

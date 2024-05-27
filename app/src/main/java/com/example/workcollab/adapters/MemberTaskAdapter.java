@@ -39,7 +39,7 @@ public class MemberTaskAdapter extends RecyclerView.Adapter<MemberTaskAdapter.My
     @Override
     public void onBindViewHolder(@NonNull MyHandler holder, @SuppressLint("RecyclerView") int position) {
         holder.tv_head.setText((tasks.get(position).get("Username")).toString());
-        Glide.with(context).asBitmap().load(tasks.get(position).get("Profile").toString()).into(holder.iv);
+        Glide.with(context).load(tasks.get(position).get("Profile").toString()).into(holder.iv);
         holder.download.setOnClickListener(v -> {
             db.downloadFile(tasks.get(position).get("file").toString(),tasks.get(position).get("fileCreator").toString(),context);
             }
