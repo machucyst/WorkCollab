@@ -1,11 +1,9 @@
 package com.example.workcollab.fragments;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,7 +14,6 @@ import com.example.workcollab.DatabaseFuncs;
 import com.example.workcollab.R;
 import com.example.workcollab.activities.MainMenuActivity;
 import com.example.workcollab.adapters.DeadlinesAdapter;
-import com.example.workcollab.adapters.TasksAdapter;
 import com.example.workcollab.databinding.FragmentMainBinding;
 import com.google.firebase.Timestamp;
 import com.google.gson.Gson;
@@ -44,8 +41,6 @@ public class MainFragment extends Fragment {
 
     public static MainFragment newInstance() {
         Bundle args = new Bundle();
-        Gson gson = new Gson();
-//        args.putString("user", gson.toJson(user));
         MainFragment f = new MainFragment();
         f.setArguments(args);
         return f;
@@ -76,6 +71,11 @@ public class MainFragment extends Fragment {
         db.getTasks(MainMenuActivity.user.get("Id").toString(), new DatabaseFuncs.TaskListener() {
             @Override
             public void onTaskRecieved(List<Map> tasks) {
+                if(tasks.size() == 1){
+                    Map<String,Object> a = new HashMap<>();
+                    a.put("TaskName","No tasks :)");
+                    tasks.add(a);
+                }
                 tasks1.addAll(tasks);
                 adapter = new DeadlinesAdapter(tasks1, getContext(), (position, task) -> {
                     // TODO: Task item click
@@ -111,59 +111,6 @@ public class MainFragment extends Fragment {
 
             }
         }, false);
-
-
-
-
-
-
-//        TasksAdapter deadlineAdapter = new TasksAdapter(tasks, new TaskListFragment.PositionListener() {
-//            @Override
-//            public void taskItemClicked(Map task) {
-//                TaskListFragment.PositionListener.super.taskItemClicked(task);
-//            }
-//        });
-//        b.rvDeadlines.setAdapter(deadlineAdapter);
-//        b.rvDeadlines.setLayoutManager(new LinearLayoutManager(getContext()));
-//        b.rvDeadlines.setNestedScrollingEnabled(false);
-//        db.getTasks(MainMenuActivity.user.get("Id").toString(), new DatabaseFuncs.TaskListener(){
-//
-//            @Override
-//            public void onTaskRecieved(List<Map> tasks) {
-//                TasksAdapter deadlineAdapter = new TasksAdapter(tasks, new TaskListFragment.PositionListener() {
-//                    @Override
-//                    public void taskItemClicked(Map task) {
-//                        TaskListFragment.PositionListener.super.taskItemClicked(task);
-//                    }
-//                });
-//                b.rvDeadlines.setAdapter(deadlineAdapter);
-//                b.rvDeadlines.setLayoutManager(new LinearLayoutManager(getContext()));
-//            }
-//
-//            @Override
-//            public void getDeadline(Timestamp timestamp) {
-//
-//            }
-//
-//
-//        });
-
-//        b.btnNG.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Toast.makeText(getContext(), "wdawda", Toast.LENGTH_SHORT).show();
-//                MainMenuActivity.backFlow.push("creategroups");
-//                requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), CreateGroupFragment.newInstance()).addToBackStack(null).commit();
-//
-//            }
-//        });
-//        b.btnG.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                MainMenuActivity.backFlow.push("creategroups");
-//                requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), CreateGroupFragment.newInstance()).addToBackStack(null).commit();
-//            }
-//        });
         return b.getRoot();
 
     }

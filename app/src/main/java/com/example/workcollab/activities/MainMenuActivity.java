@@ -168,10 +168,6 @@ public class MainMenuActivity extends AppCompatActivity implements SelectedGroup
         });
 
     }
-
-    private void UCropFunny(){
-
-    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -300,7 +296,7 @@ public class MainMenuActivity extends AppCompatActivity implements SelectedGroup
 
 //        replaceFragment(MainFragment.newInstance(user), "main");
         if (backFlow.isEmpty()) {
-            replaceFragment(new MainFragment(MainMenuActivity.user), "main");
+            replaceFragment(MainFragment.newInstance(), "main");
         } else {
             Log.e("woah", backFlow.peek());
             replaceFragment(changeFragment(backFlow.peek()), backFlow.peek());

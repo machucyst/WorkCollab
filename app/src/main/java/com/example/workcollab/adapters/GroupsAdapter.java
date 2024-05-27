@@ -40,7 +40,6 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyHandler>
     @Override
     public void onBindViewHolder(@NonNull MyHandler holder, @SuppressLint("RecyclerView") int position) {
         holder.tv_g.setText((groups.get(position).get("GroupName")).toString());
-
         try{
         Glide.with(c).load(groups.get(position).get("GroupImage").toString()).into(holder.iv);
         }catch (Exception e){

@@ -102,12 +102,8 @@ public class AccountFragment extends Fragment {
         menuTextChange(b.nvAccountMenu, R.id.menu_deleteAccount,"");
         menuTextChange(b.nvAccountMenu, R.id.menu_profilePicture,"");
         b.nvAccountMenu.getMenu().findItem(R.id.menu_email).setEnabled(false);
-        menuTextChange(b.nvSettings,R.id.menu_settings, "Settings");
-//        menuTextChange(b.nvSettings,R.id.menu_account, "Account");
         TextView a = b.nvAccountMenu.getMenu().findItem(R.id.menu_email).getActionView().findViewById(R.id.additionalText);
         a.setTextColor(AppCompatResources.getColorStateList(getContext(),R.color.stroke_gray));
-        menuTextChange(b.nvSettings,R.id.menu_appearance, "Appearance");
-        menuTextChange(b.nvSettings,R.id.menu_logOut, "Log Out");
         ImageView v = b.nvAccountMenu.getMenu().findItem(R.id.menu_deleteAccount).getActionView().findViewById(R.id.nextMenuArrow);
         v.setColorFilter(ContextCompat.getColor(getContext(), R.color.warning));
         Spannable s = new SpannableString(b.nvAccountMenu.getMenu().findItem(R.id.menu_deleteAccount).getTitle().toString());

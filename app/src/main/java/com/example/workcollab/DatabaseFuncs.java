@@ -256,6 +256,16 @@ public class DatabaseFuncs {
 
                 });
     }
+    public void getGroupData(String groupId, DataListener listener){
+        groups.document(groupId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    listener.onDataFound(task.getResult().getData());
+                }
+            }
+        });
+    }
     public void updateGroup(Map group,String value, String condition, UpdateListener listener, int i){
         group.put(condition,value);
         groups.document(group.get("Id").toString()).update(group).addOnCompleteListener(new OnCompleteListener() {
@@ -806,6 +816,14 @@ public class DatabaseFuncs {
             @Override
             public void onSuccess(Void unused) {
                 listener.onOptionPicked();
+            }
+        });
+    }
+    public void leaveGroup(String id, String groupId, BasicListener listener){
+        groups.document(groupId).update("Invites", FieldValue.arrayRemove(id)).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                listener.BasicListener();
             }
         });
     }

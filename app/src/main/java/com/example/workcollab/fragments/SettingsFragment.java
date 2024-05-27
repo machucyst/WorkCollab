@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -31,7 +30,6 @@ public class SettingsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v =inflater.inflate(R.layout.fragment_settings, container, false);
         b = FragmentSettingsBinding.bind(v);
-        menuTextChange(R.id.menu_notifications, "Notifications settings");
 
         b.nvAccountMenu.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -51,10 +49,5 @@ public class SettingsFragment extends Fragment {
         });
         // Inflate the layout for this fragment
         return v;
-    }
-
-    private void menuTextChange(int ItemId, String text) {
-        TextView a = (b.nvAccountMenu.getMenu().findItem(ItemId).getActionView().findViewById(R.id.additionalText));
-        a.setText(text);
     }
 }

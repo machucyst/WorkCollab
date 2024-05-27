@@ -3,7 +3,6 @@ package com.example.workcollab.adapters;
 import android.content.Context;
 import android.net.Uri;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -13,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.workcollab.DeadlineModel;
 import com.example.workcollab.databinding.CardDeadlineBinding;
-import com.example.workcollab.databinding.CardDeadlinesBinding;
 import com.example.workcollab.databinding.CardMainHeaderBinding;
 import com.google.firebase.Timestamp;
 
@@ -47,18 +45,21 @@ public class DeadlinesAdapter extends RecyclerView.Adapter<DeadlinesAdapter.VH> 
     public void onBindViewHolder(@NonNull DeadlinesAdapter.VH holder, int position) {
         if (holder.bind instanceof CardDeadlineBinding) {
             Map task = (Map) tasks.get(position);
+            if(task.get("TaskName").toString().equals("No tasks :)")){
+                return;
+            }
             DeadlineModel d;
             try {
                 d = new DeadlineModel(task.get("ParentId").toString(), task.get("GroupName").toString(), Uri.parse(task.get("GroupImage").toString()), task);
             } catch (Exception e) {
                 d = new DeadlineModel(task.get("ParentId").toString(), task.get("GroupName").toString(), Uri.parse(""), task);
             }
-            CardDeadlineBinding bind = (CardDeadlineBinding) holder.bind;
             // deadline card
+            CardDeadlineBinding bind = (CardDeadlineBinding) holder.bind;
             bind.deadline.setText("Submit before " + new SimpleDateFormat("MMMM d, yyyy", Locale.getDefault()).format(((Timestamp)d.getTask().get("TaskDeadline")).toDate()));
             bind.groupName.setText("Group: "+d.getGroupName());
             bind.taskName.setText(d.getTask().get("TaskName").toString());
-            Glide.with(context).asBitmap().load(d.getImage().toString()).into(bind.image);
+            Glide.with(context).load(d.getImage().toString()).into(bind.image);
         } else if (holder.bind instanceof CardMainHeaderBinding) {
             CardMainHeaderBinding bind = (CardMainHeaderBinding) holder.bind;
             // add a string on the list so that a header will show up
@@ -77,7 +78,7 @@ public class DeadlinesAdapter extends RecyclerView.Adapter<DeadlinesAdapter.VH> 
                 headerClickListener.onProfileClick();
             });
 
-            Glide.with(context).asBitmap().load(user.get("Profile").toString()).into(bind.userImage);
+            Glide.with(context).load(user.get("Profile").toString()).into(bind.userImage);
             bind.username.setText("Welcome to\nWork Collab, " + user.get("Username"));
         }
     }
