@@ -28,7 +28,7 @@
         <item
             android:id="@+id/menu_deletegroups"
             android:checkable="true"
-            android:title="Delete Group"
+            android:title="Leave Group"
             app:actionLayout="@layout/menu_arrow" />
 
 </menu>

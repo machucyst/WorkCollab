@@ -819,6 +819,14 @@ public class DatabaseFuncs {
             }
         });
     }
+    public void leaveGroup(String id, String groupId, BasicListener listener){
+        groups.document(groupId).update("Invites", FieldValue.arrayRemove(id)).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                listener.BasicListener();
+            }
+        });
+    }
     public void acceptInvite(String id,String groupId, OptionListener listener){
         groups.document(groupId).update("Invites", FieldValue.arrayRemove(id)).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override

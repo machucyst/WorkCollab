@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -63,13 +62,6 @@ public class AppearanceFragment extends Fragment {
                 return false;
             }
         });
-        menuTextChange(R.id.menu_light,"Light mode");
-        menuTextChange(R.id.menu_dark, "Dark mode");
-        menuTextChange(R.id.menu_system, "System settings");
         return b.getRoot();
-    }
-    private void menuTextChange(int ItemId,String text){
-        TextView a = (b.nvAccountMenu.getMenu().findItem(ItemId).getActionView().findViewById(R.id.additionalText));
-        a.setText(text);
     }
 }

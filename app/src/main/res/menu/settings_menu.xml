@@ -8,8 +8,9 @@
         <item
             android:id="@+id/menu_notifications"
             android:checkable="true"
-            app:actionLayout="@layout/menu_you_custom_layout"
+            app:actionLayout="@layout/menu_arrow"
             app:showAsAction="always"
+            android:title="Notification Settings"
             tools:ignore="MenuTitle" />
     </group>
 </menu>

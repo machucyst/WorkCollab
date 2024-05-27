@@ -1,11 +1,9 @@
 package com.example.workcollab.fragments;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,7 +14,6 @@ import com.example.workcollab.DatabaseFuncs;
 import com.example.workcollab.R;
 import com.example.workcollab.activities.MainMenuActivity;
 import com.example.workcollab.adapters.DeadlinesAdapter;
-import com.example.workcollab.adapters.TasksAdapter;
 import com.example.workcollab.databinding.FragmentMainBinding;
 import com.google.firebase.Timestamp;
 import com.google.gson.Gson;
@@ -68,6 +65,11 @@ public class MainFragment extends Fragment {
         db.getTasks(MainMenuActivity.user.get("Id").toString(), new DatabaseFuncs.TaskListener() {
             @Override
             public void onTaskRecieved(List<Map> tasks) {
+                if(tasks.size() == 1){
+                    Map<String,Object> a = new HashMap<>();
+                    a.put("TaskName","No tasks :)");
+                    tasks.add(a);
+                }
                 tasks1.addAll(tasks);
                 adapter = new DeadlinesAdapter(tasks1, getContext(), (position, task) -> {
                     // TODO: Task item click

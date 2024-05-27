@@ -8,13 +8,15 @@
                 <item
                     android:id="@+id/menu_ct"
                     android:checkable="true"
-                    app:actionLayout="@layout/menu_you_custom_layout"
+                    app:actionLayout="@layout/menu_arrow"
+                    android:title="Create Tasks"
                     app:showAsAction="always"
                     tools:ignore="MenuTitle" />
                 <item
                     android:id="@+id/menu_cg"
                     android:checkable="true"
-                    app:actionLayout="@layout/menu_you_custom_layout"
+                    app:actionLayout="@layout/menu_arrow"
+                    android:title="Create Groups"
                     app:showAsAction="always"
                     tools:ignore="MenuTitle" />
         </group>

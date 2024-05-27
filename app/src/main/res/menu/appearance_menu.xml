@@ -14,20 +14,23 @@
                 <item
                     android:id="@+id/menu_light"
                     android:checkable="true"
-                    app:actionLayout="@layout/menu_you_custom_layout"
+                    android:title="Light Mode"
+                    app:actionLayout="@layout/menu_arrow"
                     app:showAsAction="always"
                     tools:ignore="MenuTitle" />
                 <item
                     android:id="@+id/menu_dark"
                     android:checkable="true"
-                    app:actionLayout="@layout/menu_you_custom_layout"
+                    app:actionLayout="@layout/menu_arrow"
                     app:showAsAction="always"
+                    android:title="Dark mode"
                     tools:ignore="MenuTitle" />
                 <item
                     android:id="@+id/menu_system"
                     android:checkable="true"
                     app:showAsAction="always"
-                    app:actionLayout="@layout/menu_you_custom_layout"
+                    android:title="System Settings"
+                    app:actionLayout="@layout/menu_arrow"
                     tools:ignore="MenuTitle" />
         </group>
 </menu>
