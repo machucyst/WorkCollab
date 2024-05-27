@@ -86,7 +86,7 @@ public class AssignTaskFragment extends Fragment {
                });
                b.rvMembers.setAdapter(ma);
                b.rvMembers.setLayoutManager(new LinearLayoutManager(getContext()));
-               b.rvMembers.setNestedScrollingEnabled(false);
+               b.rvMembers.setNestedScrollingEnabled(true);
             }
         });
         b.tilUntil.setEndIconOnClickListener(new View.OnClickListener() {
@@ -139,7 +139,9 @@ public class AssignTaskFragment extends Fragment {
                              db.createTask(group.get("Id").toString(), members, TaskName, b.etTD.getText().toString(), deadline, b.btnShowPass, requireContext(), new DatabaseFuncs.CreateTaskListener() {
                                  @Override
                                  public void onCreateTaskListener() {
-                                     System.out.println("if it works it works");
+                                     Toast.makeText(getContext(),"Task Assigned Successfully",Toast.LENGTH_SHORT).show();
+                                     requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), SelectedGroupFragment.newInstance(group)).addToBackStack(null).commit();
+
                                  }
                              });
                             return;

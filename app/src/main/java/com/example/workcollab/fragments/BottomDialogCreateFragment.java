@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
@@ -30,11 +29,8 @@ public class BottomDialogCreateFragment extends BottomSheetDialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-           id = getArguments().getString("id");
+            id = getArguments().getString("id");
         }
-    }
-    TextView getAction(int id){
-        return b.nvAccountMenu.getMenu().findItem(id).getActionView().findViewById(R.id.additionalText);
     }
     @SuppressLint("ResourceAsColor")
     @NonNull
@@ -43,8 +39,6 @@ public class BottomDialogCreateFragment extends BottomSheetDialogFragment {
         BottomSheetDialog bottomSheetDialog = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
         b = DataBindingUtil.inflate(LayoutInflater.from(getContext()),R.layout.fragment_dialog_bottom_create,null,false);
 
-        getAction(R.id.menu_cg).setText("Create Group");
-        getAction(R.id.menu_ct).setText("Create Task");
         b.nvAccountMenu.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
