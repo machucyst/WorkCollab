@@ -1,5 +1,6 @@
 package com.example.workcollab.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -25,6 +26,22 @@ import java.util.Map;
 public class SelectedGroupSettingsFragment extends Fragment {
     Gson gson = new Gson();
     Map group;
+    public interface GroupPFP{
+        void onGroupChanged();
+    }
+    GroupPFP listener;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof SelectedGroupSettingsFragment.GroupPFP) {
+            listener = (SelectedGroupSettingsFragment.GroupPFP) context;
+        } else {
+            throw new RuntimeException(context
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
     FragmentSelectedGroupSettingsBinding b;
     public static SelectedGroupSettingsFragment newInstance(Map group) {
         Bundle args = new Bundle();
@@ -55,7 +72,9 @@ public class SelectedGroupSettingsFragment extends Fragment {
                 int a = menuItem.getItemId();
                 if(a == R.id.menu_groupmembers){
                     requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), InviteMoreMembersFragment.newInstance(group)).addToBackStack(null).commit();
-
+                }
+                if(a == R.id.menu_groupPicture){
+                    listener.onGroupChanged();
                 }
                 return false;
             }

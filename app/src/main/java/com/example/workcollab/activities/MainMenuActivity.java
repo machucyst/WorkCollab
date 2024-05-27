@@ -40,6 +40,7 @@ import com.example.workcollab.fragments.InvitesSubFragment;
 import com.example.workcollab.fragments.JoinedGroupsSubFragment;
 import com.example.workcollab.fragments.MainFragment;
 import com.example.workcollab.fragments.SelectedGroupFragment;
+import com.example.workcollab.fragments.SelectedGroupSettingsFragment;
 import com.example.workcollab.fragments.SubmitTaskFragment;
 import com.example.workcollab.fragments.TaskListFragment;
 import com.example.workcollab.fragments.ViewMemberTasks;
@@ -51,12 +52,13 @@ import java.io.File;
 import java.util.Map;
 import java.util.Stack;
 
-public class MainMenuActivity extends AppCompatActivity implements AccountEditFragment.UpdateListener, AccountFragment.ButtonListeners, JoinedGroupsSubFragment.PositionListener, InvitesSubFragment.PositionListener, TaskListFragment.PositionListener, SubmitTaskFragment.onSubmitClick, ViewMemberTasks.PositionListener {
+public class MainMenuActivity extends AppCompatActivity implements SelectedGroupSettingsFragment.GroupPFP,AccountEditFragment.UpdateListener, AccountFragment.ButtonListeners, JoinedGroupsSubFragment.PositionListener, InvitesSubFragment.PositionListener, TaskListFragment.PositionListener, SubmitTaskFragment.onSubmitClick, ViewMemberTasks.PositionListener {
     private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 32;
     private static final int PICK_FILE_REQUEST = 123;
     ActivityMainMenuBinding b;
     DialogLogoutConfirmBinding bl;
     Map task;
+    static int index;
     public static Stack<String> backFlow = new Stack<>();
     public static Map selectedgroup;
 
@@ -143,7 +145,6 @@ public class MainMenuActivity extends AppCompatActivity implements AccountEditFr
             }
 
         });
-
         b.bottomNavView.setOnItemReselectedListener(new NavigationBarView.OnItemReselectedListener() {
             @Override
             public void onNavigationItemReselected(@NonNull MenuItem menuItem) {
@@ -168,7 +169,9 @@ public class MainMenuActivity extends AppCompatActivity implements AccountEditFr
 
     }
 
+    private void UCropFunny(){
 
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -201,13 +204,25 @@ public class MainMenuActivity extends AppCompatActivity implements AccountEditFr
             if (resultCode == RESULT_OK) {
                 final Uri resultUri = UCrop.getOutput(data);
                 try {
-                    db.saveProfile(user, resultUri, new DatabaseFuncs.UpdateListener() {
-                        @Override
-                        public void onUpdate(Map user) {
-                            MainMenuActivity.user = user;
-                            replaceFragment(AccountFragment.newInstance(), "Profile");
-                        }
-                    });
+                    switch (index){
+                        case 10:
+                        db.saveProfile(user, resultUri, new DatabaseFuncs.UpdateListener() {
+                            @Override
+                            public void onUpdate(Map user) {
+                                MainMenuActivity.user = user;
+                                replaceFragment(AccountFragment.newInstance(), "Profile");
+                            }
+                        });
+                        break;
+                        case 20:
+                            db.saveGroupProfile(selectedgroup, resultUri, new DatabaseFuncs.UpdateListener() {
+                                @Override
+                                public void onUpdate(Map user) {
+                                    replaceFragment(SelectedGroupFragment.newInstance(user),"selectedgroup");
+                                }
+                            });
+                            break;
+                    }
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -307,6 +322,7 @@ public class MainMenuActivity extends AppCompatActivity implements AccountEditFr
     @Override
     public void onPressChangePFP() {
 //        mGetCont.launch("image/*");
+        index = 10;
         Intent intent = new Intent();
         intent.setType("image/*");  // For .doc files
         intent.setAction(Intent.ACTION_PICK);
@@ -430,5 +446,14 @@ public class MainMenuActivity extends AppCompatActivity implements AccountEditFr
         if(selected.equals("appearance")) {
             getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), AppearanceFragment.newInstance()).commit();
         }
+    }
+
+    @Override
+    public void onGroupChanged() {
+        index = 20;
+        Intent intent = new Intent();
+        intent.setType("image/*");  // For .doc files
+        intent.setAction(Intent.ACTION_PICK);
+        startActivityForResult(Intent.createChooser(intent,"Select Picture"), 101);
     }
 }
