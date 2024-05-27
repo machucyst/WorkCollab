@@ -107,7 +107,7 @@
                     android:outlineProvider="bounds"
                     android:padding="8dp"
                     android:paddingStart="45dp"
-                    android:textColor="@color/deviceTheme2"
+                    android:textColor="@color/black"
                     android:textColorHint="#A8A8A8"
                     android:textSize="15sp" />
 

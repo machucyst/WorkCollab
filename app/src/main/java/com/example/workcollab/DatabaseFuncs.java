@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.cardview.widget.CardView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -203,7 +204,7 @@ public class DatabaseFuncs {
             }
         });
     }
-    public void submitTask(Map user, Uri value, String groupId, String taskId, ImageView v, Context c, BasicListener listener){
+    public void submitTask(Map user, Uri value, String groupId, String taskId, CardView v, Context c, BasicListener listener){
         Map<String,Object> taskSub = new HashMap<>();
 
         reference.child("Groups/"+groupId+"/SubmittedFiles/"+taskId+"/"+user.get("Id").toString()+"/Task*").putFile(value, new StorageMetadata.Builder().setContentType(String.valueOf(MimeTypeMap.getSingleton().getExtensionFromMimeType(c.getContentResolver().getType(value)))).build()).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -229,8 +230,6 @@ public class DatabaseFuncs {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Toast.makeText(c,"Error Uploading Document",Toast.LENGTH_SHORT);
-                v.setBackground(AppCompatResources.getDrawable(c,R.drawable.textholder));
-                v.setEnabled(true);
             }
         });
 

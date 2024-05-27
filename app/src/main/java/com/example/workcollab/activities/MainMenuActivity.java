@@ -48,6 +48,7 @@ import com.example.workcollab.fragments.TaskListFragment;
 import com.example.workcollab.fragments.ViewMemberTasks;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
 import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
@@ -270,6 +271,8 @@ public class MainMenuActivity extends AppCompatActivity implements SelectedGroup
     void complete(){
         SharedPreferences sharedPreferences = getSharedPreferences("UserLogInPreferences", Context.MODE_PRIVATE);
         sharedPreferences.edit().remove("user-email").apply();
+        FirebaseAuth.getInstance().signOut();
+        Toast.makeText(this, (FirebaseAuth.getInstance().getCurrentUser() == null) + "", Toast.LENGTH_SHORT).show();
     }
     public void replaceFragment(Fragment fragment, String condition){
         String waa = "";
