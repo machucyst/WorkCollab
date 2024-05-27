@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:showIn="navigation_view">
+
+        <group android:checkableBehavior="single">
+                <!--        <item-->
+                <!--            android:id="@+id/menu_account"-->
+                <!--            android:checkable="true"-->
+                <!--            app:actionLayout="@layout/menu_you_custom_layout"-->
+                <!--            app:showAsAction="always"-->
+                <!--            tools:ignore="MenuTitle" />-->
+                <item
+                    android:id="@+id/menu_light"
+                    android:checkable="true"
+                    app:actionLayout="@layout/menu_you_custom_layout"
+                    app:showAsAction="always"
+                    tools:ignore="MenuTitle" />
+                <item
+                    android:id="@+id/menu_dark"
+                    android:checkable="true"
+                    app:actionLayout="@layout/menu_you_custom_layout"
+                    app:showAsAction="always"
+                    tools:ignore="MenuTitle" />
+                <item
+                    android:id="@+id/menu_system"
+                    android:checkable="true"
+                    app:showAsAction="always"
+                    app:actionLayout="@layout/menu_you_custom_layout"
+                    tools:ignore="MenuTitle" />
+        </group>
+</menu>

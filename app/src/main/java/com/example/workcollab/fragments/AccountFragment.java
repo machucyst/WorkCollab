@@ -253,7 +253,9 @@ public class AccountFragment extends Fragment {
                     return true;
                 }
                 if (a == R.id.menu_appearance) {
-                    //TODO: change themes
+                    MainMenuActivity.backFlow.push("appearance");
+                    requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), AppearanceFragment.newInstance()).addToBackStack(null).commit();
+                    return true;
                 }
 //                if (a == R.id.menu_account){
 //                    MainMenuActivity.selected ="NotAccount";

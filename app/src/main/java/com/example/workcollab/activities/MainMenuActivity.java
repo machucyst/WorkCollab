@@ -33,6 +33,7 @@ import com.example.workcollab.databinding.ActivityMainMenuBinding;
 import com.example.workcollab.databinding.DialogLogoutConfirmBinding;
 import com.example.workcollab.fragments.AccountEditFragment;
 import com.example.workcollab.fragments.AccountFragment;
+import com.example.workcollab.fragments.AppearanceFragment;
 import com.example.workcollab.fragments.BottomDialogCreateFragment;
 import com.example.workcollab.fragments.CreateGroupFragment;
 import com.example.workcollab.fragments.GroupsFragment;
@@ -43,7 +44,6 @@ import com.example.workcollab.fragments.SelectedGroupFragment;
 import com.example.workcollab.fragments.SubmitTaskFragment;
 import com.example.workcollab.fragments.TaskListFragment;
 import com.example.workcollab.fragments.ViewMemberTasks;
-import com.example.workcollab.fragments.YouFragment;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.FirebaseApp;
 import com.yalantis.ucrop.UCrop;
@@ -52,7 +52,7 @@ import java.io.File;
 import java.util.Map;
 import java.util.Stack;
 
-public class MainMenuActivity extends AppCompatActivity implements YouFragment.ButtonListeners, AccountEditFragment.UpdateListener, AccountFragment.ButtonListeners, JoinedGroupsSubFragment.PositionListener, InvitesSubFragment.PositionListener, TaskListFragment.PositionListener, SubmitTaskFragment.onSubmitClick, ViewMemberTasks.PositionListener {
+public class MainMenuActivity extends AppCompatActivity implements AccountEditFragment.UpdateListener, AccountFragment.ButtonListeners, JoinedGroupsSubFragment.PositionListener, InvitesSubFragment.PositionListener, TaskListFragment.PositionListener, SubmitTaskFragment.onSubmitClick, ViewMemberTasks.PositionListener {
     private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 32;
     private static final int PICK_FILE_REQUEST = 123;
     ActivityMainMenuBinding b;
@@ -71,7 +71,7 @@ public class MainMenuActivity extends AppCompatActivity implements YouFragment.B
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState);
         b = DataBindingUtil.setContentView(this, R.layout.activity_main_menu);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -243,6 +243,8 @@ public class MainMenuActivity extends AppCompatActivity implements YouFragment.B
             case PICK_FILE_REQUEST:
                 replaceFragment(SubmitTaskFragment.newInstance(MainMenuActivity.this.task,data.getData()),"ye");
                 break;
+            case RESULT_CANCELED:
+
         }
     }
 
@@ -307,14 +309,14 @@ public class MainMenuActivity extends AppCompatActivity implements YouFragment.B
         }
     }
 
-    @Override
-    public void onPress() {
-//        mGetCont.launch("image/*");
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), 101);
-    }
+//    @Override
+//    public void onPress() {
+////        mGetCont.launch("image/*");
+//        Intent intent = new Intent();
+//        intent.setType("image/*");
+//        intent.setAction(Intent.ACTION_GET_CONTENT);
+//        startActivityForResult(Intent.createChooser(intent, "Select Picture"), 101);
+//    }
 
 
     @Override
@@ -413,6 +415,8 @@ public class MainMenuActivity extends AppCompatActivity implements YouFragment.B
                 return CreateGroupFragment.newInstance();
             case "selectgroup":
                 return SelectedGroupFragment.newInstance(selectedgroup);
+            case "appearance":
+                return AppearanceFragment.newInstance();
         }
         return MainFragment.newInstance();
     }

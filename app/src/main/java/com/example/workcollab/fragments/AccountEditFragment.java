@@ -24,11 +24,7 @@ import com.google.gson.Gson;
 
 import java.util.Map;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link AccountEditFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class AccountEditFragment extends Fragment {
 
 //    Map user;
