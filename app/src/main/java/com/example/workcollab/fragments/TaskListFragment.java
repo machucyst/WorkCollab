@@ -97,7 +97,7 @@ public class TaskListFragment extends Fragment {
             }, MainMenuActivity.user);
             b.rvTasks.setLayoutManager(new LinearLayoutManager(getContext()));
             b.rvTasks.setAdapter(adapter);
-            db.getTasks(group.get("Id").toString(), group.get("GroupName").toString(), Uri.parse(group.get("GroupImage") == null ? "" : group.get("GroupImage").toString()), new DatabaseFuncs.TaskListener() {
+            db.getTasks(group.get("Id").toString(), group.get("GroupName").toString(), group.get("GroupImage") == null ? null : Uri.parse(group.get("GroupImage").toString()), new DatabaseFuncs.TaskListener() {
                 @Override
                 public void onTaskRecieved(List<Map> tasks) {
                     adapter.addRange(tasks);

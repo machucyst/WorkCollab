@@ -18,7 +18,6 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
             <TextView
-                android:id="@+id/textView2"
                 style="@style/SecondTextStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -103,25 +102,33 @@
                     <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:cardCornerRadius="5dp"
-                        app:cardBackgroundColor="@color/white"
-                        android:layout_margin="5dp">
+                        app:cardBackgroundColor="@android:color/transparent"
+                        app:cardElevation="0dp">
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_addUsers"
                         android:layout_width="match_parent"
                         android:layout_height="200dp"
-                        android:layout_margin="10dp"
                         android:layout_weight="1" />
 
+                    <androidx.cardview.widget.CardView
+                        android:layout_marginTop="10dp"
+                        android:id="@+id/textView2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cardBackgroundColor="@color/deviceTheme"
+                        app:cardElevation="0dp"
+                        app:cardCornerRadius="20dp">
                         <TextView
+                            android:padding="10dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Add a group member"
-                            android:layout_gravity="center|top"
-                            android:layout_marginTop="20dp"
+                            android:text="Please add a group member"
                             style="@style/LightTextStyle"
-                            android:textColor="#C1C1C1"/>
+                            android:textColor="@color/deviceThemeInverted2"/>
+
+                    </androidx.cardview.widget.CardView>
+
 
                     </androidx.cardview.widget.CardView>
 
@@ -153,7 +160,7 @@
                             android:paddingStart="15dp"
                             android:textColor="@color/black"
                             android:textColorHint="#B5B5B5"
-                            android:textSize="20dp" />
+                            android:textSize="17dp" />
                     </com.google.android.material.textfield.TextInputLayout>
 
             <androidx.appcompat.widget.AppCompatButton

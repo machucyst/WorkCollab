@@ -65,6 +65,8 @@ public class DeadlinesAdapter extends RecyclerView.Adapter<DeadlinesAdapter.VH> 
 
             if (!(task.get("GroupImage") == null)) {
                 Glide.with(context).load(d.getImage().toString()).into(bind.image);
+            } else {
+                bind.image.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_test));
             }
 
             bind.parent.setOnClickListener(v -> {

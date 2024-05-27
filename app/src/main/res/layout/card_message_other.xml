@@ -7,11 +7,13 @@
     android:id="@+id/parent">
 
     <TextView
+        style="@style/LightTextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/sender"
         app:layout_constraintBottom_toTopOf="@id/wrapper"
         android:text="Sender"
+        android:textSize="15dp"
         android:textColor="@color/deviceThemeInverted"
         app:layout_constraintLeft_toLeftOf="@id/wrapper"
         />
@@ -25,6 +27,7 @@
         android:layout_marginBottom="20dp"
         app:cardCornerRadius="10dp">
         <TextView
+            style="@style/LightTextStyle"
             android:id="@+id/reply"
             android:maxWidth="275dp"
             android:layout_width="wrap_content"
@@ -48,6 +51,7 @@
         android:layout_marginBottom="3dp"
         app:cardCornerRadius="10dp">
         <TextView
+            style="@style/LightTextStyle"
             android:id="@+id/message"
             android:maxWidth="275dp"
             android:layout_width="wrap_content"

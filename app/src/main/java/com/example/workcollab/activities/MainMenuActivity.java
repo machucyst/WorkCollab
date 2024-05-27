@@ -239,12 +239,14 @@ public class MainMenuActivity extends AppCompatActivity implements SelectedGroup
             }
             break;
             case PICK_FILE_REQUEST:
-                if(getFileSize(data.getData())<=MAX_FILE_SIZE){
-                    getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment,SubmitTaskFragment.newInstance(MainMenuActivity.this.task,data.getData())).commit();
-                }else{
-                    Toast.makeText(this,"File size too large (20 MB Only)",Toast.LENGTH_SHORT).show();
+                if (data != null) {
+                    if(getFileSize(data.getData())<=MAX_FILE_SIZE){
+                        getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment,SubmitTaskFragment.newInstance(MainMenuActivity.this.task,data.getData())).commit();
+                    }else{
+                        Toast.makeText(this,"File size too large (20 MB Only)",Toast.LENGTH_SHORT).show();
+                    }
+                    break;
                 }
-                break;
             case RESULT_CANCELED:
                 reload();
                 break;

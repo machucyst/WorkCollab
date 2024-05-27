@@ -96,7 +96,6 @@ public class AssignTaskFragment extends Fragment {
                 di = DialogDateInputBinding.inflate(getLayoutInflater().from(requireContext()));
                 builder.setView(di.getRoot());
                 AlertDialog dialog = builder.create();
-                di.editAccount.setText("Input old password before proceeding");
                 today.set(Calendar.HOUR_OF_DAY, 0);
                 di.calendarView.setDate(today.getTimeInMillis());
                 di.Cancel.setOnClickListener(k -> {

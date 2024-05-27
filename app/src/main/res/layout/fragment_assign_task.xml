@@ -43,7 +43,7 @@
                             android:layout_gravity="center"
                             android:layout_weight="1"
                             android:fontFamily="@font/bahnschrift"
-                            android:text="Create Group"
+                            android:text="Create Task"
                             android:textColor="@color/deviceThemeInverted"
                             android:textSize="30dp" />
 
@@ -66,7 +66,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:fontFamily="@font/bahnschrift"
-                                    android:text="Group Name:"
+                                    android:text="Task Title:"
                                     android:layout_marginTop="10dp"
                                     android:paddingHorizontal="15dp"
                                     style="@style/LightTextStyle"
@@ -128,13 +128,13 @@
                                     android:ems="10"
                                     android:fontFamily="@font/bahnschrift"
                                     android:gravity="top|left"
-                                    android:hint="Clear text...etc"
+                                    android:hint="Enter a task description..."
                                     android:inputType="text"
                                     android:padding="2dp"
                                     android:paddingStart="15dp"
                                     android:textColor="@color/black"
                                     android:textColorHint="@color/stroke_gray"
-                                    android:textSize="20dp" />
+                                    android:textSize="15dp" />
 
                                 <TextView
                                     android:id="@+id/tv_until"
@@ -199,12 +199,14 @@
                                 android:orientation="vertical">
 
                                 <TextView
+                                    android:paddingLeft="5dp"
                                     android:id="@+id/tv_add"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="5dp"
                                     android:fontFamily="@font/bahnschrift"
                                     android:text="Assign to:"
+                                    android:layout_margin="5dp"
                                     style="@style/LightTextStyle"
                                     android:textSize="20dp" />
 
@@ -213,8 +215,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="140dp"
                                     android:layout_margin="10dp"
-                                    android:layout_weight="1"
-                                    android:background="@color/white" />
+                                    android:layout_weight="1" />
 
                                 <androidx.appcompat.widget.AppCompatButton
                                     android:id="@+id/btn_showPass"

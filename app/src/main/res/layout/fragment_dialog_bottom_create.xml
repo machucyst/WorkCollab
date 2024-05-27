@@ -9,15 +9,14 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/fui_transparent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
         tools:context=".fragments.AccountFragment">
 
         <com.google.android.material.navigation.NavigationView
             android:id="@+id/nv_accountMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
             android:background="@color/deviceTheme"
             app:itemBackground="@color/deviceTheme"
             app:itemTextAppearance="@style/menuText"

@@ -13,7 +13,7 @@
             android:id="@+id/main1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/background_default">
+            android:background="@color/deviceTheme2">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
@@ -72,12 +72,13 @@
                 android:id="@+id/wrapper"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/deviceTheme2"
+                android:background="@color/deviceTheme"
                 android:orientation="horizontal"
                 android:paddingVertical="10dp"
                 app:layout_constraintBottom_toTopOf="@id/bottomPadding">
 
                 <ImageView
+                    android:visibility="gone"
                     android:id="@+id/attachFile"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -89,6 +90,7 @@
                     android:rotation="45" />
 
                 <EditText
+                    android:layout_marginStart="10dp"
                     android:id="@+id/chat"
                     style="@style/TextHolder"
                     android:layout_width="0dp"

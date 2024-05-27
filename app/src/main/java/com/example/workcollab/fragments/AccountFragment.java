@@ -110,6 +110,9 @@ public class AccountFragment extends Fragment {
         s.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.warning)), 0, s.length(), 0);
         b.nvAccountMenu.getMenu().findItem(R.id.menu_deleteAccount).setTitle(s);
 
+        b.nvAccountMenu.setNestedScrollingEnabled(false);
+        b.nvSettings.setNestedScrollingEnabled(false);
+
         db.InitDB(MainMenuActivity.user.get("Email").toString(), new DatabaseFuncs.DataListener() {
             @Override
             public void onDataFound(Map user) {
