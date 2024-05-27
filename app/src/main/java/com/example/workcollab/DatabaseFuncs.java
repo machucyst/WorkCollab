@@ -256,6 +256,52 @@ public class DatabaseFuncs {
 
                 });
     }
+    public void updateGroup(Map group,String value, String condition, UpdateListener listener, int i){
+        group.put(condition,value);
+        groups.document(group.get("Id").toString()).update(group).addOnCompleteListener(new OnCompleteListener() {
+            @Override
+            public void onComplete(@NonNull Task task) {
+                if (task.isSuccessful()){
+                    listener.onUpdate(group);
+                }
+            }
+        });
+    }
+    public void updateGroup(Map group, String path, UpdateListener listener){
+        group.put("GroupImage",path);
+        groups.document(group.get("Id").toString()).update(group).addOnCompleteListener(new OnCompleteListener() {
+            @Override
+            public void onComplete(@NonNull Task task) {
+               if (task.isSuccessful()){
+                   listener.onUpdate(group);
+               }
+            }
+        });
+    }
+    public void saveGroupProfile(Map group, Uri value, UpdateListener listener){
+        reference.child("GroupsProfiles/"+group.get("Id").toString()+"/Profile.png").putFile(value)
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        e.printStackTrace();
+                        System.out.println(e);
+                    }
+                })
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        reference.child("GroupsProfiles/"+group.get("Id").toString()+"/Profile.png").getDownloadUrl().addOnSuccessListener(uri->{
+                            updateGroup(group, uri.toString(), new UpdateListener() {
+                                @Override
+                                public void onUpdate(Map user) {
+                                    listener.onUpdate(user);
+                                }
+                            });
+                        });
+                    }
+
+                });
+    }
     public void createGroup(String name, List<String> Members, UpdateListener listener) {
         Map<String, Object> group = new HashMap<>();
         group.put("GroupName", name);

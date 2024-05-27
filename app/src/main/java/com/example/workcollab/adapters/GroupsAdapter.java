@@ -1,14 +1,18 @@
 package com.example.workcollab.adapters;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.workcollab.DatabaseFuncs;
 import com.example.workcollab.R;
 import com.example.workcollab.activities.MainMenuActivity;
@@ -22,6 +26,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyHandler>
     public final List<Map> groups;
     DatabaseFuncs db = new DatabaseFuncs();
     private final JoinedGroupsSubFragment.PositionListener listener;
+    Context c;
 
 
     @NonNull
@@ -35,6 +40,12 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyHandler>
     @Override
     public void onBindViewHolder(@NonNull MyHandler holder, @SuppressLint("RecyclerView") int position) {
         holder.tv_g.setText((groups.get(position).get("GroupName")).toString());
+
+        try{
+        Glide.with(c).load(groups.get(position).get("GroupImage").toString()).into(holder.iv);
+        }catch (Exception e){
+        Glide.with(c).load(AppCompatResources.getDrawable(c,R.drawable.icon_test)).into(holder.iv);
+        }
         holder.parent.setOnClickListener(v -> {
             listener.itemClicked(groups.get(position));
                 MainMenuActivity.selected = "notGroups";
@@ -47,19 +58,22 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyHandler>
     public int getItemCount() {
         return groups.size();
     }
-    public GroupsAdapter(List<Map> groups, JoinedGroupsSubFragment.PositionListener listener){
+    public GroupsAdapter(List<Map> groups, Context c,JoinedGroupsSubFragment.PositionListener listener){
         this.groups = groups;
+        this.c = c;
         this.listener = listener;
     }
 
     public static class MyHandler extends RecyclerView.ViewHolder{
         TextView tv_g, tv_lm;
         View parent;
+        ImageView iv;
         public MyHandler(@NonNull View v){
             super(v);
             tv_g = v.findViewById(R.id.tv_groupName);
             tv_lm = v.findViewById(R.id.tv_latestMessage);
             parent = v.findViewById(R.id.parent);
+            iv = v.findViewById(R.id.nav_image);
         }
 
         public TextView groups() {

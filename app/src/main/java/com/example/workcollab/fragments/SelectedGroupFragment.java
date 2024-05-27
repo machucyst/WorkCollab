@@ -8,9 +8,12 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
 import com.example.workcollab.DatabaseFuncs;
+import com.example.workcollab.R;
 import com.example.workcollab.activities.ChatActivity;
 import com.example.workcollab.activities.MainMenuActivity;
 import com.example.workcollab.databinding.FragmentSelectedGroupBinding;
@@ -61,6 +64,11 @@ public class SelectedGroupFragment extends Fragment {
         //TODO: Edit Group, Add Tasks!!!!!!!!!!, Leave Group.
         b = FragmentSelectedGroupBinding.inflate(inflater,container,false);
         b.tvGroupName.setText(group.get("GroupName").toString());
+        try {
+            Glide.with(getContext()).load(group.get("GroupImage").toString()).into(b.ivGroupImage);
+        }catch (Exception e){
+            Glide.with(getContext()).load(AppCompatResources.getDrawable(getContext(), R.drawable.icon_test)).into(b.ivGroupImage);
+        }
         System.out.println("Selected Group"+MainMenuActivity.user);
         System.out.println(group.get("isLeader"));
         b.btnTasks.setOnClickListener(new View.OnClickListener() {
