@@ -20,11 +20,11 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.util.Map;
 
-public class DialogBottom extends BottomSheetDialogFragment {
+public class BottomDialogViewProfileFragment extends BottomSheetDialogFragment {
     FragmentDialogBottomBinding b;
     DatabaseFuncs db =new DatabaseFuncs();
     String id;
-    public DialogBottom(String id){
+    public BottomDialogViewProfileFragment(String id){
         this.id = id;
     }
 

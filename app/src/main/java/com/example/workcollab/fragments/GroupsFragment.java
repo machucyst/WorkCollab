@@ -50,13 +50,13 @@ public class GroupsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        getChildFragmentManager().beginTransaction().replace(b.groupsFragmentFrame.getId(),JoinedGroupsSubFragment.newInstance()).commit();
+        getChildFragmentManager().beginTransaction().replace(b.groupsFragmentFrame.getId(),JoinedGroupsSubFragment.newInstance(true)).commit();
         b.groupsMenu.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 int a = menuItem.getItemId();
                 if(a == R.id.menu_joined){
-                    getChildFragmentManager().beginTransaction().replace(b.groupsFragmentFrame.getId(),JoinedGroupsSubFragment.newInstance()).commit();
+                    getChildFragmentManager().beginTransaction().replace(b.groupsFragmentFrame.getId(),JoinedGroupsSubFragment.newInstance(true)).commit();
                     return true;
                 }else if(a == R.id.menu_invites){
                     getChildFragmentManager().beginTransaction().replace(b.groupsFragmentFrame.getId(),InvitesSubFragment.newInstance()).commit();

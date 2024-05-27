@@ -11,9 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.Fragment;
 
 import com.example.workcollab.DatabaseFuncs;
+import com.example.workcollab.R;
 import com.example.workcollab.activities.MainMenuActivity;
 import com.example.workcollab.databinding.FragmentSubmitTaskBinding;
 import com.google.gson.Gson;
@@ -67,6 +69,7 @@ public class SubmitTaskFragment extends Fragment {
             task = gson.fromJson(getArguments().getString("task"), Map.class);
             if(getArguments().getString("file")!=null){
                 fileUri = Uri.parse(getArguments().getString("file"));
+                System.out.println(23);
             }
         }
     }
@@ -90,13 +93,23 @@ public class SubmitTaskFragment extends Fragment {
                 listener.onSubmitClick(task);
             }
         });
+        b.btnReturn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                requireActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
         b.btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                db.submitTask(MainMenuActivity.user, fileUri, task.get("ParentId").toString(),task.get("Id").toString(), new DatabaseFuncs.BasicListener() {
+                b.btnSubmit.setBackground(AppCompatResources.getDrawable(requireContext(),R.drawable.textholderdisabled));
+                b.btnSubmit.setEnabled(false);
+
+                db.submitTask(MainMenuActivity.user, fileUri, task.get("ParentId").toString(),task.get("Id").toString(), b.btnSubmit,requireContext(), new DatabaseFuncs.BasicListener() {
                     @Override
                     public void BasicListener() {
                         Toast.makeText(requireContext(), "yey",Toast.LENGTH_SHORT).show();
+                        requireActivity().getSupportFragmentManager().popBackStack();
                     }
                 });
             }

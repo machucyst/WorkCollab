@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -198,7 +199,7 @@ public class DatabaseFuncs {
             }
         });
     }
-    public void submitTask(Map user,Uri value, String groupId, String taskId, BasicListener listener){
+    public void submitTask(Map user, Uri value, String groupId, String taskId, ImageView v, Context c, BasicListener listener){
         Map<String,Object> taskSub = new HashMap<>();
 
         reference.child("Groups/"+groupId+"/SubmittedFiles/"+taskId+"/"+user.get("Id").toString()+"/Task*").putFile(value).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -217,6 +218,13 @@ public class DatabaseFuncs {
                         });
                     }
                 });
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(c,"Error Uploading Document",Toast.LENGTH_SHORT);
+                v.setBackground(AppCompatResources.getDrawable(c,R.drawable.textholder));
+                v.setEnabled(true);
             }
         });
 

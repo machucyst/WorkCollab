@@ -16,7 +16,6 @@ import com.example.workcollab.activities.MainMenuActivity;
 import com.example.workcollab.adapters.GroupsAdapter;
 import com.example.workcollab.databinding.FragmentJoinedGroupsBinding;
 import com.google.firebase.Timestamp;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +26,7 @@ public class JoinedGroupsSubFragment extends Fragment {
 //    Map user;
     DatabaseFuncs db = new DatabaseFuncs();
     FragmentJoinedGroupsBinding b;
+    boolean test = true;
 
     public JoinedGroupsSubFragment() {
         // Required empty public constructor
@@ -46,12 +46,10 @@ public class JoinedGroupsSubFragment extends Fragment {
                     + " must implement OnFragmentInteractionListener");
         }
     }
-
-
-    public static JoinedGroupsSubFragment newInstance() {
+    
+    public static JoinedGroupsSubFragment newInstance(boolean test) {
         Bundle args = new Bundle();
-        Gson gson = new Gson();
-//        args.putString("user", gson.toJson(user));
+        args.putBoolean("test",test);
         JoinedGroupsSubFragment f = new JoinedGroupsSubFragment();
         f.setArguments(args);
         return f;
@@ -60,11 +58,9 @@ public class JoinedGroupsSubFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        if(getArguments() != null){
-//            System.out.println(getArguments().getString("user") + "awjgoiaehgoaeig");
-//            Gson gson = new Gson();
-//            user = gson.fromJson(getArguments().getString("user"),Map.class);
-//        }
+        if(getArguments() != null){
+           test = getArguments().getBoolean("test");
+        }
 //        System.out.println(user);
         db.getJoinedGroups(MainMenuActivity.user.get("Id").toString(), new DatabaseFuncs.GroupListener() {
             @Override
@@ -75,10 +71,15 @@ public class JoinedGroupsSubFragment extends Fragment {
                 GroupsAdapter ga = new GroupsAdapter(newList, new PositionListener() {
                     @Override
                     public void itemClicked(Map group) {
-                        PositionListener.super.itemClicked(group);
-                        MainMenuActivity.selected = "groups";
-
-                        listener.itemClicked(group);
+                        if(test){
+                            PositionListener.super.itemClicked(group);
+                            MainMenuActivity.selected = "groups";
+                            listener.itemClicked(group);
+                        }else{
+                            test = true;
+                            b.textView6.setVisibility(View.VISIBLE);
+                            requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), AssignTaskFragment.newInstance(group)).addToBackStack(null).commit();
+                        }
                     }
                 });
                 try {

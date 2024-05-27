@@ -29,7 +29,7 @@ import com.example.workcollab.Message;
 import com.example.workcollab.R;
 import com.example.workcollab.adapters.ChatAdapter;
 import com.example.workcollab.databinding.ActivityChatBinding;
-import com.example.workcollab.fragments.DialogBottom;
+import com.example.workcollab.fragments.BottomDialogViewProfileFragment;
 import com.google.firebase.Timestamp;
 import com.google.gson.Gson;
 
@@ -137,9 +137,8 @@ public class ChatActivity extends AppCompatActivity {
                 @Override
                 public void onHoldPressed(String id) {
                     System.out.println("yeyeyeyey");
-                    DialogBottom dba = new DialogBottom(id);
-
-                    dba.show(getSupportFragmentManager(),new DialogBottom(id).getTag());
+                    BottomDialogViewProfileFragment dba = new BottomDialogViewProfileFragment(id);
+                    dba.show(getSupportFragmentManager(),new BottomDialogViewProfileFragment(id).getTag());
                 }
             });
             LinearLayoutManager layoutManager = new LinearLayoutManager(ChatActivity.this);

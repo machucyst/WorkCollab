@@ -12,11 +12,30 @@
         android:id="@+id/parent"
         tools:context=".fragments.JoinedGroupsSubFragment">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_groups"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/fui_transparent" />
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView6"
+                style="@style/SecondTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/deviceTheme2"
+                android:padding="5dp"
+                android:text="Create Task"
+                android:textAlignment="center"
+                android:textColor="@color/deviceThemeInverted"
+                android:textSize="30dp"
+                android:visibility="gone" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_groups"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/fui_transparent" />
+        </LinearLayout>
 
     </FrameLayout>
 </layout>

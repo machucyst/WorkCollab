@@ -1,6 +1,5 @@
 package com.example.workcollab.activities;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -34,7 +33,7 @@ import com.example.workcollab.databinding.ActivityMainMenuBinding;
 import com.example.workcollab.databinding.DialogLogoutConfirmBinding;
 import com.example.workcollab.fragments.AccountEditFragment;
 import com.example.workcollab.fragments.AccountFragment;
-import com.example.workcollab.fragments.AssignTaskFragment;
+import com.example.workcollab.fragments.BottomDialogCreateFragment;
 import com.example.workcollab.fragments.CreateGroupFragment;
 import com.example.workcollab.fragments.GroupsFragment;
 import com.example.workcollab.fragments.InvitesSubFragment;
@@ -81,7 +80,12 @@ public class MainMenuActivity extends AppCompatActivity implements YouFragment.B
         });
 
         backFlow.push("main");
-
+        if (ContextCompat.checkSelfPermission(MainMenuActivity.this,
+                android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            System.out.println("ajieoghaoie11");
+            ActivityCompat.requestPermissions(MainMenuActivity.this,
+                    new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+        }
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 201);
@@ -150,14 +154,17 @@ public class MainMenuActivity extends AppCompatActivity implements YouFragment.B
         b.btnFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (selected.equals("groups")) {
-                    backFlow.push("creategroups");
-                    replaceFragment(CreateGroupFragment.newInstance(), "creategroups");
-                }
-                if(selected.equals("tasks")){
-                    System.out.println("abs");
-                    replaceFragment(AssignTaskFragment.newInstance(selectedgroup),"assignTask");
-                }
+                BottomDialogCreateFragment dba = new BottomDialogCreateFragment();
+
+                dba.show(getSupportFragmentManager(),new BottomDialogCreateFragment().getTag());
+//                if (selected.equals("groups")) {
+//                    backFlow.push("creategroups");
+//                    replaceFragment(CreateGroupFragment.newInstance(), "creategroups");
+//                }
+//                if(selected.equals("tasks")){
+//                    System.out.println("abs");
+//                    replaceFragment(AssignTaskFragment.newInstance(selectedgroup),"assignTask");
+//                }
             }
         });
         b.bottomNavView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
@@ -191,54 +198,53 @@ public class MainMenuActivity extends AppCompatActivity implements YouFragment.B
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        System.out.println(resultCode+" "+requestCode);
-        if (requestCode == 101){
-            Uri sourceUri = data.getData();
+        System.out.println(resultCode + " " + requestCode);
+        switch (requestCode) {
+            case 101:
+                Uri sourceUri = data.getData();
 
-            // Destination URI
-            Uri destinationUri = Uri.fromFile(new File(getCacheDir(), "IMG_" + System.currentTimeMillis()));
+                // Destination URI
+                Uri destinationUri = Uri.fromFile(new File(getCacheDir(), "IMG_" + System.currentTimeMillis()));
 
-            // Start UCrop activity
-            UCrop.Options options = new UCrop.Options();
+                // Start UCrop activity
+                UCrop.Options options = new UCrop.Options();
                 options.setContrastEnabled(false);
                 options.setBrightnessEnabled(false);
                 options.setFreeStyleCropEnabled(false);
                 options.setSaturationEnabled(false);
                 options.setSharpnessEnabled(false);
                 options.setShowCropGrid(false);
-            UCrop.of(sourceUri, destinationUri)
-                    .withAspectRatio(1, 1)
-                    .withMaxResultSize(450, 450)
-                    .withOptions(options)
-                    .start(this);
-            } else if (requestCode == UCrop.REQUEST_CROP) {
-                if (resultCode == RESULT_OK) {
-                    final Uri resultUri = UCrop.getOutput(data);
-                    try{
-                        db.saveProfile(user, resultUri, new DatabaseFuncs.UpdateListener() {
-                            @Override
-                            public void onUpdate(Map user) {
-                                MainMenuActivity.user = user;
-                                replaceFragment(AccountFragment.newInstance(),"Profile");
-                            }
-                        });
+                UCrop.of(sourceUri, destinationUri)
+                        .withAspectRatio(1, 1)
+                        .withMaxResultSize(450, 450)
+                        .withOptions(options)
+                        .start(this);
+            break;
+            case UCrop.REQUEST_CROP:
+            if (resultCode == RESULT_OK) {
+                final Uri resultUri = UCrop.getOutput(data);
+                try {
+                    db.saveProfile(user, resultUri, new DatabaseFuncs.UpdateListener() {
+                        @Override
+                        public void onUpdate(Map user) {
+                            MainMenuActivity.user = user;
+                            replaceFragment(AccountFragment.newInstance(), "Profile");
+                        }
+                    });
 
-                    } catch (Exception e){
-                        e.printStackTrace();
-                    }
-                } else if (resultCode == UCrop.RESULT_ERROR) {
-                    final Throwable cropError = UCrop.getError(data);
-                    // Handle the error
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+            } else if (resultCode == UCrop.RESULT_ERROR) {
+                final Throwable cropError = UCrop.getError(data);
+                // Handle the error
             }
-//            String result = data.getStringExtra("RESULT");
-//            Uri resultUri = null;
-//            if(result!=null){
-//                resultUri = Uri.parse(result);
-//
-//            }
-
+            break;
+            case PICK_FILE_REQUEST:
+                replaceFragment(SubmitTaskFragment.newInstance(MainMenuActivity.this.task,data.getData()),"ye");
+                break;
         }
+    }
 
     private String getUserEmail() {
         SharedPreferences sharedPreferences = getSharedPreferences("UserLogInPreferences", Context.MODE_PRIVATE);
@@ -363,22 +369,23 @@ public class MainMenuActivity extends AppCompatActivity implements YouFragment.B
     @Override
     public void onSubmitClick(Map task) {
         MainMenuActivity.this.task = task;
-        System.out.println("ajieoghaoie");
-        if (ContextCompat.checkSelfPermission(MainMenuActivity.this,
-                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            System.out.println("ajieoghaoie11");
-            ActivityCompat.requestPermissions(MainMenuActivity.this,
-                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
-        } else {
-            System.out.println("ajieoghaoie23452");
+//        System.out.println("ajieoghaoie");
+//        if (ContextCompat.checkSelfPermission(MainMenuActivity.this,
+//                android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//            System.out.println("ajieoghaoie11");
+//            ActivityCompat.requestPermissions(MainMenuActivity.this,
+//                    new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+//        } else {
+//            System.out.println("ajieoghaoie23452");
             openFilePicker();
-        }
+//        }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE) {
+            System.out.println(grantResults + " waawgaw");
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 openFilePicker();
             } else {
@@ -387,9 +394,9 @@ public class MainMenuActivity extends AppCompatActivity implements YouFragment.B
         }
     }
     public void openFilePicker(){
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("*/*");  // For .doc files
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("*/*");
         startActivityForResult(intent, PICK_FILE_REQUEST);
     }
 
