@@ -22,6 +22,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.palette.graphics.Palette;
@@ -103,6 +104,8 @@ public class AccountFragment extends Fragment {
         b.nvAccountMenu.getMenu().findItem(R.id.menu_email).setEnabled(false);
         menuTextChange(b.nvSettings,R.id.menu_settings, "Settings");
 //        menuTextChange(b.nvSettings,R.id.menu_account, "Account");
+        TextView a = b.nvAccountMenu.getMenu().findItem(R.id.menu_email).getActionView().findViewById(R.id.additionalText);
+        a.setTextColor(AppCompatResources.getColorStateList(getContext(),R.color.stroke_gray));
         menuTextChange(b.nvSettings,R.id.menu_appearance, "Appearance");
         menuTextChange(b.nvSettings,R.id.menu_logOut, "Log Out");
         ImageView v = b.nvAccountMenu.getMenu().findItem(R.id.menu_deleteAccount).getActionView().findViewById(R.id.nextMenuArrow);
@@ -261,6 +264,7 @@ public class AccountFragment extends Fragment {
                     return true;
                 }
                 if (a == R.id.menu_appearance) {
+                    MainMenuActivity.selected ="appearance";
                     MainMenuActivity.backFlow.push("appearance");
                     requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), AppearanceFragment.newInstance()).addToBackStack(null).commit();
                     return true;

@@ -5,11 +5,13 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.workcollab.DatabaseFuncs;
 import com.example.workcollab.R;
 import com.example.workcollab.fragments.ViewMemberTasks;
@@ -37,6 +39,7 @@ public class MemberTaskAdapter extends RecyclerView.Adapter<MemberTaskAdapter.My
     @Override
     public void onBindViewHolder(@NonNull MyHandler holder, @SuppressLint("RecyclerView") int position) {
         holder.tv_head.setText((tasks.get(position).get("Username")).toString());
+        Glide.with(context).asBitmap().load(tasks.get(position).get("Profile").toString()).into(holder.iv);
         holder.download.setOnClickListener(v -> {
             db.downloadFile(tasks.get(position).get("file").toString(),tasks.get(position).get("fileCreator").toString(),context);
             }
@@ -58,10 +61,12 @@ public class MemberTaskAdapter extends RecyclerView.Adapter<MemberTaskAdapter.My
     public static class MyHandler extends RecyclerView.ViewHolder{
         TextView tv_fn, tv_head;
         View download;
+        ImageView iv;
         public MyHandler(@NonNull View v){
             super(v);
             tv_head = v.findViewById(R.id.tv_memberName);
             tv_fn = v.findViewById(R.id.tv_fileName);
+            iv = v.findViewById(R.id.nav_image);
             download = v.findViewById(R.id.iv_save);
         }
 

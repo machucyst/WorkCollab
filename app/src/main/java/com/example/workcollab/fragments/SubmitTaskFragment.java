@@ -102,14 +102,18 @@ public class SubmitTaskFragment extends Fragment {
         b.btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(fileUri == null){
+                    Toast.makeText(getContext(), "Upload a file before submitting",Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 b.btnSubmit.setBackground(AppCompatResources.getDrawable(requireContext(),R.drawable.textholderdisabled));
                 b.btnSubmit.setEnabled(false);
-
                 db.submitTask(MainMenuActivity.user, fileUri, task.get("ParentId").toString(),task.get("Id").toString(), b.btnSubmit,requireContext(), new DatabaseFuncs.BasicListener() {
                     @Override
                     public void BasicListener() {
-                        Toast.makeText(requireContext(), "yey",Toast.LENGTH_SHORT).show();
-                        requireActivity().getSupportFragmentManager().popBackStack();
+                        Toast.makeText(getContext(),"File Submitted Successfully",Toast.LENGTH_SHORT).show();
+                        requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), SelectedGroupFragment.newInstance(TaskListFragment.group)).addToBackStack(null).commit();
+
                     }
                 });
             }

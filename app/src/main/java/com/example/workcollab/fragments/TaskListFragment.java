@@ -24,7 +24,7 @@ import java.util.Map;
 
 public class TaskListFragment extends Fragment {
     FragmentTaskListBinding b;
-    Map group;
+    public static Map group;
     DatabaseFuncs db = new DatabaseFuncs();
     Gson gson = new Gson();
     boolean a;
@@ -97,7 +97,6 @@ public class TaskListFragment extends Fragment {
                             requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), ViewMemberTasks.newInstance(task)).addToBackStack(null).commit();
                         }else{
                             requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), SubmitTaskFragment.newInstance(task)).addToBackStack(null).commit();
-
                         }
 
                     }
@@ -123,7 +122,14 @@ public class TaskListFragment extends Fragment {
                    }
                    List<Object> wwa = new ArrayList<>();
                    wwa.addAll(tasks);
-                   TasksAdapter ta = new TasksAdapter(wwa);
+                   TasksAdapter ta = new TasksAdapter(wwa, new PositionListener() {
+                       @Override
+                       public void taskItemClicked(Map task) {
+                           PositionListener.super.taskItemClicked(task);
+                           requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), SubmitTaskFragment.newInstance(task)).addToBackStack(null).commit();
+
+                       }
+                   });
                    b.rvTasks.setAdapter(ta);
                    b.rvTasks.setLayoutManager(new LinearLayoutManager(getContext()));
 

@@ -22,7 +22,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.MyHandler>{
 
     public List<Object> tasks;
     DatabaseFuncs db = new DatabaseFuncs();
-    private TaskListFragment.PositionListener listener;
+    private final TaskListFragment.PositionListener listener;
 
 
     @NonNull
@@ -68,9 +68,6 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.MyHandler>{
     public TasksAdapter(List<Object> tasks, TaskListFragment.PositionListener listener){
         this.tasks = tasks;
         this.listener = listener;
-    }
-    public TasksAdapter(List<Object> tasks){
-        this.tasks = tasks;
     }
 
     public static class MyHandler extends RecyclerView.ViewHolder{

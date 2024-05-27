@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -150,7 +149,6 @@ public class ChatActivity extends AppCompatActivity {
             ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
             itemTouchHelper.attachToRecyclerView(bind.recyclerView);
 
-            Toast.makeText(this, "awdjaljdalwkdjlakwdj", Toast.LENGTH_SHORT).show();
             db.setReceivedMessagesListener(user.get("Id").toString(), group.get("Id").toString(), new DatabaseFuncs.MessagesReceivedListener() {
                 @Override
                 public void onMessageReceived(List<Message> newMessages, List<Message> updatedMessages) {
