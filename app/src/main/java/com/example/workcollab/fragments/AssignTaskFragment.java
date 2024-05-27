@@ -150,12 +150,21 @@ public class AssignTaskFragment extends Fragment {
                             return;
                         }
                             Toast.makeText(requireContext(),"Please add description to task",Toast.LENGTH_SHORT).show();
+                        b.btnShowPass.setBackgroundDrawable(AppCompatResources.getDrawable(requireActivity(), R.drawable.textholder));
+                        b.btnShowPass.setText("Submit");
+                        b.btnShowPass.setEnabled(true);
                         return;
                     }
                     Toast.makeText(requireContext(),"Please input task name",Toast.LENGTH_SHORT).show();
+                    b.btnShowPass.setBackgroundDrawable(AppCompatResources.getDrawable(requireActivity(), R.drawable.textholder));
+                    b.btnShowPass.setText("Submit");
+                    b.btnShowPass.setEnabled(true);
                 return;
                 }
                 Toast.makeText(requireContext(),"Deadline Invalid",Toast.LENGTH_SHORT).show();
+                b.btnShowPass.setBackgroundDrawable(AppCompatResources.getDrawable(requireActivity(), R.drawable.textholder));
+                b.btnShowPass.setText("Submit");
+                b.btnShowPass.setEnabled(true);
             }
         });
 
