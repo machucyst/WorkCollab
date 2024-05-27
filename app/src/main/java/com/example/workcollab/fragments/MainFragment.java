@@ -1,9 +1,11 @@
 package com.example.workcollab.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -11,7 +13,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.workcollab.DatabaseFuncs;
+import com.example.workcollab.R;
 import com.example.workcollab.activities.MainMenuActivity;
+import com.example.workcollab.adapters.DeadlinesAdapter;
 import com.example.workcollab.adapters.TasksAdapter;
 import com.example.workcollab.databinding.FragmentMainBinding;
 import com.google.firebase.Timestamp;
@@ -28,6 +32,7 @@ public class MainFragment extends Fragment {
     Map user;
     DatabaseFuncs db = new DatabaseFuncs();
     Gson gson = new Gson();
+    DeadlinesAdapter adapter;
 
     public MainFragment() {
     }
@@ -60,38 +65,61 @@ public class MainFragment extends Fragment {
         // Inflate the layout for this fragment
         b = FragmentMainBinding.inflate(inflater, container, false);
 
-        List<Object> tasks = new ArrayList<>();
-        tasks.add("");
-        Map waa = new HashMap<>();
-        waa.put("TaskName", "waaa");
-        tasks.add(waa);
-        tasks.add(waa);
-        tasks.add(waa);tasks.add(waa);
-        tasks.add(waa);
-        tasks.add(waa);
-        tasks.add(waa);
-        tasks.add(waa);
-        tasks.add(waa);
-        tasks.add(waa);
-        tasks.add(waa);
-        tasks.add(waa);
-        tasks.add(waa);
-        tasks.add(waa);
-        tasks.add(waa);
-        tasks.add(waa);
-        tasks.add(waa);
-        tasks.add(waa);
-
-
-        TasksAdapter deadlineAdapter = new TasksAdapter(tasks, new TaskListFragment.PositionListener() {
+        List<Object> tasks1 = new ArrayList<>();
+        tasks1.add("");
+        db.getTasks(MainMenuActivity.user.get("Id").toString(), new DatabaseFuncs.TaskListener() {
             @Override
-            public void taskItemClicked(Map task) {
-                TaskListFragment.PositionListener.super.taskItemClicked(task);
+            public void onTaskRecieved(List<Map> tasks) {
+                tasks1.addAll(tasks);
+                adapter = new DeadlinesAdapter(tasks1, getContext(), (position, task) -> {
+                    // TODO: Task item click
+                }, user);
+                b.rvDeadlines.setLayoutManager(new LinearLayoutManager(getContext()));
+                b.rvDeadlines.setAdapter(adapter);
+
+                adapter.setHeaderClickListener(new DeadlinesAdapter.HeaderClickListener() {
+                    @Override
+                    public void onInvitesClick() {
+                        MainMenuActivity.backFlow.clear();
+                        MainMenuActivity.backFlow.push("groups");
+                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment,GroupsFragment.newInstance()).commit();
+                    }
+
+                    @Override
+                    public void onCreateGroupClick() {
+                        MainMenuActivity.backFlow.push("creategroups");
+                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment,CreateGroupFragment.newInstance()).commit();
+                    }
+
+                    @Override
+                    public void onProfileClick() {
+                        MainMenuActivity.backFlow.clear();
+                        MainMenuActivity.backFlow.push("profile");
+                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment,AccountFragment.newInstance()).commit();
+                    }
+                });
             }
-        });
-        b.rvDeadlines.setAdapter(deadlineAdapter);
-        b.rvDeadlines.setLayoutManager(new LinearLayoutManager(getContext()));
-        b.rvDeadlines.setNestedScrollingEnabled(false);
+
+            @Override
+            public void getDeadline(Timestamp timestamp) {
+
+            }
+        }, false);
+
+
+
+
+
+
+//        TasksAdapter deadlineAdapter = new TasksAdapter(tasks, new TaskListFragment.PositionListener() {
+//            @Override
+//            public void taskItemClicked(Map task) {
+//                TaskListFragment.PositionListener.super.taskItemClicked(task);
+//            }
+//        });
+//        b.rvDeadlines.setAdapter(deadlineAdapter);
+//        b.rvDeadlines.setLayoutManager(new LinearLayoutManager(getContext()));
+//        b.rvDeadlines.setNestedScrollingEnabled(false);
 //        db.getTasks(MainMenuActivity.user.get("Id").toString(), new DatabaseFuncs.TaskListener(){
 //
 //            @Override

@@ -125,7 +125,7 @@ public class MainMenuActivity extends AppCompatActivity implements AccountEditFr
 
                 int a = menuItem.getItemId();
                 if(a == R.id.menu_home){
-                    replaceFragment(MainFragment.newInstance(),"main");
+                    replaceFragment(new MainFragment(user),"main");
                     backFlow.clear();
                     backFlow.push("main");
                 } else if (a == R.id.menu_groups) {
@@ -149,7 +149,7 @@ public class MainMenuActivity extends AppCompatActivity implements AccountEditFr
             public void onNavigationItemReselected(@NonNull MenuItem menuItem) {
                 int a = menuItem.getItemId();
                 if(a == R.id.menu_home){
-                    replaceFragment(MainFragment.newInstance(),"main");
+                    replaceFragment(new MainFragment(user),"main");
                     backFlow.clear();
                     backFlow.push("main");
                 } else if (a == R.id.menu_groups) {
@@ -380,7 +380,7 @@ public class MainMenuActivity extends AppCompatActivity implements AccountEditFr
     public Fragment changeFragment(String fragmentTag) {
         switch (fragmentTag) {
             case "main":
-                return MainFragment.newInstance();
+                return new MainFragment(user);
             case "groups":
                 return GroupsFragment.newInstance();
             case "profile":
@@ -392,7 +392,7 @@ public class MainMenuActivity extends AppCompatActivity implements AccountEditFr
             case "appearance":
                 return AppearanceFragment.newInstance();
         }
-        return MainFragment.newInstance();
+        return new MainFragment(user);
     }
 
     public void viewMemberTask(Map task) {
@@ -400,12 +400,12 @@ public class MainMenuActivity extends AppCompatActivity implements AccountEditFr
     }
     public void reload(){
         if(selected.equals("main")){
-            getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), MainFragment.newInstance()).commitAllowingStateLoss();
+            getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), new MainFragment(user)).commitAllowingStateLoss();
             b.bottomNavView.setSelectedItemId(R.id.menu_home);
             return;
         }
         if(selected.equals("groups")){
-            getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), MainFragment.newInstance()).commitAllowingStateLoss();
+            getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), new MainFragment(user)).commitAllowingStateLoss();
             b.bottomNavView.setSelectedItemId(R.id.menu_home);
             return;
         }
@@ -415,7 +415,7 @@ public class MainMenuActivity extends AppCompatActivity implements AccountEditFr
             return;
         }
         if(selected.equals("tasks")){
-            getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), MainFragment.newInstance()).commitAllowingStateLoss();
+            getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), new MainFragment(user)).commitAllowingStateLoss();
             b.bottomNavView.setSelectedItemId(R.id.menu_tasks);
             return;
         }

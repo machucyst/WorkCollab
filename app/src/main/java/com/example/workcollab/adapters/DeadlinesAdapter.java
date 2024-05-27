@@ -1,6 +1,7 @@
 package com.example.workcollab.adapters;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,7 +46,13 @@ public class DeadlinesAdapter extends RecyclerView.Adapter<DeadlinesAdapter.VH> 
     @Override
     public void onBindViewHolder(@NonNull DeadlinesAdapter.VH holder, int position) {
         if (holder.bind instanceof CardDeadlineBinding) {
-            DeadlineModel d = (DeadlineModel) tasks.get(position);
+            Map task = (Map) tasks.get(position);
+            DeadlineModel d;
+            try {
+                d = new DeadlineModel(task.get("ParentId").toString(), task.get("GroupName").toString(), Uri.parse(task.get("GroupImage").toString()), task);
+            } catch (Exception e) {
+                d = new DeadlineModel(task.get("ParentId").toString(), task.get("GroupName").toString(), Uri.parse(""), task);
+            }
             CardDeadlineBinding bind = (CardDeadlineBinding) holder.bind;
             // deadline card
             bind.deadline.setText(new SimpleDateFormat("MMMM d, yyyy", Locale.getDefault()).format(((Timestamp)d.getTask().get("TaskDeadline")).toDate()));

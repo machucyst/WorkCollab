@@ -589,6 +589,7 @@ public class DatabaseFuncs {
     }
     public void getTasks(String userId, TaskListener listener, boolean a){
         List<Map> tasks = new ArrayList<>();
+        Log.e("wawa", "woah");
         getJoinedGroups(userId, new GroupListener() {
             @Override
             public void onReceive(List<Map> groups, List<Map> groupLeaders) {
@@ -598,10 +599,13 @@ public class DatabaseFuncs {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             if (task.isSuccessful()){
+                                Log.e("wawa", "whee");
                                 for (DocumentSnapshot doc : task.getResult()){
                                     System.out.println(doc.getData());
                                     Map<String, Object> taskMap = doc.getData();
                                     taskMap.put("Id",doc.getId());
+                                    taskMap.put("GroupName", g.get("GroupName"));
+                                    taskMap.put("GroupImage", g.get("GroupImage"));
                                     tasks.add(taskMap);
                                 }
                             }
