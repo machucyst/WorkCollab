@@ -49,7 +49,7 @@
                         android:textSize="18dp"
                         android:text="Work Collab Privacy and Personal Information Access Agreement Form"
                         android:textAlignment="center"
-                        android:textColor="@color/deviceThemeInverted" />
+                        android:textColor="@color/black" />
                     <TextView
                         style="@style/LightTextStyle"
                         android:layout_width="match_parent"
@@ -57,7 +57,7 @@
                         android:fontFamily="@font/bahnschrift"
                         android:textSize="15dp"
                         android:text="The purpose of this Agreement is to establish the terms and conditions under which the User agrees to provide access to personal information and data security to the Application. \n\nPersonal information may include but is not limited to:"
-                        android:textColor="@color/deviceThemeInverted" />
+                        android:textColor="@color/black" />
                     <TextView
                         style="@style/LightTextStyle"
                         android:layout_width="match_parent"
@@ -69,7 +69,7 @@
 	                \n● Email Address
 	                \n● Phone Number"
                         android:fontFamily="@font/bahnschrift"
-                        android:textColor="@color/deviceThemeInverted" />
+                        android:textColor="@color/black" />
                     <TextView
                         android:id="@+id/edit_account"
                         style="@style/LightTextStyle"

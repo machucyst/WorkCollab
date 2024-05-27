@@ -96,10 +96,13 @@ public class SelectedGroupSettingsFragment extends Fragment {
                             public void BasicListener() {
                                 dialog.dismiss();
                                 requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), MainFragment.newInstance()).addToBackStack(null).commit();
-
                             }
                         });
                     });
+                    dialog.show();
+                }
+                if(a == R.id.menu_groupname){
+
                 }
                 return false;
             }

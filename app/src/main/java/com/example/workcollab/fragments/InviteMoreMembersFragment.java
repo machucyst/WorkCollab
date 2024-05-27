@@ -78,17 +78,53 @@ public class InviteMoreMembersFragment extends Fragment {
         if(!Boolean.parseBoolean(group.get("isLeader").toString())){
             b.llAddMembers.setVisibility(View.GONE);
         }
+        b.tilAddUsers.setEndIconOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                db.getUsers(new DatabaseFuncs.GroupListener() {
+
+                    @Override
+                    public void onReceive(List<Map> groups, List<Map> groupLeaders) {
+
+                    }
+
+                    @Override
+                    public void onReceive(List<Map> groups) {
+                        System.out.println(groups);
+                        for (int i = 0; i < groups.size(); i++) {
+                            if (b.etAdd.getText().toString().equals(groups.get(i).get("Email"))) {
+                                System.out.println(filteredgroups);
+                                if (!filteredgroups.contains(groups.get(i)) && !MainMenuActivity.user.get("Email").toString().equals(groups.get(i).get("Email").toString())) {
+                                    filteredgroups.add(groups.get(i));
+                                } else {
+                                    Toast.makeText(requireContext(), "User already selected", Toast.LENGTH_SHORT);
+                                }
+                            }
+                        }
+                        CreateGroupsUsersAdapter ad = new CreateGroupsUsersAdapter(requireContext(), filteredgroups);
+                        b.rvAddUsers.setAdapter(ad);
+                        b.rvAddUsers.setLayoutManager(new LinearLayoutManager(getContext()));
+                    }
+
+                    @Override
+                    public void getDeadline(Timestamp timestamp) {
+
+                    }
+                });
+            }
+        });
         db.getMembers(group.get("Id").toString(), new DatabaseFuncs.MembersListener() {
             @Override
             public void onReceiveMembers(List<Map> members) {
                 GroupMembersAdapter a = new GroupMembersAdapter(members, getContext(), new GroupMembersAdapter.PositionListener() {
+
                     @Override
                     public void onMemberClicked() {
 
                     }
                 });
-                b.rvMembers.setAdapter(a);
-                b.rvMembers.setLayoutManager(new LinearLayoutManager(getContext()));
+                if(members!=null){
                 b.tilAddUsers.setEndIconOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -100,6 +136,7 @@ public class InviteMoreMembersFragment extends Fragment {
 
                     @Override
                     public void onReceive(List<Map> groups) {
+
                         System.out.println(groups);
                         for (int i = 0; i < groups.size(); i++) {
                             if (b.etAdd.getText().toString().equals(groups.get(i).get("Email"))) {
@@ -130,7 +167,9 @@ public class InviteMoreMembersFragment extends Fragment {
                 });
                     }
                 });
-
+                }
+                b.rvMembers.setAdapter(a);
+                b.rvMembers.setLayoutManager(new LinearLayoutManager(getContext()));
             }
         });
         b.submit.setOnClickListener(new View.OnClickListener() {

@@ -356,6 +356,7 @@ public class DatabaseFuncs {
 
     }
     public void getUsers(GroupListener listener) {
+        System.out.println("12512512512535413714713471347134713713471314");
         account.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
