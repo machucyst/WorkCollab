@@ -6,6 +6,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -31,6 +32,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -172,7 +174,6 @@ public class DatabaseFuncs {
                                 System.out.println("seojaehg"+document.getData());
                                 task2.put("Profile",user.get("Profile").toString());
                                 task2.put("Username",user.get("Username").toString());
-                                System.out.println(document.getReference());
                                 taskDetails.add(task2);
                                 listener.onTaskRecieved(taskDetails);
 
@@ -202,7 +203,7 @@ public class DatabaseFuncs {
     public void submitTask(Map user, Uri value, String groupId, String taskId, ImageView v, Context c, BasicListener listener){
         Map<String,Object> taskSub = new HashMap<>();
 
-        reference.child("Groups/"+groupId+"/SubmittedFiles/"+taskId+"/"+user.get("Id").toString()+"/Task*").putFile(value).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        reference.child("Groups/"+groupId+"/SubmittedFiles/"+taskId+"/"+user.get("Id").toString()+"/Task*").putFile(value, new StorageMetadata.Builder().setContentType(String.valueOf(MimeTypeMap.getSingleton().getExtensionFromMimeType(c.getContentResolver().getType(value)))).build()).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 reference.child("Groups/"+groupId+"/SubmittedFiles/"+taskId+"/"+user.get("Id").toString()+"/Task*").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -210,6 +211,8 @@ public class DatabaseFuncs {
                     public void onSuccess(Uri uri) {
                         taskSub.put("file",uri.toString());
                         taskSub.put("date",Timestamp.now());
+                        taskSub.put("fileCreator",user.get("Username"));
+                        taskSub.put("Profile",user.get("Profile"));
                         groups.document(groupId).collection("Tasks").document(taskId).collection("Submitted").document(user.get("Id").toString()).set(taskSub).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {

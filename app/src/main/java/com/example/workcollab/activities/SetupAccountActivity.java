@@ -1,5 +1,6 @@
 package com.example.workcollab.activities;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -72,7 +73,10 @@ public class SetupAccountActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (resultUri == null) {
                     Toast.makeText(SetupAccountActivity.this, "Pick a profile image", Toast.LENGTH_SHORT).show();
-                    return; // TODO: if uri is null, itll crash
+                    resultUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE +
+                            "://" + getResources().getResourcePackageName(R.drawable.icon_test)
+                            + '/' + getResources().getResourceTypeName(R.drawable.icon_test)
+                            + '/' + getResources().getResourceEntryName(R.drawable.icon_test));
                 }
                 if (StrValOf(b.etCN).length() != 11) {
                     Toast.makeText(SetupAccountActivity.this, "Invalid Phone Number", Toast.LENGTH_SHORT).show();

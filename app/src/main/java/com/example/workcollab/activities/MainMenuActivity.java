@@ -12,7 +12,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -57,7 +56,6 @@ public class MainMenuActivity extends AppCompatActivity implements AccountEditFr
     private static final int PICK_FILE_REQUEST = 123;
     ActivityMainMenuBinding b;
     DialogLogoutConfirmBinding bl;
-    ActivityResultLauncher<String> mGetCont;
     Map task;
     public static Stack<String> backFlow = new Stack<>();
     public static Map selectedgroup;
@@ -80,12 +78,6 @@ public class MainMenuActivity extends AppCompatActivity implements AccountEditFr
         });
 
         backFlow.push("main");
-        if (ContextCompat.checkSelfPermission(MainMenuActivity.this,
-                android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            System.out.println("ajieoghaoie11");
-            ActivityCompat.requestPermissions(MainMenuActivity.this,
-                    new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
-        }
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 201);
@@ -106,45 +98,14 @@ public class MainMenuActivity extends AppCompatActivity implements AccountEditFr
             email = bu.getString("user-email");
         }
         FirebaseApp.initializeApp(this);
-//        mGetCont=registerForActivityResult(new ActivityResultContracts.GetContent(), o ->{
-//            Intent intent = new Intent(MainMenuActivity.this, CropperActivity.class);
-//            intent.setAction(Intent.ACTION_GET_CONTENT);
-//            intent.putExtra("DATA",o.toString());
-//            startActivityForResult(Intent.createChooser(intent,"Select Picture"),101);
-//        });
         System.out.println(email + "whaiohgoeihaoieug aogoiaea");
         db.InitDB(email, new DatabaseFuncs.DataListener() {
 
             @Override
             public void onDataFound(Map user) {
                 MainMenuActivity.user = user;
-                if(selected.equals("main")){
-                    getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), MainFragment.newInstance()).commitAllowingStateLoss();
-                    b.bottomNavView.setSelectedItemId(R.id.menu_home);
-                    return;
+                    reload();
                 }
-                if(selected.equals("groups")){
-                    getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), MainFragment.newInstance()).commitAllowingStateLoss();
-                    b.bottomNavView.setSelectedItemId(R.id.menu_home);
-                    return;
-                }
-                if(selected.equals("account")){
-                    getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), AccountFragment.newInstance()).commit();
-                    b.bottomNavView.setSelectedItemId(R.id.menu_profile);
-                    return;
-                }
-                if(selected.equals("tasks")){
-                    getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), MainFragment.newInstance()).commitAllowingStateLoss();
-                    b.bottomNavView.setSelectedItemId(R.id.menu_tasks);
-                    return;
-                }
-                if (selected.equals("creategroups")) {
-                    getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), CreateGroupFragment.newInstance()).commit();
-                }
-                if (selected.equals("selectgroup")) {
-                    getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), SelectedGroupFragment.newInstance(selectedgroup)).commit();
-                }
-            }
 
             @Override
             public void noDuplicateUser() {
@@ -155,16 +116,7 @@ public class MainMenuActivity extends AppCompatActivity implements AccountEditFr
             @Override
             public void onClick(View v) {
                 BottomDialogCreateFragment dba = new BottomDialogCreateFragment();
-
                 dba.show(getSupportFragmentManager(),new BottomDialogCreateFragment().getTag());
-//                if (selected.equals("groups")) {
-//                    backFlow.push("creategroups");
-//                    replaceFragment(CreateGroupFragment.newInstance(), "creategroups");
-//                }
-//                if(selected.equals("tasks")){
-//                    System.out.println("abs");
-//                    replaceFragment(AssignTaskFragment.newInstance(selectedgroup),"assignTask");
-//                }
             }
         });
         b.bottomNavView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
@@ -266,10 +218,11 @@ public class MainMenuActivity extends AppCompatActivity implements AccountEditFr
             }
             break;
             case PICK_FILE_REQUEST:
-                replaceFragment(SubmitTaskFragment.newInstance(MainMenuActivity.this.task,data.getData()),"ye");
+                getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment,SubmitTaskFragment.newInstance(MainMenuActivity.this.task,data.getData())).commit();
                 break;
             case RESULT_CANCELED:
-
+                reload();
+                break;
         }
     }
 
@@ -312,6 +265,7 @@ public class MainMenuActivity extends AppCompatActivity implements AccountEditFr
             startActivity(toLogIn);
             complete();
             finish();
+            selected="main";
 
         });
         dialog.show();
@@ -337,15 +291,6 @@ public class MainMenuActivity extends AppCompatActivity implements AccountEditFr
             replaceFragment(changeFragment(backFlow.peek()), backFlow.peek());
         }
     }
-
-//    @Override
-//    public void onPress() {
-////        mGetCont.launch("image/*");
-//        Intent intent = new Intent();
-//        intent.setType("image/*");
-//        intent.setAction(Intent.ACTION_GET_CONTENT);
-//        startActivityForResult(Intent.createChooser(intent, "Select Picture"), 101);
-//    }
 
 
     @Override
@@ -452,5 +397,38 @@ public class MainMenuActivity extends AppCompatActivity implements AccountEditFr
 
     public void viewMemberTask(Map task) {
 
+    }
+    public void reload(){
+        if(selected.equals("main")){
+            getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), MainFragment.newInstance()).commitAllowingStateLoss();
+            b.bottomNavView.setSelectedItemId(R.id.menu_home);
+            return;
+        }
+        if(selected.equals("groups")){
+            getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), MainFragment.newInstance()).commitAllowingStateLoss();
+            b.bottomNavView.setSelectedItemId(R.id.menu_home);
+            return;
+        }
+        if(selected.equals("account")){
+            getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), AccountFragment.newInstance()).commit();
+            b.bottomNavView.setSelectedItemId(R.id.menu_profile);
+            return;
+        }
+        if(selected.equals("tasks")){
+            getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), MainFragment.newInstance()).commitAllowingStateLoss();
+            b.bottomNavView.setSelectedItemId(R.id.menu_tasks);
+            return;
+        }
+        if (selected.equals("creategroups")) {
+            getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), CreateGroupFragment.newInstance()).commit();
+            return;
+        }
+        if (selected.equals("selectgroup")) {
+            getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), SelectedGroupFragment.newInstance(selectedgroup)).commit();
+            return;
+        }
+        if(selected.equals("appearance")) {
+            getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), AppearanceFragment.newInstance()).commit();
+        }
     }
 }
