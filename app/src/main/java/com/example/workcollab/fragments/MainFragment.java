@@ -82,7 +82,7 @@ public class MainFragment extends Fragment {
                     public void onInvitesClick() {
                         MainMenuActivity.backFlow.clear();
                         MainMenuActivity.backFlow.push("groups");
-                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment,GroupsFragment.newInstance()).commit();
+                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment,new GroupsFragment(true)).commit();
                     }
 
                     @Override

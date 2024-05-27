@@ -55,8 +55,8 @@ public class DeadlinesAdapter extends RecyclerView.Adapter<DeadlinesAdapter.VH> 
             }
             CardDeadlineBinding bind = (CardDeadlineBinding) holder.bind;
             // deadline card
-            bind.deadline.setText(new SimpleDateFormat("MMMM d, yyyy", Locale.getDefault()).format(((Timestamp)d.getTask().get("TaskDeadline")).toDate()));
-            bind.groupName.setText(d.getGroupName());
+            bind.deadline.setText("Submit before " + new SimpleDateFormat("MMMM d, yyyy", Locale.getDefault()).format(((Timestamp)d.getTask().get("TaskDeadline")).toDate()));
+            bind.groupName.setText("Group: "+d.getGroupName());
             bind.taskName.setText(d.getTask().get("TaskName").toString());
             Glide.with(context).asBitmap().load(d.getImage().toString()).into(bind.image);
         } else if (holder.bind instanceof CardMainHeaderBinding) {
@@ -71,6 +71,10 @@ public class DeadlinesAdapter extends RecyclerView.Adapter<DeadlinesAdapter.VH> 
 
             bind.toInvites.setOnClickListener(v -> {
                 headerClickListener.onInvitesClick();
+            });
+
+            bind.userImage.setOnClickListener(v -> {
+                headerClickListener.onProfileClick();
             });
 
             Glide.with(context).asBitmap().load(user.get("Profile").toString()).into(bind.userImage);

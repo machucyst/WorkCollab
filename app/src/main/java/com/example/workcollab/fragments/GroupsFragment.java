@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,7 +21,7 @@ public class GroupsFragment extends Fragment {
 //    Map user;
     FragmentGroupsBinding b;
     Gson gson = new Gson();
-
+    boolean a = false;
     public static GroupsFragment newInstance() {
         Bundle args = new Bundle();
         Gson gson = new Gson();
@@ -28,6 +29,13 @@ public class GroupsFragment extends Fragment {
         GroupsFragment f = new GroupsFragment();
         f.setArguments(args);
         return f;
+    }
+
+    public GroupsFragment() {
+
+    }
+    public GroupsFragment(boolean a) {
+        this.a = a;
     }
 
     @Override
@@ -51,6 +59,10 @@ public class GroupsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getChildFragmentManager().beginTransaction().replace(b.groupsFragmentFrame.getId(),JoinedGroupsSubFragment.newInstance(true)).commit();
+        if (a) {
+            getChildFragmentManager().beginTransaction().replace(b.groupsFragmentFrame.getId(),InvitesSubFragment.newInstance()).commit();
+            b.groupsMenu.setSelectedItemId(R.id.menu_invites);
+        }
         b.groupsMenu.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
