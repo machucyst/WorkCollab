@@ -67,6 +67,12 @@ public class MainFragment extends Fragment {
 
         List<Object> tasks1 = new ArrayList<>();
         tasks1.add("");
+
+        adapter = new DeadlinesAdapter(tasks1, getContext(), (position, task) -> {
+            // TODO: Task item click
+        }, user);
+        b.rvDeadlines.setLayoutManager(new LinearLayoutManager(getContext()));
+        b.rvDeadlines.setAdapter(adapter);
         db.getTasks(MainMenuActivity.user.get("Id").toString(), new DatabaseFuncs.TaskListener() {
             @Override
             public void onTaskRecieved(List<Map> tasks) {

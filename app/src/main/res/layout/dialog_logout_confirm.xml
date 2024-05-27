@@ -10,10 +10,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
+        <androidx.cardview.widget.CardView
+            app:cardCornerRadius="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/background_default"
+            app:cardBackgroundColor="@color/deviceTheme2"
             android:orientation="vertical"
             android:padding="16dp"
             android:backgroundTint="@color/whiteTint"
@@ -22,47 +23,60 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/edit_account"
-                style="@style/LightTextStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/bahnschrift"
-                android:text="Are you sure you want to log out?"
-                android:textColor="@color/deviceThemeInverted" />
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="150dp"
-                android:layout_marginTop="5dp"
-                android:orientation="horizontal">
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:backgroundTint="@color/whiteTint"
+                android:backgroundTintMode="src_over"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
-                    android:id="@+id/Cancel"
-                    style="@style/SecondTextStyle"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/edit_account"
+                    style="@style/LightTextStyle"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/textholder"
-                    android:text="Cancel"
-                    android:textAlignment="center"
-                    android:textColor="@color/black" />
+                    android:fontFamily="@font/bahnschrift"
+                    android:text="Are you sure you want to log out?"
+                    android:textColor="@color/deviceThemeInverted" />
 
-                <TextView
-                    android:id="@+id/Ok"
-                    style="@style/SecondTextStyle"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/textholder"
-                    android:text="Ok"
-                    android:textAlignment="center"
-                    android:textColor="@color/black" />
+                    android:layout_marginLeft="150dp"
+                    android:layout_marginTop="5dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/Cancel"
+                        style="@style/SecondTextStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/textholder"
+                        android:text="Cancel"
+                        android:textAlignment="center"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:id="@+id/Ok"
+                        style="@style/SecondTextStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/textholder"
+                        android:text="Ok"
+                        android:textAlignment="center"
+                        android:textColor="@color/black" />
+                </LinearLayout>
+
             </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
-        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

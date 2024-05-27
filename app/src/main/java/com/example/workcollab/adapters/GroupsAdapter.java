@@ -33,7 +33,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyHandler>
     @Override
     public GroupsAdapter.MyHandler onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater =LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.card_joined_groups,parent,false);
+        View view = inflater.inflate(R.layout.card_joined_groups2,parent,false);
         return new GroupsAdapter.MyHandler(view);
     }
 
