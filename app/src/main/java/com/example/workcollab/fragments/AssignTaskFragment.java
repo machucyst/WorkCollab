@@ -12,7 +12,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.LinearSnapHelper;
 
 import com.example.workcollab.DatabaseFuncs;
 import com.example.workcollab.R;
@@ -87,8 +86,6 @@ public class AssignTaskFragment extends Fragment {
                });
                b.rvMembers.setAdapter(ma);
                b.rvMembers.setLayoutManager(new LinearLayoutManager(getContext()));
-                LinearSnapHelper lsh = new LinearSnapHelper();
-                        lsh.attachToRecyclerView(b.rvMembers);
                b.rvMembers.setNestedScrollingEnabled(true);
             }
         });
