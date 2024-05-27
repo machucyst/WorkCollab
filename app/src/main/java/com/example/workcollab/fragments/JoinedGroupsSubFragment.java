@@ -46,7 +46,7 @@ public class JoinedGroupsSubFragment extends Fragment {
                     + " must implement OnFragmentInteractionListener");
         }
     }
-    
+
     public static JoinedGroupsSubFragment newInstance(boolean test) {
         Bundle args = new Bundle();
         args.putBoolean("test",test);
@@ -77,7 +77,6 @@ public class JoinedGroupsSubFragment extends Fragment {
                             listener.itemClicked(group);
                         }else{
                             test = true;
-                            b.textView6.setVisibility(View.VISIBLE);
                             requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), AssignTaskFragment.newInstance(group)).addToBackStack(null).commit();
                         }
                     }
@@ -108,6 +107,7 @@ public class JoinedGroupsSubFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         b = FragmentJoinedGroupsBinding.inflate(inflater, container, false);
+        if(!test) b.textView6.setVisibility(View.VISIBLE);
         return b.getRoot();
     }
 
