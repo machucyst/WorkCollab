@@ -23,6 +23,7 @@ import com.example.workcollab.DatabaseFuncs;
 import com.example.workcollab.Message;
 import com.example.workcollab.R;
 import com.example.workcollab.UserData;
+import com.example.workcollab.activities.ChatActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +37,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     List<UserData> data = new ArrayList<>();
     DatabaseFuncs db;
     ReplyListener replyListener;
+    ChatActivity.onProfileLongHoldPress listener;
 
     public final static int TYPE_SELF = 1;
     public final static int TYPE_OTHER = 2;
@@ -43,12 +45,13 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         void onReplySwiped(String message, String messageId, String replyTo);
     }
 
-    public ChatAdapter(List<Message> messages, Context context, Map user, DatabaseFuncs db, ReplyListener replyListener) {
+    public ChatAdapter(List<Message> messages, Context context, Map user, DatabaseFuncs db, ReplyListener replyListener, ChatActivity.onProfileLongHoldPress listener) {
         this.messages = messages;
         this.context = context;
         this.currentUser = user;
         this.db = db;
         this.replyListener = replyListener;
+        this.listener = listener;
     }
 
     @NonNull
@@ -86,6 +89,13 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
                     data.set(data.indexOf(d1), d);
                     Glide.with(context).asBitmap().load(d.getUri()).into(holder.image);
                     holder.image.setImageURI(d.getUri());
+                    holder.image.setOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View v) {
+                            listener.onHoldPressed(m.getSenderId());
+                            return false;
+                        }
+                    });
                     holder.sender.setText(d.getUsername());
 
                     notifyDataSetChanged();
@@ -99,6 +109,13 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         } else {
             sender = searchUserData.get().getUsername();
             Glide.with(context).asBitmap().load(searchUserData.get().getUri()).into(holder.image);
+            holder.image.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    listener.onHoldPressed(searchUserData.get().getId());
+                    return false;
+                }
+            });
             holder.sender.setText(sender);
         }
 

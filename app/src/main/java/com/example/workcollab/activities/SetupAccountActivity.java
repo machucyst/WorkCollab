@@ -10,7 +10,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
@@ -24,7 +23,9 @@ import com.google.android.gms.auth.api.identity.BeginSignInRequest;
 import com.google.android.gms.auth.api.identity.SignInClient;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.yalantis.ucrop.UCrop;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -47,15 +48,13 @@ public class SetupAccountActivity extends AppCompatActivity {
         Intent intent = getIntent();
         bu = intent.getExtras();
 
-        mGetCont = registerForActivityResult(new ActivityResultContracts.GetContent(), o -> {
-            Intent a = new Intent(SetupAccountActivity.this, CropperActivity.class);
-            a.putExtra("DATA", o.toString());
-            startActivityForResult(a, 101);
-        });
         b.profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mGetCont.launch("image/*");
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), 101);
             }
         });
         signInRequest = BeginSignInRequest.builder()
@@ -119,12 +118,38 @@ public class SetupAccountActivity extends AppCompatActivity {
         switch (requestCode){
             case 101:
                 if (resultCode == -1) {
+                    Uri sourceUri = data.getData();
+                    // Destination URI
+                    Uri destinationUri = Uri.fromFile(new File(getCacheDir(), "IMG_" + System.currentTimeMillis()));
+                    // Start UCrop activity
+                    UCrop.Options options = new UCrop.Options();
+                    options.setContrastEnabled(false);
+                    options.setBrightnessEnabled(false);
+                    options.setFreeStyleCropEnabled(false);
+                    options.setSaturationEnabled(false);
+                    options.setSharpnessEnabled(false);
+                    options.setShowCropGrid(false);
+                    UCrop.of(sourceUri, destinationUri)
+                            .withAspectRatio(1, 1)
+                            .withMaxResultSize(450, 450)
+                            .withOptions(options)
+                            .start(this);
+                } else if (requestCode == UCrop.REQUEST_CROP) {
+                    if (resultCode == RESULT_OK) {
+                        resultUri = UCrop.getOutput(data);
+                        try{
+                            Glide.with(this).asBitmap().load(resultUri).into(b.profileImage);
+                        } catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    } else if (resultCode == UCrop.RESULT_ERROR) {
+                        final Throwable cropError = UCrop.getError(data);
+                        // Handle the error
+                    }
                     String result = data.getStringExtra("RESULT");
                     resultUri = null;
                     if (result != null) {
                         resultUri = Uri.parse(result);
-                        Glide.with(this).asBitmap().load(resultUri).into(b.profileImage);
-
                     }
               }
             break;

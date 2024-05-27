@@ -7,6 +7,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -26,6 +29,7 @@ import com.example.workcollab.Message;
 import com.example.workcollab.R;
 import com.example.workcollab.adapters.ChatAdapter;
 import com.example.workcollab.databinding.ActivityChatBinding;
+import com.example.workcollab.fragments.DialogBottom;
 import com.google.firebase.Timestamp;
 import com.google.gson.Gson;
 
@@ -43,8 +47,13 @@ public class ChatActivity extends AppCompatActivity {
     boolean activityIsActive = true;
     List<Message> backlog = new ArrayList<>();
     Uri attachedFile;
+    private LinearLayout bottomSheetLayout;
     String fileType;
     String replyId = "";
+
+    public interface onProfileLongHoldPress{
+        void onHoldPressed(String id);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +61,7 @@ public class ChatActivity extends AppCompatActivity {
         ActivityChatBinding bind = DataBindingUtil.setContentView(this, R.layout.activity_chat);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
@@ -120,10 +130,18 @@ public class ChatActivity extends AppCompatActivity {
                 cs.connect(bind.recyclerView.getId(), ConstraintSet.BOTTOM, bind.replyWrapper.getId(), ConstraintSet.TOP);
                 bind.main1.setConstraintSet(cs);
                 bind.reply.setText(message);
-                if(replyTo.equals(user.get("Username").toString())) replyTo = "Yourself";
+                if (replyTo.equals(user.get("Username").toString())) replyTo = "Yourself";
                 bind.replyTo.setText("Replying to: " + replyTo);
                 ChatActivity.this.replyId = messageId;
-            }));
+            }), new onProfileLongHoldPress() {
+                @Override
+                public void onHoldPressed(String id) {
+                    System.out.println("yeyeyeyey");
+                    DialogBottom dba = new DialogBottom(id);
+
+                    dba.show(getSupportFragmentManager(),new DialogBottom(id).getTag());
+                }
+            });
             LinearLayoutManager layoutManager = new LinearLayoutManager(ChatActivity.this);
             layoutManager.setStackFromEnd(true);
             bind.recyclerView.setLayoutManager(layoutManager);
@@ -194,5 +212,17 @@ public class ChatActivity extends AppCompatActivity {
         bind.attachFile.setOnClickListener(v -> {
             adapter.notifyDataSetChanged();
         });
+    }
+    private void animateBottomSheet() {
+        Animation slideUpAnimation = new TranslateAnimation(
+                Animation.RELATIVE_TO_SELF, 0.0f,
+                Animation.RELATIVE_TO_SELF, 0.0f,
+                Animation.RELATIVE_TO_SELF, 1.0f,
+                Animation.RELATIVE_TO_SELF, 0.5f);
+
+        slideUpAnimation.setDuration(500);
+        slideUpAnimation.setFillAfter(true);
+        bottomSheetLayout.startAnimation(slideUpAnimation);
+        bottomSheetLayout.setVisibility(View.VISIBLE);
     }
 }

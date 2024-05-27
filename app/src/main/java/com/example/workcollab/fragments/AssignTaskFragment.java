@@ -9,10 +9,12 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.workcollab.DatabaseFuncs;
+import com.example.workcollab.R;
 import com.example.workcollab.adapters.MembersAdapter;
 import com.example.workcollab.databinding.DialogDateInputBinding;
 import com.example.workcollab.databinding.FragmentAssignTaskBinding;
@@ -128,10 +130,13 @@ public class AssignTaskFragment extends Fragment {
                 String TaskName = String.valueOf(b.etTN.getText());
                 System.out.println(today.getTimeInMillis());
                 System.out.println(deadline);
+                b.btnShowPass.setBackgroundDrawable(AppCompatResources.getDrawable(requireActivity(), R.drawable.textholderdisabled));
+                b.btnShowPass.setText("Loading..");
+                b.btnShowPass.setEnabled(false);
                 if(today.getTimeInMillis()<deadline){
                     if(!TaskName.equals("")){
                         if(!String.valueOf(b.etTD.getText()).equals("")){
-                             db.createTask(group.get("Id").toString(), members, TaskName, b.etTD.getText().toString(), deadline, new DatabaseFuncs.CreateTaskListener() {
+                             db.createTask(group.get("Id").toString(), members, TaskName, b.etTD.getText().toString(), deadline, b.btnShowPass, requireContext(), new DatabaseFuncs.CreateTaskListener() {
                                  @Override
                                  public void onCreateTaskListener() {
                                      System.out.println("if it works it works");

@@ -94,7 +94,7 @@ public class YouFragment extends Fragment {
         // Inflate the layout for this fragment
         b = FragmentYouBinding.inflate(inflater, container, false);
         menuTextChange(R.id.menu_settings, "Settings");
-        menuTextChange(R.id.menu_account, "Account");
+//        menuTextChange(R.id.menu_account, "Account");
         menuTextChange(R.id.menu_appearance, "Appearance");
         menuTextChange(R.id.menu_logOut, "Log Out");
 
@@ -166,18 +166,18 @@ public class YouFragment extends Fragment {
                 if (a == R.id.menu_settings) {
                     MainMenuActivity.selected ="settings";
                     MainMenuActivity.backFlow.push("settings");
-                    requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), new SettingsFragment(user)).addToBackStack(null).commit();
+                    requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), SettingsFragment.newInstance()).addToBackStack(null).commit();
                     return true;
                 }
                 if (a == R.id.menu_appearance) {
                     //TODO: change themes
                 }
-                if (a == R.id.menu_account){
-                    MainMenuActivity.selected ="NotAccount";
-                    MainMenuActivity.backFlow.push("NotAccount");
-                    requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), AccountFragment.newInstance()).addToBackStack(null).commit();
-                    return true;
-                }
+//                if (a == R.id.menu_account){
+//                    MainMenuActivity.selected ="NotAccount";
+//                    MainMenuActivity.backFlow.push("NotAccount");
+//                    requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), AccountFragment.newInstance()).addToBackStack(null).commit();
+//                    return true;
+//                }
                 return false;
             }
         });

@@ -107,7 +107,9 @@ public class InviteMoreMembersFragment extends Fragment {
                                 if (!filteredgroups.contains(groups.get(i)) && !MainMenuActivity.user.get("Email").toString().equals(groups.get(i).get("Email").toString())) {
                                     for(Map m:members){
                                         if(!b.etAdd.getText().equals(m.get("Id").toString())){
-                                            filteredgroups.add(groups.get(i));
+                                            if(!filteredgroups.contains(groups.get(i))){
+                                                filteredgroups.add(groups.get(i));
+                                            }
                                             b.etAdd.setText("");
                                         }
                                     }

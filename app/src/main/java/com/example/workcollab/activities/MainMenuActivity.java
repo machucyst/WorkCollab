@@ -124,14 +124,14 @@ public class MainMenuActivity extends AppCompatActivity implements YouFragment.B
                     b.bottomNavView.setSelectedItemId(R.id.menu_home);
                     return;
                 }
-                if(selected.equals("profile")){
-                    getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), YouFragment.newInstance()).commit();
-                    b.bottomNavView.setSelectedItemId(R.id.menu_account);
+                if(selected.equals("account")){
+                    getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), AccountFragment.newInstance()).commit();
+                    b.bottomNavView.setSelectedItemId(R.id.menu_profile);
                     return;
                 }
                 if(selected.equals("tasks")){
                     getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), MainFragment.newInstance()).commitAllowingStateLoss();
-                    b.bottomNavView.setSelectedItemId(R.id.menu_home);
+                    b.bottomNavView.setSelectedItemId(R.id.menu_tasks);
                     return;
                 }
                 if (selected.equals("creategroups")) {
@@ -176,7 +176,7 @@ public class MainMenuActivity extends AppCompatActivity implements YouFragment.B
                 }else if (a == R.id.menu_tasks){
                     replaceFragment(TaskListFragment.newInstance(false),"tasks");
                 }else if (a == R.id.menu_profile){
-                    replaceFragment(YouFragment.newInstance(), "profile");
+                    replaceFragment(AccountFragment.newInstance(), "account");
                     backFlow.clear();
                     backFlow.push("profile");
                 }
@@ -199,9 +199,17 @@ public class MainMenuActivity extends AppCompatActivity implements YouFragment.B
             Uri destinationUri = Uri.fromFile(new File(getCacheDir(), "IMG_" + System.currentTimeMillis()));
 
             // Start UCrop activity
+            UCrop.Options options = new UCrop.Options();
+                options.setContrastEnabled(false);
+                options.setBrightnessEnabled(false);
+                options.setFreeStyleCropEnabled(false);
+                options.setSaturationEnabled(false);
+                options.setSharpnessEnabled(false);
+                options.setShowCropGrid(false);
             UCrop.of(sourceUri, destinationUri)
                     .withAspectRatio(1, 1)
                     .withMaxResultSize(450, 450)
+                    .withOptions(options)
                     .start(this);
             } else if (requestCode == UCrop.REQUEST_CROP) {
                 if (resultCode == RESULT_OK) {
@@ -382,11 +390,6 @@ public class MainMenuActivity extends AppCompatActivity implements YouFragment.B
 
     }
 
-    @Override
-    public void viewMemberTask(Map task) {
-
-    }
-
 
     public Fragment changeFragment(String fragmentTag) {
         switch (fragmentTag) {
@@ -394,13 +397,17 @@ public class MainMenuActivity extends AppCompatActivity implements YouFragment.B
                 return MainFragment.newInstance();
             case "groups":
                 return GroupsFragment.newInstance();
-            case "profile":
-                return YouFragment.newInstance();
+            case "account":
+                return AccountFragment.newInstance();
             case "creategroups":
                 return CreateGroupFragment.newInstance();
             case "selectgroup":
                 return SelectedGroupFragment.newInstance(selectedgroup);
         }
         return MainFragment.newInstance();
+    }
+
+    public void viewMemberTask(Map task) {
+
     }
 }

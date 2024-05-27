@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -82,8 +83,9 @@ public class CreateGroupFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 System.out.println("Public Static my beloved" + amabatuhavefun);
-                b.btnShowPass.setBackgroundDrawable(getResources().getDrawable(R.drawable.textholderdisabled));
+                b.btnShowPass.setBackgroundDrawable(AppCompatResources.getDrawable(requireContext(),R.drawable.textholderdisabled));
                 b.btnShowPass.setEnabled(false);
+                b.btnShowPass.setText("Loading...");
                 try {
                     for (int i = 0; i < amabatuhavefun.size(); i++) {
                         filteredIds.add(amabatuhavefun.get(i).get("Id").toString());
@@ -91,11 +93,10 @@ public class CreateGroupFragment extends Fragment {
                     String a = b.etGN.getText().toString();
                     if (a.equals("")) a = MainMenuActivity.user.get("Username").toString() + "'s Group";
 
-                    db.createGroup(a, leader, filteredIds, new DatabaseFuncs.UpdateListener() {
+                    db.createGroup(a, leader, filteredIds,requireContext(),b.btnShowPass, new DatabaseFuncs.UpdateListener() {
                         @Override
                         public void onUpdate(Map group) {
                             System.out.println("It worked probably");
-
                             requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), SelectedGroupFragment.newInstance(group)).addToBackStack(null).commit();
 
                         }

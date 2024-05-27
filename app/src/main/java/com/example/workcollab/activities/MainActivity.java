@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.constraintlayout.motion.widget.MotionLayout;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.databinding.DataBindingUtil;
@@ -105,6 +106,8 @@ public class MainActivity extends AppCompatActivity {
                    System.out.println(user);
                    if (user.isEmailVerified()) {
                        if (task.isSuccessful()) {
+                           v.setEnabled(false);
+                           v.setBackground(AppCompatResources.getDrawable(MainActivity.this,R.drawable.textholderdisabled));
                            userDb.InitDB(email, new DatabaseFuncs.DataListener() {
                                @Override
                                public void onDataFound(Map user) {

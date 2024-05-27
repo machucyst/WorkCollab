@@ -2,10 +2,6 @@ package com.example.workcollab.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
 import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -13,17 +9,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+
 import com.example.workcollab.R;
 import com.example.workcollab.databinding.FragmentSettingsBinding;
 import com.google.android.material.navigation.NavigationView;
 
-import java.util.Map;
-
 public class SettingsFragment extends Fragment {
     FragmentSettingsBinding b;
-    Map user;
-    public SettingsFragment(Map user) {
-        this.user = user;
+
+    public SettingsFragment() {
+
+    }
+    public static SettingsFragment newInstance(){
+        SettingsFragment f = new SettingsFragment();
+        return f;
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

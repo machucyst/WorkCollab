@@ -38,14 +38,13 @@ public class MembersAdapter extends RecyclerView.Adapter<MembersAdapter.MyHandle
 
     @Override
     public void onBindViewHolder(@NonNull MyHandler holder, @SuppressLint("RecyclerView") int position) {
-        k = false;
         holder.tv_u.setText((user.get(position).get("Username")).toString());
         Glide.with(context).asBitmap().load(user.get(position).get("Profile").toString()).into(holder.img);
         holder.toggleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                k = !k;
-                if (k){
+                holder.k = !holder.k;
+                if (holder.k){
                    AssignTaskFragment.members.add(user.get(position).get("Id").toString());
                    Glide.with(context).asBitmap().load(R.drawable.ic_close).into(holder.toggleBtn);
                 }else{
@@ -70,6 +69,7 @@ public class MembersAdapter extends RecyclerView.Adapter<MembersAdapter.MyHandle
 
     public static class MyHandler extends RecyclerView.ViewHolder{
         TextView tv_u;
+        boolean k;
         ImageView toggleBtn,img;
         View parent;
         public MyHandler(@NonNull View v){
@@ -77,6 +77,7 @@ public class MembersAdapter extends RecyclerView.Adapter<MembersAdapter.MyHandle
             toggleBtn = v.findViewById(R.id.toggleAssign);
             tv_u = v.findViewById(R.id.tv_user);
             img = v.findViewById(R.id.nav_image);
+            k = false;
         }
     }
 

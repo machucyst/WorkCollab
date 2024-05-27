@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/fui_transparent"
+        tools:context=".fragments.AccountFragment">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/fui_transparent"
+            android:orientation="vertical"
+            android:weightSum="11"
+            tools:context=".ActivityUserAccount">
+
+
+                <LinearLayout
+                    android:id="@+id/profileBackground"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="-180dp"
+                    android:background="@drawable/background_transparent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    tools:visibility="visible">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/imageWrapper"
+                        android:layout_width="wrap_content"
+                        android:layout_marginTop="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="-90dp"
+                        app:cardCornerRadius="100dp"
+                        app:cardElevation="20dp">
+
+                        <ImageView
+                            android:id="@+id/profileImage"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:elevation="20dp"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/icon_test" />
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center|bottom"
+                        android:backgroundTint="@color/deviceTheme"
+                        android:elevation="0dp"
+                        app:cardCornerRadius="20dp"
+                        app:cardPreventCornerOverlap="true">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="180dp"
+                            android:orientation="vertical">
+
+
+                            <com.google.android.material.navigation.NavigationView
+                                android:id="@+id/nv_accountMenu"
+                                android:layout_width="match_parent"
+                                android:layout_height="300dp"
+                                android:layout_marginTop="80dp"
+                                android:background="@color/deviceTheme"
+                                app:itemBackground="@color/deviceTheme"
+                                app:itemTextAppearance="@style/menuText"
+                                app:menu="@menu/view_profile_menu">
+
+                            </com.google.android.material.navigation.NavigationView>
+
+
+                        </LinearLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                </LinearLayout>
+
+        </LinearLayout>
+
+
+    </FrameLayout>
+</layout>

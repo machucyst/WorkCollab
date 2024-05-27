@@ -61,6 +61,8 @@ public class AccountFragment extends Fragment {
     public interface ButtonListeners{
         void onPressChangePFP();
         void onDeletedAccount();
+
+        void onLogOutPress();
     }
     DialogTextInputBinding dtb;
     DialogLogoutConfirmBinding dlc;
@@ -76,8 +78,8 @@ public class AccountFragment extends Fragment {
         }
     }
 
-    private void menuTextChange(int ItemId,String text){
-        TextView a = (b.nvAccountMenu.getMenu().findItem(ItemId).getActionView().findViewById(R.id.additionalText));
+    private void menuTextChange(NavigationView nv, int ItemId,String text){
+        TextView a = (nv.getMenu().findItem(ItemId).getActionView().findViewById(R.id.additionalText));
         a.setText(text);
     }
     @Override
@@ -95,10 +97,14 @@ public class AccountFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         b = FragmentAccountBinding.inflate(inflater,container,false);
-        menuTextChange(R.id.menu_password, "");
-        menuTextChange(R.id.menu_profilePicture, "");
-        menuTextChange(R.id.menu_deleteAccount, "");
+        menuTextChange(b.nvAccountMenu,R.id.menu_password, "");
+        menuTextChange(b.nvAccountMenu, R.id.menu_deleteAccount,"");
+        menuTextChange(b.nvAccountMenu, R.id.menu_profilePicture,"");
         b.nvAccountMenu.getMenu().findItem(R.id.menu_email).setEnabled(false);
+        menuTextChange(b.nvSettings,R.id.menu_settings, "Settings");
+//        menuTextChange(b.nvSettings,R.id.menu_account, "Account");
+        menuTextChange(b.nvSettings,R.id.menu_appearance, "Appearance");
+        menuTextChange(b.nvSettings,R.id.menu_logOut, "Log Out");
         ImageView v = b.nvAccountMenu.getMenu().findItem(R.id.menu_deleteAccount).getActionView().findViewById(R.id.nextMenuArrow);
         v.setColorFilter(ContextCompat.getColor(getContext(), R.color.warning));
         Spannable s = new SpannableString(b.nvAccountMenu.getMenu().findItem(R.id.menu_deleteAccount).getTitle().toString());
@@ -108,9 +114,9 @@ public class AccountFragment extends Fragment {
         db.InitDB(MainMenuActivity.user.get("Email").toString(), new DatabaseFuncs.DataListener() {
             @Override
             public void onDataFound(Map user) {
-                menuTextChange(R.id.menu_username, "\"" + user.get("Username").toString() + "\"");
-                menuTextChange(R.id.menu_contactNumber, "\"" + user.get("ContactNumber").toString() + "\"");
-                menuTextChange(R.id.menu_email, "\"" + user.get("Email").toString() + "\"");
+                menuTextChange(b.nvAccountMenu,R.id.menu_username, "\"" + user.get("Username").toString() + "\"");
+                menuTextChange(b.nvAccountMenu,R.id.menu_contactNumber, "\"" + user.get("ContactNumber").toString() + "\"");
+                menuTextChange(b.nvAccountMenu,R.id.menu_email, "\"" + user.get("Email").toString() + "\"");
             }
             @Override
             public void noDuplicateUser() {
@@ -232,6 +238,32 @@ public class AccountFragment extends Fragment {
             }
 
         });
+        b.nvSettings.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                int a = menuItem.getItemId();
+                if (a == R.id.menu_logOut){
+                    listener.onLogOutPress();
+                    return true;
+                }
+                if (a == R.id.menu_settings) {
+                    MainMenuActivity.selected ="settings";
+                    MainMenuActivity.backFlow.push("settings");
+                    requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), SettingsFragment.newInstance()).addToBackStack(null).commit();
+                    return true;
+                }
+                if (a == R.id.menu_appearance) {
+                    //TODO: change themes
+                }
+//                if (a == R.id.menu_account){
+//                    MainMenuActivity.selected ="NotAccount";
+//                    MainMenuActivity.backFlow.push("NotAccount");
+//                    requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), AccountFragment.newInstance()).addToBackStack(null).commit();
+//                    return true;
+//                }
+                return false;
+            }
+        });
         b.profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -249,10 +281,10 @@ public class AccountFragment extends Fragment {
                     int colorWhite = getResources().getColor(R.color.white, getActivity().getTheme());
                     switch (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) {
                         case Configuration.UI_MODE_NIGHT_YES:
-                            b.profileBackgroundView.setBackgroundColor(p.getDarkVibrantColor(colorWhite));
+                            b.profileBackground.setBackgroundColor(p.getDarkVibrantColor(colorWhite));
                             break;
                         case Configuration.UI_MODE_NIGHT_NO:
-                            b.profileBackgroundView.setBackgroundColor(p.getVibrantColor(colorWhite));
+                            b.profileBackground.setBackgroundColor(p.getVibrantColor(colorWhite));
                             break;
                     }
                 }

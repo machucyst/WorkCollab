@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.content.res.AppCompatResources;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -256,7 +257,7 @@ public class DatabaseFuncs {
             }
         });
     }
-    public void createGroup(String name, List<String> Leaders, List<String> Members, UpdateListener listener) {
+    public void createGroup(String name, List<String> Leaders, List<String> Members, Context c, Button b, UpdateListener listener) {
         Map<String, Object> group = new HashMap<>();
         group.put("GroupName", name);
         group.put("Leaders", Leaders);
@@ -266,6 +267,13 @@ public class DatabaseFuncs {
             public void onSuccess(DocumentReference documentReference) {
                 group.put("Id", documentReference.getId());
                 listener.onUpdate(group);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                b.setBackgroundDrawable(AppCompatResources.getDrawable(c,R.drawable.textholder));
+                b.setText("Submit");
+                b.setEnabled(true);
             }
         });
     }
@@ -637,7 +645,7 @@ public class DatabaseFuncs {
             dataListener.onDataFound(user);
         });
     }
-    public void createTask(String groupId, List<String> members,String taskName, String taskDescription, long taskDeadline, CreateTaskListener listener){
+    public void createTask(String groupId, List<String> members,String taskName, String taskDescription, long taskDeadline, Button b, Context c,  CreateTaskListener listener){
         Map taskBuilder = new HashMap<>();
         taskBuilder.put("ParentId",groupId);
         taskBuilder.put("TaskName",taskName);
@@ -651,6 +659,13 @@ public class DatabaseFuncs {
             public void onSuccess(DocumentReference documentReference) {
                 System.out.println("ypee");
                 listener.onCreateTaskListener();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                b.setEnabled(true);
+                b.setText("Submit");
+                b.setBackgroundDrawable(AppCompatResources.getDrawable(c,R.drawable.textholder));
             }
         });
     }

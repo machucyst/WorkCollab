@@ -68,6 +68,10 @@ public class ViewMemberTasks extends Fragment {
             @Override
             public void onTaskRecieved(List<Map> tasks) {
                 MemberTaskAdapter mta = new MemberTaskAdapter(tasks, getContext(), new PositionListener() {
+                    @Override
+                    public void viewMemberTask(Map task) {
+
+                    }
                 });
                 b.rvMemberTasks.setAdapter(mta);
                 b.rvMemberTasks.setLayoutManager(new LinearLayoutManager(getContext()));

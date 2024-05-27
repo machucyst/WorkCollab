@@ -5,12 +5,12 @@
     tools:showIn="navigation_view">
 
     <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/menu_account"
-            android:checkable="true"
-            app:actionLayout="@layout/menu_you_custom_layout"
-            app:showAsAction="always"
-            tools:ignore="MenuTitle" />
+<!--        <item-->
+<!--            android:id="@+id/menu_account"-->
+<!--            android:checkable="true"-->
+<!--            app:actionLayout="@layout/menu_you_custom_layout"-->
+<!--            app:showAsAction="always"-->
+<!--            tools:ignore="MenuTitle" />-->
         <item
             android:id="@+id/menu_settings"
             android:checkable="true"
