@@ -1,5 +1,7 @@
 package com.example.workcollab.fragments;
 
+import static android.view.View.GONE;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -62,6 +64,7 @@ public class CreateGroupFragment extends Fragment {
                                 System.out.println(filteredgroups);
                                 if (!filteredgroups.contains(groups.get(i)) && !MainMenuActivity.user.get("Email").toString().equals(groups.get(i).get("Email").toString())) {
                                 filteredgroups.add(groups.get(i));
+                                b.textView2.setVisibility(GONE);
                                 } else {
                                     Toast.makeText(requireContext(), "User already selected", Toast.LENGTH_SHORT);
                                 }
