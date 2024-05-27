@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="deviceTheme">#2E2E2E</color>
+    <color name="deviceTheme">#3A3E43</color>
     <color name="deviceThemeInverted">#F1E9E9</color>
     <color name="deviceTheme2">#24242C</color>
     <color name="deviceThemeInverted2">#FFF1E9E9</color>

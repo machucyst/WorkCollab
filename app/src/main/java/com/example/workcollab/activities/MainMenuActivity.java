@@ -192,6 +192,28 @@ public class MainMenuActivity extends AppCompatActivity implements AccountEditFr
 
         });
 
+        b.bottomNavView.setOnItemReselectedListener(new NavigationBarView.OnItemReselectedListener() {
+            @Override
+            public void onNavigationItemReselected(@NonNull MenuItem menuItem) {
+                int a = menuItem.getItemId();
+                if(a == R.id.menu_home){
+                    replaceFragment(MainFragment.newInstance(),"main");
+                    backFlow.clear();
+                    backFlow.push("main");
+                } else if (a == R.id.menu_groups) {
+                    replaceFragment(GroupsFragment.newInstance(),"groups");
+                    backFlow.clear();
+                    backFlow.push("groups");
+                }else if (a == R.id.menu_tasks){
+                    replaceFragment(TaskListFragment.newInstance(false),"tasks");
+                }else if (a == R.id.menu_profile){
+                    replaceFragment(AccountFragment.newInstance(), "account");
+                    backFlow.clear();
+                    backFlow.push("profile");
+                }
+            }
+        });
+
     }
 
 
@@ -201,25 +223,28 @@ public class MainMenuActivity extends AppCompatActivity implements AccountEditFr
         System.out.println(resultCode + " " + requestCode);
         switch (requestCode) {
             case 101:
-                Uri sourceUri = data.getData();
+                if (data != null) {
+                    Uri sourceUri = data.getData();
 
-                // Destination URI
-                Uri destinationUri = Uri.fromFile(new File(getCacheDir(), "IMG_" + System.currentTimeMillis()));
+                    // Destination URI
+                    Uri destinationUri = Uri.fromFile(new File(getCacheDir(), "IMG_" + System.currentTimeMillis()));
 
-                // Start UCrop activity
-                UCrop.Options options = new UCrop.Options();
-                options.setContrastEnabled(false);
-                options.setBrightnessEnabled(false);
-                options.setFreeStyleCropEnabled(false);
-                options.setSaturationEnabled(false);
-                options.setSharpnessEnabled(false);
-                options.setShowCropGrid(false);
-                UCrop.of(sourceUri, destinationUri)
-                        .withAspectRatio(1, 1)
-                        .withMaxResultSize(450, 450)
-                        .withOptions(options)
-                        .start(this);
-            break;
+                    // Start UCrop activity
+                    UCrop.Options options = new UCrop.Options();
+                    options.setContrastEnabled(false);
+                    options.setBrightnessEnabled(false);
+                    options.setFreeStyleCropEnabled(false);
+                    options.setSaturationEnabled(false);
+                    options.setSharpnessEnabled(false);
+                    options.setShowCropGrid(false);
+                    UCrop.of(sourceUri, destinationUri)
+                            .withAspectRatio(1, 1)
+                            .withMaxResultSize(450, 450)
+                            .withOptions(options)
+                            .start(this);
+
+                }
+                break;
             case UCrop.REQUEST_CROP:
             if (resultCode == RESULT_OK) {
                 final Uri resultUri = UCrop.getOutput(data);
@@ -262,7 +287,11 @@ public class MainMenuActivity extends AppCompatActivity implements AccountEditFr
         sharedPreferences.edit().remove("user-email").apply();
     }
     public void replaceFragment(Fragment fragment, String condition){
-        if(!selected.equals(condition)){
+        String waa = "";
+        if (!backFlow.isEmpty()) {
+            waa = backFlow.peek();
+        }
+        if(!selected.equals(condition) || !waa.equals(condition)){
             selected = condition;
             getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(),fragment).addToBackStack(null).commit();
         }
@@ -409,7 +438,7 @@ public class MainMenuActivity extends AppCompatActivity implements AccountEditFr
                 return MainFragment.newInstance();
             case "groups":
                 return GroupsFragment.newInstance();
-            case "account":
+            case "profile":
                 return AccountFragment.newInstance();
             case "creategroups":
                 return CreateGroupFragment.newInstance();

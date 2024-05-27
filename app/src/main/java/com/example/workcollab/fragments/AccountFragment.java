@@ -131,6 +131,8 @@ public class AccountFragment extends Fragment {
                     public void onDataFound(Map user) {
                         int a = menuItem.getItemId();
                         if (a == R.id.menu_username) {
+                            MainMenuActivity.selected ="username";
+                            MainMenuActivity.backFlow.push("username");
                             requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), AccountEditFragment.newInstance("Username")).addToBackStack(null).commit();
 
                         }
@@ -146,6 +148,8 @@ public class AccountFragment extends Fragment {
                             });
                             dtb.Ok.setOnClickListener(k -> {
                                 if(dtb.editText.getText().toString().equals(DecryptPassword(user.get("Password").toString()))){
+                                    MainMenuActivity.selected ="password";
+                                    MainMenuActivity.backFlow.push("password");
                                     requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), AccountEditFragment.newInstance("Password")).addToBackStack(null).commit();
                                     dialog.dismiss();
                                 }else{
@@ -157,9 +161,13 @@ public class AccountFragment extends Fragment {
                             dialog.show();
                         }
                         if (a == R.id.menu_contactNumber){
+                            MainMenuActivity.selected ="contactNumber";
+                            MainMenuActivity.backFlow.push("contactNumber");
                             requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), AccountEditFragment.newInstance("ContactNumber")).addToBackStack(null).commit();
                         }
                         if (a == R.id.menu_profilePicture){
+                            MainMenuActivity.selected ="pfp";
+                            MainMenuActivity.backFlow.push("pfp");
                             listener.onPressChangePFP();
                         }
                         if (a == R.id.menu_deleteAccount) {
