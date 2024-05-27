@@ -387,7 +387,10 @@ public class MainMenuActivity extends AppCompatActivity implements YouFragment.B
         }
     }
     public void openFilePicker(){
-
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("*/*");  // For .doc files
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        startActivityForResult(intent, PICK_FILE_REQUEST);
     }
 
 
