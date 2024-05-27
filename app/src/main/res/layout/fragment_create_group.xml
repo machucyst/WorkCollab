@@ -47,15 +47,18 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/bahnschrift"
                         android:text="Group Name:"
-                        android:padding="10dp"
+                        android:layout_marginTop="10dp"
+                        android:paddingHorizontal="15dp"
                         style="@style/LightTextStyle"
                         android:textSize="20dp" />
 
                     <EditText
+                        android:layout_marginTop="5dp"
                         android:id="@+id/et_GN"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="15dp"
+                        android:layout_marginHorizontal="15dp"
+                        android:layout_marginBottom="15dp"
                         android:layout_weight="1"
                         android:background="@drawable/textholder"
                         android:ems="10"
@@ -100,9 +103,9 @@
                     <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:cardCornerRadius="20dp"
+                        app:cardCornerRadius="5dp"
                         app:cardBackgroundColor="@color/white"
-                        android:layout_margin="10dp">
+                        android:layout_margin="5dp">
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_addUsers"
@@ -139,7 +142,7 @@
                             android:id="@+id/et_add"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_margin="10dp"
+                            android:layout_margin="5dp"
                             android:layout_weight="1"
                             android:background="@drawable/textholder"
                             android:ems="10"
