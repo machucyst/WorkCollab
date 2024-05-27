@@ -3,7 +3,9 @@ package com.example.workcollab.adapters;
 import android.content.Context;
 import android.net.Uri;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.ViewDataBinding;
@@ -21,7 +23,7 @@ import java.util.Locale;
 import java.util.Map;
 
 public class DeadlinesAdapter extends RecyclerView.Adapter<DeadlinesAdapter.VH> {
-    List<Object> tasks;
+    public List<Object> tasks;
     Context context;
     HeaderClickListener headerClickListener;
     ClickItemListener listener;
@@ -59,12 +61,25 @@ public class DeadlinesAdapter extends RecyclerView.Adapter<DeadlinesAdapter.VH> 
             bind.deadline.setText("Submit before " + new SimpleDateFormat("MMMM d, yyyy", Locale.getDefault()).format(((Timestamp)d.getTask().get("TaskDeadline")).toDate()));
             bind.groupName.setText("Group: "+d.getGroupName());
             bind.taskName.setText(d.getTask().get("TaskName").toString());
-            Glide.with(context).load(d.getImage().toString()).into(bind.image);
+
+            if (!(task.get("GroupImage") == null)) {
+                Glide.with(context).load(d.getImage().toString()).into(bind.image);
+            }
+
+            bind.parent.setOnClickListener(v -> {
+                listener.onItemClick(position, task);
+            });
         } else if (holder.bind instanceof CardMainHeaderBinding) {
             CardMainHeaderBinding bind = (CardMainHeaderBinding) holder.bind;
             // add a string on the list so that a header will show up
 
             // header layout
+
+            if (tasks.size() == 1) {
+                bind.waa.setVisibility(View.GONE);
+            } else {
+                bind.waa.setVisibility(View.VISIBLE);
+            }
 
             bind.toCreateGroup.setOnClickListener(v -> {
                 headerClickListener.onCreateGroupClick();
@@ -79,7 +94,7 @@ public class DeadlinesAdapter extends RecyclerView.Adapter<DeadlinesAdapter.VH> 
             });
 
             Glide.with(context).load(user.get("Profile").toString()).into(bind.userImage);
-            bind.username.setText("Welcome to\nWork Collab, " + user.get("Username"));
+            bind.username.setText("Welcome\nto Work Collab, " + user.get("Username"));
         }
     }
 
@@ -115,5 +130,12 @@ public class DeadlinesAdapter extends RecyclerView.Adapter<DeadlinesAdapter.VH> 
 
     public void setHeaderClickListener(HeaderClickListener headerClickListener) {
         this.headerClickListener = headerClickListener;
+    }
+
+    public void addRange(List<Map> tasks) {
+        int pos = this.tasks.size();
+        this.tasks.addAll(tasks);
+        notifyItemRangeInserted(pos, tasks.size());
+        notifyItemChanged(0);
     }
 }

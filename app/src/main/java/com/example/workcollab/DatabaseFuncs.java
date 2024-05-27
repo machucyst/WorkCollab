@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -26,8 +27,10 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FileDownloadTask;
@@ -563,24 +566,38 @@ public class DatabaseFuncs {
 
     }
     public void getInvites(String id, GroupListener listener){
-        List<Map> documentList = new ArrayList<>();
-        groups.whereArrayContains("Invites",id)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Map a = document.getData();
-                                a.put("Id",document.getId());
-                                documentList.add(a);
-                            }
-                            listener.onReceive(documentList);
+//        groups.whereArrayContains("Invites",id)
+//                .get()
+//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                        if (task.isSuccessful()) {
+//                            for (QueryDocumentSnapshot document : task.getResult()) {
+//                                Map a = document.getData();
+//                                a.put("Id",document.getId());
+//                                documentList.add(a);
+//                            }
+//                            listener.onReceive(documentList);
+//
+//                        } else {
+//                            Log.d(TAG, "Error getting documents: ", task.getException());
+//                        }
+//                    }
+//                });
 
-                        } else {
-                            Log.d(TAG, "Error getting documents: ", task.getException());
+        groups.whereArrayContains("Invites",id)
+                .addSnapshotListener((value, error) -> {
+                    List<Map> documentList = new ArrayList<>();
+                    if (error != null) return;
+                    for (DocumentChange d : value.getDocumentChanges()) {
+                        if (d.getType() == DocumentChange.Type.ADDED) {
+                            DocumentSnapshot document = d.getDocument();
+                            Map a = document.getData();
+                            a.put("Id",document.getId());
+                            documentList.add(a);
                         }
                     }
+                    listener.onReceive(documentList);
                 });
     }
     public void getMembers(String id, MembersListener listener){
@@ -628,46 +645,71 @@ public class DatabaseFuncs {
             }
         });
     }
-    public void getTasks(String groupId, TaskListener listener){
+    public void getTasks(String groupId, String groupName, Uri groupImage, TaskListener listener){
     List<Map> tasks = new ArrayList<>();
-        groups.document(groupId).collection("Tasks").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()){
-                    for (DocumentSnapshot doc : task.getResult()){
-                        Map<String, Object> taskMap = doc.getData();
-                        taskMap.put("Id",doc.getId());
-                        tasks.add(taskMap);
-                    }
-                    listener.onTaskRecieved(tasks);
+        groups.document(groupId).collection("Tasks").addSnapshotListener((value, error) -> {
+            if (error != null) return;
+            for (DocumentChange c :
+                    value.getDocumentChanges()) {
+                DocumentSnapshot d = c.getDocument();
+                if (c.getType() == DocumentChange.Type.ADDED) {
+                    System.out.println(d.getData());
+                    Map<String, Object> taskMap = d.getData();
+                    taskMap.put("Id",d.getId());
+                    taskMap.put("GroupName", groupName);
+                    taskMap.put("GroupImage", groupImage);
+                    tasks.add(taskMap);
                 }
             }
+            listener.onTaskRecieved(tasks);
         });
 
     }
     public void getTasks(String userId, TaskListener listener, boolean a){
-        List<Map> tasks = new ArrayList<>();
+//        List<Map> tasks = new ArrayList<>();
         Log.e("wawa", "woah");
         getJoinedGroups(userId, new GroupListener() {
             @Override
             public void onReceive(List<Map> groups, List<Map> groupLeaders) {
                 for (Map g : groups){
                     System.out.println(g.get("Id").toString()+"id funny");
-                    DatabaseFuncs.this.groups.document(g.get("Id").toString()).collection("Tasks").whereArrayContains("Assigned Members",userId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                    DatabaseFuncs.this.groups.document(g.get("Id").toString()).collection("Tasks").whereArrayContains("Assigned Members",userId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                            if (task.isSuccessful()){
+//                                Log.e("wawa", "whee");
+//                                for (DocumentSnapshot doc : task.getResult()){
+//                                    System.out.println(doc.getData());
+//                                    Map<String, Object> taskMap = doc.getData();
+//                                    taskMap.put("Id",doc.getId());
+//                                    taskMap.put("GroupName", g.get("GroupName"));
+//                                    taskMap.put("GroupImage", g.get("GroupImage"));
+//                                    tasks.add(taskMap);
+//                                }
+//                            }
+//                        listener.onTaskRecieved(tasks);
+//                        }
+//                    });
+
+                    DatabaseFuncs.this.groups.document(g.get("Id").toString()).collection("Tasks").whereArrayContains("Assigned Members",userId).addSnapshotListener(new EventListener<QuerySnapshot>() {
                         @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()){
-                                Log.e("wawa", "whee");
-                                for (DocumentSnapshot doc : task.getResult()){
-                                    System.out.println(doc.getData());
-                                    Map<String, Object> taskMap = doc.getData();
-                                    taskMap.put("Id",doc.getId());
+                        public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                            if (error != null) return;
+                            List<Map> tasks = new ArrayList<>();
+                            Log.e("wawa", "whee");
+                            for (DocumentChange c :
+                                    value.getDocumentChanges()) {
+                                DocumentSnapshot d = c.getDocument();
+                                if (c.getType() == DocumentChange.Type.ADDED) {
+                                    System.out.println(d.getData());
+                                    Map<String, Object> taskMap = d.getData();
+                                    taskMap.put("Id",d.getId());
                                     taskMap.put("GroupName", g.get("GroupName"));
                                     taskMap.put("GroupImage", g.get("GroupImage"));
                                     tasks.add(taskMap);
                                 }
                             }
-                        listener.onTaskRecieved(tasks);
+                            listener.onTaskRecieved(tasks);
                         }
                     });
                 }

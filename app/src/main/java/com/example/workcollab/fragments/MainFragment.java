@@ -19,6 +19,7 @@ import com.google.firebase.Timestamp;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -70,12 +71,14 @@ public class MainFragment extends Fragment {
         db.getTasks(MainMenuActivity.user.get("Id").toString(), new DatabaseFuncs.TaskListener() {
             @Override
             public void onTaskRecieved(List<Map> tasks) {
-                tasks1.addAll(tasks);
-                adapter = new DeadlinesAdapter(tasks1, getContext(), (position, task) -> {
-                    // TODO: Task item click
-                }, user);
-                b.rvDeadlines.setLayoutManager(new LinearLayoutManager(getContext()));
-                b.rvDeadlines.setAdapter(adapter);
+//                tasks1.addAll(tasks);
+//                adapter = new DeadlinesAdapter(tasks1, getContext(), (position, task) -> {
+//                    // TODO: Task item click
+//                }, user);
+//                b.rvDeadlines.setLayoutManager(new LinearLayoutManager(getContext()));
+//                b.rvDeadlines.setAdapter(adapter);
+
+                adapter.addRange(tasks);
 
                 adapter.setHeaderClickListener(new DeadlinesAdapter.HeaderClickListener() {
                     @Override

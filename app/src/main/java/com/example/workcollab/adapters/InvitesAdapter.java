@@ -36,11 +36,12 @@ public class InvitesAdapter extends RecyclerView.Adapter<InvitesAdapter.MyHandle
     @Override
     public void onBindViewHolder(@NonNull MyHandler holder, @SuppressLint("RecyclerView") int position) {
         holder.tv_g.setText((groups.get(position).get("GroupName")).toString());
+        holder.waa.setVisibility(View.GONE);
         holder.deny.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onDeny(groups.get(position));
                 if (position != RecyclerView.NO_POSITION) {
+                    listener.onDeny(groups.get(position));
                     removeItem(position);
                     CreateGroupFragment.amabatuhavefun = groups;
                 }
@@ -73,7 +74,7 @@ public class InvitesAdapter extends RecyclerView.Adapter<InvitesAdapter.MyHandle
     }
 
     public static class MyHandler extends RecyclerView.ViewHolder{
-        TextView tv_g;
+        TextView tv_g, waa;
         View parent;
         CardView accept,deny;
         public MyHandler(@NonNull View v){
@@ -82,8 +83,15 @@ public class InvitesAdapter extends RecyclerView.Adapter<InvitesAdapter.MyHandle
             parent = v.findViewById(R.id.parent);
             accept = v.findViewById(R.id.btn_accept);
             deny = v.findViewById(R.id.btn_deny);
+            waa = v.findViewById(R.id.tv_latestMessage);
         }
 
+    }
+
+    public void addRange(List<Map> group) {
+        int pos = groups.size();
+        groups.addAll(group);
+        notifyItemRangeInserted(pos, group.size());
     }
 
 

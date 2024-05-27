@@ -140,6 +140,7 @@ public class AccountFragment extends Fragment {
                             dtb = DialogTextInputBinding.inflate(getLayoutInflater().from(requireContext()));
                             builder.setView(dtb.getRoot());
                             AlertDialog dialog = builder.create();
+                            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
                             dtb.editAccount.setText("Input old password before proceeding");
                             dtb.Cancel.setOnClickListener(k -> {
                                 dialog.dismiss();
@@ -174,6 +175,7 @@ public class AccountFragment extends Fragment {
                             dlc = DialogLogoutConfirmBinding.inflate(getLayoutInflater().from(requireContext()));
                             builder.setView(dlc.getRoot());
                             AlertDialog dialog = builder.create();
+                            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
                             dlc.editAccount.setText("THIS PROCESS CANNOT BE UNDONE");
                             dlc.Cancel.setOnClickListener(k -> {
                                 dialog.dismiss();

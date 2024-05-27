@@ -16,6 +16,7 @@ import com.example.workcollab.databinding.FragmentInvitesBinding;
 import com.google.firebase.Timestamp;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -70,6 +71,32 @@ public class InvitesSubFragment extends Fragment  {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         b = FragmentInvitesBinding.inflate(inflater,container,false);
+        InvitesAdapter a = new InvitesAdapter(new ArrayList<>(), new PositionListener() {
+            @Override
+            public void onDeny(Map group) {
+                PositionListener.super.onDeny(group);
+                db.denyInvite(MainMenuActivity.user.get("Id").toString(), group.get("Id").toString(), new DatabaseFuncs.OptionListener() {
+                    @Override
+                    public void onOptionPicked() {
+                        System.out.println("Invite Denied");
+                    }
+                });
+            }
+
+            @Override
+            public void onAccept(Map group) {
+                PositionListener.super.onAccept(group);
+                db.acceptInvite(MainMenuActivity.user.get("Id").toString(), group.get("Id").toString(), new DatabaseFuncs.OptionListener() {
+                    @Override
+                    public void onOptionPicked() {
+                        System.out.println("Invite to "+group.get("Id").toString()+" Accepted");
+                    }
+                });
+            }
+        });
+
+        b.rvInvites.setAdapter(a);
+        b.rvInvites.setLayoutManager(new LinearLayoutManager(getContext()));
         db.getInvites(MainMenuActivity.user.get("Id").toString(), new DatabaseFuncs.GroupListener() {
             @Override
             public void onReceive(List<Map> groups, List<Map> groupLeaders) {
@@ -78,31 +105,7 @@ public class InvitesSubFragment extends Fragment  {
 
             @Override
             public void onReceive(List<Map> groups) {
-                InvitesAdapter a = new InvitesAdapter(groups, new PositionListener() {
-                    @Override
-                    public void onDeny(Map group) {
-                        PositionListener.super.onDeny(group);
-                        db.denyInvite(MainMenuActivity.user.get("Id").toString(), group.get("Id").toString(), new DatabaseFuncs.OptionListener() {
-                            @Override
-                            public void onOptionPicked() {
-                                System.out.println("Invite Denied");
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onAccept(Map group) {
-                        PositionListener.super.onAccept(group);
-                        db.acceptInvite(MainMenuActivity.user.get("Id").toString(), group.get("Id").toString(), new DatabaseFuncs.OptionListener() {
-                            @Override
-                            public void onOptionPicked() {
-                                System.out.println("Invite to "+group.get("Id").toString()+" Accepted");
-                            }
-                        });
-                    }
-                });
-                b.rvInvites.setAdapter(a);
-                b.rvInvites.setLayoutManager(new LinearLayoutManager(getContext()));
+                a.addRange(groups);
             }
 
             @Override

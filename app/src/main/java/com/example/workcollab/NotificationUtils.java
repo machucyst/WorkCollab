@@ -8,8 +8,11 @@ import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.core.app.NotificationManagerCompat;
+
+import java.util.Locale;
 
 public class NotificationUtils {
     public static String DEFAULT_CHANNEL = "default";
@@ -28,6 +31,22 @@ public class NotificationUtils {
             manager.notify(id, notification);
         }
     }
+    @SuppressLint("MissingPermission")
+    public static void postNotificationSummary(Context context, int id , String channel, String title, String message, int iconDrawableId, String group) {
+        NotificationManagerCompat manager = NotificationManagerCompat.from(context);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            Notification notification = new Notification.Builder(context, channel)
+                    .setSmallIcon(iconDrawableId)
+                    .setContentTitle(title)
+                    .setContentText(message)
+                    .setGroup(group)
+                    .setGroupSummary(true)
+                    .build();
+
+            manager.notify(id, notification);
+        }
+    }
+
 
     @SuppressLint("MissingPermission")
     public static void postBigTextNotification(Context context, int id , String channel, String title, String message, int iconDrawableId, String group) {
@@ -49,6 +68,7 @@ public class NotificationUtils {
     public static void postNotificationGrouper(Context context, int id , String channel, String title, String message, int iconDrawableId, String group) {
         NotificationManagerCompat manager = NotificationManagerCompat.from(context);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            Log.e("waa2", "weeeee");
             Notification notification = new Notification.Builder(context, channel)
                     .setSmallIcon(iconDrawableId)
                     .setContentTitle(title)

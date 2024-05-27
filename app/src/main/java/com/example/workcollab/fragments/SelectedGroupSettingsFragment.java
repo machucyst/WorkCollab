@@ -91,6 +91,7 @@ public class SelectedGroupSettingsFragment extends Fragment {
                     dlc = DialogLogoutConfirmBinding.inflate(getLayoutInflater());
                     builder.setView(dlc.getRoot());
                     AlertDialog dialog = builder.create();
+                    dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
                     dlc.editAccount.setText("Are you sure you want to leave this group?");
                     dlc.Cancel.setOnClickListener(k -> {
                         dialog.dismiss();

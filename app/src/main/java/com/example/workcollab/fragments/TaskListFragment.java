@@ -1,16 +1,19 @@
 package com.example.workcollab.fragments;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.workcollab.DatabaseFuncs;
 import com.example.workcollab.activities.MainMenuActivity;
+import com.example.workcollab.adapters.DeadlinesAdapter;
 import com.example.workcollab.adapters.TasksAdapter;
 import com.example.workcollab.databinding.FragmentTaskListBinding;
 import com.google.firebase.Timestamp;
@@ -81,57 +84,42 @@ public class TaskListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
        // Inflate the layout for this fragment
+       List<Object> wwa = new ArrayList<>();
         b = FragmentTaskListBinding.inflate(inflater,container,false);
         if(a){
-        db.getTasks(group.get("Id").toString(), new DatabaseFuncs.TaskListener() {
-            @Override
-            public void onTaskRecieved(List<Map> tasks) {
-                List<Object> waa = new ArrayList<>();
-                waa.addAll(tasks);
+            DeadlinesAdapter adapter = new DeadlinesAdapter(wwa, getContext(), (position, task) -> {
+                MainMenuActivity.backFlow.push("viewtask");
+                if(Boolean.parseBoolean(group.get("isLeader").toString())){
+                    requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), ViewMemberTasks.newInstance(task)).addToBackStack(null).commit();
+                }else{
+                    requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), SubmitTaskFragment.newInstance(task)).addToBackStack(null).commit();
+                }
+            }, MainMenuActivity.user);
+            b.rvTasks.setLayoutManager(new LinearLayoutManager(getContext()));
+            b.rvTasks.setAdapter(adapter);
+            db.getTasks(group.get("Id").toString(), group.get("GroupName").toString(), Uri.parse(group.get("GroupImage") == null ? "" : group.get("GroupImage").toString()), new DatabaseFuncs.TaskListener() {
+                @Override
+                public void onTaskRecieved(List<Map> tasks) {
+                    adapter.addRange(tasks);
+                }
 
-                TasksAdapter ta = new TasksAdapter(waa, new PositionListener() {
-                    @Override
-                    public void taskItemClicked(Map task) {
-                    TaskListFragment.PositionListener.super.taskItemClicked(task);
-                        if(Boolean.parseBoolean(group.get("isLeader").toString())){
-                            requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), ViewMemberTasks.newInstance(task)).addToBackStack(null).commit();
-                        }else{
-                            requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), SubmitTaskFragment.newInstance(task)).addToBackStack(null).commit();
-                        }
+                @Override
+                public void getDeadline(Timestamp timestamp) {
 
-                    }
-                });
-                b.rvTasks.setAdapter(ta);
-                b.rvTasks.setLayoutManager(new LinearLayoutManager(getContext()));
-            }
-
-            @Override
-            public void getDeadline(Timestamp timestamp) {
-
-            }
-        });
+                }
+            });
         }else{
+            DeadlinesAdapter adapter = new DeadlinesAdapter(wwa, getContext(), (position, task) -> {
+                MainMenuActivity.backFlow.push("viewtask");
+                MainMenuActivity.selected = "viewtask";
+                requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), SubmitTaskFragment.newInstance(task)).addToBackStack(null).commit();
+            }, MainMenuActivity.user);
+            b.rvTasks.setLayoutManager(new LinearLayoutManager(getContext()));
+            b.rvTasks.setAdapter(adapter);
            db.getTasks(MainMenuActivity.user.get("Id").toString(), new DatabaseFuncs.TaskListener() {
                @Override
                public void onTaskRecieved(List<Map> tasks) {
-                   if (tasks.isEmpty()){
-                       Map<String,Object> task = new HashMap();
-                       task.put("TaskName","No tasks pending :)");
-
-                       tasks.add(task);
-                   }
-                   List<Object> wwa = new ArrayList<>();
-                   wwa.addAll(tasks);
-                   TasksAdapter ta = new TasksAdapter(wwa, new PositionListener() {
-                       @Override
-                       public void taskItemClicked(Map task) {
-                           PositionListener.super.taskItemClicked(task);
-                           requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), SubmitTaskFragment.newInstance(task)).addToBackStack(null).commit();
-
-                       }
-                   });
-                   b.rvTasks.setAdapter(ta);
-                   b.rvTasks.setLayoutManager(new LinearLayoutManager(getContext()));
+                   adapter.addRange(tasks);
 
                }
 

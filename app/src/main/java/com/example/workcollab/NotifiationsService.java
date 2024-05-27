@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.IBinder;
@@ -16,9 +17,16 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.example.workcollab.activities.MainMenuActivity;
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.ListenerRegistration;
+
+import java.util.List;
+import java.util.Map;
 
 public class NotifiationsService extends Service {
     DatabaseFuncs df = new DatabaseFuncs();
+    DatabaseFuncs.GroupListener listener;
+    boolean newLaunch = true;
 
 
     /**
@@ -41,6 +49,46 @@ public class NotifiationsService extends Service {
 //
 //            }
 //        });
+
+        newLaunch = true;
+
+        NotificationUtils.createChannel(this, "invites", "invites");
+
+        listener = new DatabaseFuncs.GroupListener() {
+            @Override
+            public void onReceive(List<Map> groups, List<Map> groupLeaders) {
+
+            }
+
+            @Override
+            public void onReceive(List<Map> groups) {
+                if (!newLaunch && !MainMenuActivity.isActivityRunning()) {
+                    for (Map group :
+                            groups) {
+                        NotificationUtils.postNotificationGrouper(NotifiationsService.this, 2, "invites", "Invite Received", "You have been invited to " + group.get("GroupName").toString(), R.drawable.ic_mail, "invites");
+                        NotificationUtils.postNotification(NotifiationsService.this, (int)System.currentTimeMillis(), "invites", "Invite Received", "You have been invited to " + group.get("GroupName").toString(), R.drawable.ic_mail, "invites");
+                    }
+                }
+                newLaunch = false;
+            }
+
+            @Override
+            public void getDeadline(Timestamp timestamp) {
+
+            }
+        };
+
+        df.InitDB(checkLoggedIn(), new DatabaseFuncs.DataListener() {
+            @Override
+            public void onDataFound(Map user) {
+                df.getInvites(user.get("Id").toString(), listener);
+            }
+
+            @Override
+            public void noDuplicateUser() {
+
+            }
+        });
 
         Log.e("holeymoley", "running");
 
@@ -84,5 +132,10 @@ public class NotifiationsService extends Service {
             startForeground(1, notification);
 
         }
+    }
+
+    private String checkLoggedIn() {
+        SharedPreferences sharedPreferences = getSharedPreferences("UserLogInPreferences", Context.MODE_PRIVATE);
+        return sharedPreferences.getString("user-email", "");
     }
 }

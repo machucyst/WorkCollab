@@ -57,6 +57,7 @@ public class MainMenuActivity extends AppCompatActivity implements SelectedGroup
     private static final int PICK_FILE_REQUEST = 123;
     ActivityMainMenuBinding b;
     DialogLogoutConfirmBinding bl;
+    static boolean activityRunning = false;
     Map task;
     static int index;
     public static Stack<String> backFlow = new Stack<>();
@@ -135,6 +136,8 @@ public class MainMenuActivity extends AppCompatActivity implements SelectedGroup
                     backFlow.clear();
                     backFlow.push("groups");
                 }else if (a == R.id.menu_tasks){
+                    backFlow.clear();
+                    backFlow.push("tasks");
                     replaceFragment(TaskListFragment.newInstance(false),"tasks");
                 }else if (a == R.id.menu_profile){
                     replaceFragment(AccountFragment.newInstance(), "account");
@@ -158,6 +161,8 @@ public class MainMenuActivity extends AppCompatActivity implements SelectedGroup
                     backFlow.clear();
                     backFlow.push("groups");
                 }else if (a == R.id.menu_tasks){
+                    backFlow.clear();
+                    backFlow.push("tasks");
                     replaceFragment(TaskListFragment.newInstance(false),"tasks");
                 }else if (a == R.id.menu_profile){
                     replaceFragment(AccountFragment.newInstance(), "account");
@@ -267,6 +272,7 @@ public class MainMenuActivity extends AppCompatActivity implements SelectedGroup
         bl = DialogLogoutConfirmBinding.inflate(getLayoutInflater().from(this));
         builder.setView(bl.getRoot());
         AlertDialog dialog = builder.create();
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         bl.Cancel.setOnClickListener(k->{
             dialog.cancel();
         });
@@ -296,7 +302,7 @@ public class MainMenuActivity extends AppCompatActivity implements SelectedGroup
 
 //        replaceFragment(MainFragment.newInstance(user), "main");
         if (backFlow.isEmpty()) {
-            replaceFragment(MainFragment.newInstance(), "main");
+            replaceFragment(new MainFragment(user), "main");
         } else {
             Log.e("woah", backFlow.peek());
             replaceFragment(changeFragment(backFlow.peek()), backFlow.peek());
@@ -403,6 +409,8 @@ public class MainMenuActivity extends AppCompatActivity implements SelectedGroup
                 return SelectedGroupFragment.newInstance(selectedgroup);
             case "appearance":
                 return AppearanceFragment.newInstance();
+            case "tasks":
+                return TaskListFragment.newInstance(false);
         }
         return new MainFragment(user);
     }
@@ -441,6 +449,10 @@ public class MainMenuActivity extends AppCompatActivity implements SelectedGroup
         }
         if(selected.equals("appearance")) {
             getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), AppearanceFragment.newInstance()).commit();
+            return;
+        }
+        if(selected.equals("tasks")) {
+            getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), TaskListFragment.newInstance(false)).commit();
         }
     }
 
@@ -451,5 +463,23 @@ public class MainMenuActivity extends AppCompatActivity implements SelectedGroup
         intent.setType("image/*");  // For .doc files
         intent.setAction(Intent.ACTION_PICK);
         startActivityForResult(Intent.createChooser(intent,"Select Picture"), 101);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        activityRunning = true;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        activityRunning = false;
+    }
+
+    public static boolean isActivityRunning() {
+        return activityRunning;
     }
 }

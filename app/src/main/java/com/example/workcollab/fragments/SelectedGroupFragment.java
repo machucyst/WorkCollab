@@ -1,6 +1,7 @@
 package com.example.workcollab.fragments;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,15 +11,21 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
 import com.example.workcollab.DatabaseFuncs;
 import com.example.workcollab.R;
 import com.example.workcollab.activities.ChatActivity;
 import com.example.workcollab.activities.MainMenuActivity;
+import com.example.workcollab.adapters.DeadlinesAdapter;
 import com.example.workcollab.databinding.FragmentSelectedGroupBinding;
+import com.google.firebase.Timestamp;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,6 +37,7 @@ public class SelectedGroupFragment extends Fragment {
 //    Map user;
     static Map group;
     DatabaseFuncs db = new DatabaseFuncs();
+    DeadlinesAdapter adapter;
     FragmentSelectedGroupBinding b;
     public SelectedGroupFragment() {
         // Required empty public constructor
@@ -93,6 +101,53 @@ public class SelectedGroupFragment extends Fragment {
                 MainMenuActivity.selected="tasks";
                 MainMenuActivity.selectedgroup = group;
                 requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), SelectedGroupSettingsFragment.newInstance(group)).addToBackStack(null).commit();
+
+            }
+        });
+
+        adapter = new DeadlinesAdapter(new ArrayList<>(), getContext(), (position, task) -> {
+            // TODO: Task item click
+        }, MainMenuActivity.user);
+        b.rvDeadlines.setLayoutManager(new LinearLayoutManager(getContext()));
+        b.rvDeadlines.setAdapter(adapter);
+
+        db.getTasks(group.get("Id").toString(), group.get("GroupName").toString(), group.get("GroupImage") == null ? null : Uri.parse(group.get("GroupImage").toString()), new DatabaseFuncs.TaskListener() {
+            @Override
+            public void onTaskRecieved(List<Map> tasks) {
+                adapter.addRange(tasks);
+                if (adapter.tasks.size() > 0) {
+                    b.rvDeadlines.setVisibility(View.VISIBLE);
+                    b.waa.setVisibility(View.VISIBLE);
+                } else {
+                    b.rvDeadlines.setVisibility(View.GONE);
+                    b.waa.setVisibility(View.GONE);
+                }
+
+                adapter.setHeaderClickListener(new DeadlinesAdapter.HeaderClickListener() {
+                    @Override
+                    public void onInvitesClick() {
+                        MainMenuActivity.backFlow.clear();
+                        MainMenuActivity.backFlow.push("groups");
+                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment,new GroupsFragment(true)).commit();
+                    }
+
+                    @Override
+                    public void onCreateGroupClick() {
+                        MainMenuActivity.backFlow.push("creategroups");
+                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment,CreateGroupFragment.newInstance()).commit();
+                    }
+
+                    @Override
+                    public void onProfileClick() {
+                        MainMenuActivity.backFlow.clear();
+                        MainMenuActivity.backFlow.push("profile");
+                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment,AccountFragment.newInstance()).commit();
+                    }
+                });
+            }
+
+            @Override
+            public void getDeadline(Timestamp timestamp) {
 
             }
         });
