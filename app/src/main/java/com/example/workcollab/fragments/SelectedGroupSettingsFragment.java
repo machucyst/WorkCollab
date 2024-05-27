@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -15,6 +16,7 @@ import com.example.workcollab.DatabaseFuncs;
 import com.example.workcollab.R;
 import com.example.workcollab.activities.MainMenuActivity;
 import com.example.workcollab.databinding.DialogLogoutConfirmBinding;
+import com.example.workcollab.databinding.DialogTextInputBinding;
 import com.example.workcollab.databinding.FragmentSelectedGroupSettingsBinding;
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
@@ -30,6 +32,7 @@ public class SelectedGroupSettingsFragment extends Fragment {
     Gson gson = new Gson();
     Map group;
     DialogLogoutConfirmBinding dlc;
+    DialogTextInputBinding dtb;
     public interface GroupPFP{
         void onGroupChanged();
     }
@@ -71,6 +74,8 @@ public class SelectedGroupSettingsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         b = FragmentSelectedGroupSettingsBinding.inflate(inflater, container, false);
+        TextView a = b.nvAccountMenu.getMenu().findItem(R.id.menu_groupname).getActionView().findViewById(R.id.additionalText);
+        a.setText(group.get("GroupName").toString());
         b.nvAccountMenu.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -83,7 +88,7 @@ public class SelectedGroupSettingsFragment extends Fragment {
                 }
                 if(a == R.id.menu_deletegroups){
                     AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-                    dlc = DialogLogoutConfirmBinding.inflate(getLayoutInflater().from(requireContext()));
+                    dlc = DialogLogoutConfirmBinding.inflate(getLayoutInflater());
                     builder.setView(dlc.getRoot());
                     AlertDialog dialog = builder.create();
                     dlc.editAccount.setText("Are you sure you want to leave this group?");
@@ -102,7 +107,24 @@ public class SelectedGroupSettingsFragment extends Fragment {
                     dialog.show();
                 }
                 if(a == R.id.menu_groupname){
-
+                    AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+                    dtb = DialogTextInputBinding.inflate(getLayoutInflater());
+                    builder.setView(dtb.getRoot());
+                    AlertDialog dialog = builder.create();
+                    dtb.editAccount.setText("Rename Group");
+                    dtb.Cancel.setOnClickListener(k -> {
+                        dialog.dismiss();
+                    });
+                    dtb.Ok.setOnClickListener(k -> {
+                        db.updateGroup(group, dtb.editText.getText().toString(),"GroupName", new DatabaseFuncs.UpdateListener() {
+                            @Override
+                            public void onUpdate(Map user) {
+                                requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), SelectedGroupFragment.newInstance(user)).addToBackStack(null).commit();
+                                dialog.dismiss();
+                            }
+                        },2);
+                    });
+                    dialog.show();
                 }
                 return false;
             }
