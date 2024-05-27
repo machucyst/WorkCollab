@@ -329,6 +329,7 @@ public class DatabaseFuncs {
         group.put("GroupName", name);
         group.put("Leaders", Leaders);
         group.put("Invites", Members);
+        group.put("Members",new ArrayList<>());
         groups.add(group).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
             public void onSuccess(DocumentReference documentReference) {

@@ -173,10 +173,11 @@ public class InviteMoreMembersFragment extends Fragment {
             }
         });
         b.submit.setOnClickListener(new View.OnClickListener() {
+        List<String> filteredIds;
         boolean a = true;
             @Override
             public void onClick(View v) {
-                List<String> filteredIds = new ArrayList<>();
+                filteredIds = new ArrayList<>();
                 System.out.println("Public Static my beloved" + CreateGroupFragment.amabatuhavefun);
                 b.submit.setBackgroundDrawable(getResources().getDrawable(R.drawable.textholderdisabled));
                 b.submit.setEnabled(false);
@@ -190,6 +191,7 @@ public class InviteMoreMembersFragment extends Fragment {
                         public void BasicListener() {
                             if(a){
                                 requireActivity().getSupportFragmentManager().popBackStack();
+                                filteredIds = new ArrayList<>();
                                 a=false;
                             }
                         }
