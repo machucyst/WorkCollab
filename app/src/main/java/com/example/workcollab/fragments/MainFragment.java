@@ -44,8 +44,6 @@ public class MainFragment extends Fragment {
 
     public static MainFragment newInstance() {
         Bundle args = new Bundle();
-        Gson gson = new Gson();
-//        args.putString("user", gson.toJson(user));
         MainFragment f = new MainFragment();
         f.setArguments(args);
         return f;
@@ -105,59 +103,6 @@ public class MainFragment extends Fragment {
 
             }
         }, false);
-
-
-
-
-
-
-//        TasksAdapter deadlineAdapter = new TasksAdapter(tasks, new TaskListFragment.PositionListener() {
-//            @Override
-//            public void taskItemClicked(Map task) {
-//                TaskListFragment.PositionListener.super.taskItemClicked(task);
-//            }
-//        });
-//        b.rvDeadlines.setAdapter(deadlineAdapter);
-//        b.rvDeadlines.setLayoutManager(new LinearLayoutManager(getContext()));
-//        b.rvDeadlines.setNestedScrollingEnabled(false);
-//        db.getTasks(MainMenuActivity.user.get("Id").toString(), new DatabaseFuncs.TaskListener(){
-//
-//            @Override
-//            public void onTaskRecieved(List<Map> tasks) {
-//                TasksAdapter deadlineAdapter = new TasksAdapter(tasks, new TaskListFragment.PositionListener() {
-//                    @Override
-//                    public void taskItemClicked(Map task) {
-//                        TaskListFragment.PositionListener.super.taskItemClicked(task);
-//                    }
-//                });
-//                b.rvDeadlines.setAdapter(deadlineAdapter);
-//                b.rvDeadlines.setLayoutManager(new LinearLayoutManager(getContext()));
-//            }
-//
-//            @Override
-//            public void getDeadline(Timestamp timestamp) {
-//
-//            }
-//
-//
-//        });
-
-//        b.btnNG.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Toast.makeText(getContext(), "wdawda", Toast.LENGTH_SHORT).show();
-//                MainMenuActivity.backFlow.push("creategroups");
-//                requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), CreateGroupFragment.newInstance()).addToBackStack(null).commit();
-//
-//            }
-//        });
-//        b.btnG.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                MainMenuActivity.backFlow.push("creategroups");
-//                requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), CreateGroupFragment.newInstance()).addToBackStack(null).commit();
-//            }
-//        });
         return b.getRoot();
 
     }
