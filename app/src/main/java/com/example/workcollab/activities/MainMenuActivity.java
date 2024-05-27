@@ -4,9 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.OpenableColumns;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -55,6 +57,8 @@ import java.util.Stack;
 public class MainMenuActivity extends AppCompatActivity implements SelectedGroupSettingsFragment.GroupPFP,AccountEditFragment.UpdateListener, AccountFragment.ButtonListeners, JoinedGroupsSubFragment.PositionListener, InvitesSubFragment.PositionListener, TaskListFragment.PositionListener, SubmitTaskFragment.onSubmitClick, ViewMemberTasks.PositionListener {
     private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 32;
     private static final int PICK_FILE_REQUEST = 123;
+    private static final long MAX_FILE_SIZE = 20 * 1024 * 1024; // 20 MB
+
     ActivityMainMenuBinding b;
     DialogLogoutConfirmBinding bl;
     static boolean activityRunning = false;
@@ -234,12 +238,24 @@ public class MainMenuActivity extends AppCompatActivity implements SelectedGroup
             }
             break;
             case PICK_FILE_REQUEST:
-                getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment,SubmitTaskFragment.newInstance(MainMenuActivity.this.task,data.getData())).commit();
+                if(getFileSize(data.getData())<=MAX_FILE_SIZE){
+                    getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment,SubmitTaskFragment.newInstance(MainMenuActivity.this.task,data.getData())).commit();
+                }else{
+                    Toast.makeText(this,"File size too large (20 MB Only)",Toast.LENGTH_SHORT).show();
+                }
                 break;
             case RESULT_CANCELED:
                 reload();
                 break;
         }
+    }
+    private long getFileSize(Uri uri) {
+        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+        int sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE);
+        cursor.moveToFirst();
+        long size = cursor.getLong(sizeIndex);
+        cursor.close();
+        return size;
     }
 
     private String getUserEmail() {
