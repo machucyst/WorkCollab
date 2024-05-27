@@ -20,7 +20,7 @@ import java.util.Map;
 
 public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.MyHandler>{
 
-    public final List<Map> tasks;
+    public List<Object> tasks;
     DatabaseFuncs db = new DatabaseFuncs();
     private TaskListFragment.PositionListener listener;
 
@@ -30,35 +30,46 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.MyHandler>{
     public TasksAdapter.MyHandler onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater =LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.card_joined_groups,parent,false);
+        if (viewType == 1) return new TasksAdapter.MyHandler(inflater.inflate(R.layout.card_main_header,parent,false));
         return new TasksAdapter.MyHandler(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull MyHandler holder, @SuppressLint("RecyclerView") int position) {
-        holder.tv_g.setText((tasks.get(position).get("TaskName")).toString());
-        holder.parent.setOnClickListener(v -> {
-            try {
-                    listener.taskItemClicked(tasks.get(position));
-            }catch (Exception ex){
-                System.out.println("im going to sleep");
-            }
-            MainMenuActivity.selected = "Tasks";
+        if (tasks.get(position) instanceof Map) {
+            Map task = (Map)tasks.get(position);
+            holder.tv_g.setText((task.get("TaskName")).toString());
+            holder.parent.setOnClickListener(v -> {
+                try {
+                        listener.taskItemClicked(task);
+                }catch (Exception ex){
+                    System.out.println("im going to sleep");
+                }
+                MainMenuActivity.selected = "Tasks";
 
-            }
+                }
 
-        );
+            );
 
+        }
+
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (tasks.get(position) instanceof String) return 1;
+        return 0;
     }
 
     @Override
     public int getItemCount() {
         return tasks.size();
     }
-    public TasksAdapter(List<Map> tasks, TaskListFragment.PositionListener listener){
+    public TasksAdapter(List<Object> tasks, TaskListFragment.PositionListener listener){
         this.tasks = tasks;
         this.listener = listener;
     }
-    public TasksAdapter(List<Map> tasks){
+    public TasksAdapter(List<Object> tasks){
         this.tasks = tasks;
     }
 

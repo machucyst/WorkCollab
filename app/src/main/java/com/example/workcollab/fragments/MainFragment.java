@@ -17,6 +17,8 @@ import com.example.workcollab.databinding.FragmentMainBinding;
 import com.google.firebase.Timestamp;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -57,27 +59,60 @@ public class MainFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         b = FragmentMainBinding.inflate(inflater, container, false);
-        db.getTasks(MainMenuActivity.user.get("Id").toString(), new DatabaseFuncs.TaskListener(){
 
+        List<Object> tasks = new ArrayList<>();
+        tasks.add("");
+        Map waa = new HashMap<>();
+        waa.put("TaskName", "waaa");
+        tasks.add(waa);
+        tasks.add(waa);
+        tasks.add(waa);tasks.add(waa);
+        tasks.add(waa);
+        tasks.add(waa);
+        tasks.add(waa);
+        tasks.add(waa);
+        tasks.add(waa);
+        tasks.add(waa);
+        tasks.add(waa);
+        tasks.add(waa);
+        tasks.add(waa);
+        tasks.add(waa);
+        tasks.add(waa);
+        tasks.add(waa);
+        tasks.add(waa);
+        tasks.add(waa);
+
+
+        TasksAdapter deadlineAdapter = new TasksAdapter(tasks, new TaskListFragment.PositionListener() {
             @Override
-            public void onTaskRecieved(List<Map> tasks) {
-                TasksAdapter deadlineAdapter = new TasksAdapter(tasks, new TaskListFragment.PositionListener() {
-                    @Override
-                    public void taskItemClicked(Map task) {
-                        TaskListFragment.PositionListener.super.taskItemClicked(task);
-                    }
-                });
-                b.rvDeadlines.setAdapter(deadlineAdapter);
-                b.rvDeadlines.setLayoutManager(new LinearLayoutManager(getContext()));
+            public void taskItemClicked(Map task) {
+                TaskListFragment.PositionListener.super.taskItemClicked(task);
             }
-
-            @Override
-            public void getDeadline(Timestamp timestamp) {
-
-            }
-
-
         });
+        b.rvDeadlines.setAdapter(deadlineAdapter);
+        b.rvDeadlines.setLayoutManager(new LinearLayoutManager(getContext()));
+        b.rvDeadlines.setNestedScrollingEnabled(false);
+//        db.getTasks(MainMenuActivity.user.get("Id").toString(), new DatabaseFuncs.TaskListener(){
+//
+//            @Override
+//            public void onTaskRecieved(List<Map> tasks) {
+//                TasksAdapter deadlineAdapter = new TasksAdapter(tasks, new TaskListFragment.PositionListener() {
+//                    @Override
+//                    public void taskItemClicked(Map task) {
+//                        TaskListFragment.PositionListener.super.taskItemClicked(task);
+//                    }
+//                });
+//                b.rvDeadlines.setAdapter(deadlineAdapter);
+//                b.rvDeadlines.setLayoutManager(new LinearLayoutManager(getContext()));
+//            }
+//
+//            @Override
+//            public void getDeadline(Timestamp timestamp) {
+//
+//            }
+//
+//
+//        });
 
 //        b.btnNG.setOnClickListener(new View.OnClickListener() {
 //            @Override

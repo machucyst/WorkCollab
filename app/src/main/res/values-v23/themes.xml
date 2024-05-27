@@ -2,8 +2,8 @@
 
     <style name="Theme.WorkCollab" parent="Base.Theme.WorkCollab">
         <!-- Transparent system bars for edge-to-edge. -->
-        <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:navigationBarColor">#28134A</item>
     </style>
 </resources>

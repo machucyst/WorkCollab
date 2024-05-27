@@ -5,6 +5,7 @@
         <item name="colorPrimary">@color/deviceTheme</item>
         <item name="colorOnPrimary">@color/white</item>
         <item name="colorSecondary">@color/deviceTheme2</item>
+        <item name="android:navigationBarColor">#28134A</item>
 
     </style>
 
