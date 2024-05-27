@@ -35,6 +35,7 @@ public class SelectedGroupSettingsFragment extends Fragment {
     DialogTextInputBinding dtb;
     public interface GroupPFP{
         void onGroupChanged();
+        void otherOne();
     }
     DatabaseFuncs db =new DatabaseFuncs();
     GroupPFP listener;
@@ -100,8 +101,8 @@ public class SelectedGroupSettingsFragment extends Fragment {
                         db.leaveGroup(MainMenuActivity.user.get("Id").toString(), group.get("Id").toString(), new DatabaseFuncs.BasicListener() {
                             @Override
                             public void BasicListener() {
+                                listener.otherOne();
                                 dialog.dismiss();
-                                requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), MainFragment.newInstance()).addToBackStack(null).commit();
                             }
                         });
                     });

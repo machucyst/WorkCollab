@@ -5,14 +5,15 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.databinding.ViewDataBinding;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.workcollab.DeadlineModel;
+import com.example.workcollab.R;
 import com.example.workcollab.databinding.CardDeadlineBinding;
 import com.example.workcollab.databinding.CardMainHeaderBinding;
 import com.google.firebase.Timestamp;
@@ -92,9 +93,12 @@ public class DeadlinesAdapter extends RecyclerView.Adapter<DeadlinesAdapter.VH> 
             bind.userImage.setOnClickListener(v -> {
                 headerClickListener.onProfileClick();
             });
-
-            Glide.with(context).load(user.get("Profile").toString()).into(bind.userImage);
-            bind.username.setText("Welcome\nto Work Collab, " + user.get("Username"));
+            try{
+                Glide.with(context).load(user.get("Profile").toString()).into(bind.userImage);
+                bind.username.setText("Welcome\nto Work Collab, " + user.get("Username"));
+            }catch (Exception ex){
+                Glide.with(context).load(AppCompatResources.getDrawable(context, R.drawable.icon_test)).into(bind.userImage);
+            }
         }
     }
 

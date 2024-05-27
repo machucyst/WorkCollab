@@ -482,6 +482,11 @@ public class MainMenuActivity extends AppCompatActivity implements SelectedGroup
     }
 
     @Override
+    public void otherOne() {
+        getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(),MainFragment.newInstance()).commit();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
 

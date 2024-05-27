@@ -864,7 +864,13 @@ public class DatabaseFuncs {
         });
     }
     public void leaveGroup(String id, String groupId, BasicListener listener){
-        groups.document(groupId).update("Invites", FieldValue.arrayRemove(id)).addOnSuccessListener(new OnSuccessListener<Void>() {
+        groups.document(groupId).update("Members", FieldValue.arrayRemove(id)).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                listener.BasicListener();
+            }
+        });
+        groups.document(groupId).update("Leaders", FieldValue.arrayRemove(id)).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
                 listener.BasicListener();
