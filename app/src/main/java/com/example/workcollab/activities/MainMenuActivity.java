@@ -274,7 +274,6 @@ public class MainMenuActivity extends AppCompatActivity implements SelectedGroup
         SharedPreferences sharedPreferences = getSharedPreferences("UserLogInPreferences", Context.MODE_PRIVATE);
         sharedPreferences.edit().remove("user-email").apply();
         FirebaseAuth.getInstance().signOut();
-        Toast.makeText(this, (FirebaseAuth.getInstance().getCurrentUser() == null) + "", Toast.LENGTH_SHORT).show();
     }
     public void replaceFragment(Fragment fragment, String condition){
         String waa = "";

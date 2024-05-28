@@ -192,7 +192,7 @@ public class AccountFragment extends Fragment {
                                 dtb.editAccount.setText("Please input password before proceeding");
                                 dtb.Ok.setEnabled(false);
                                 dtb.Ok.setHint("This process cannot be undone!");
-                                dtb.Ok.setBackground(getResources().getDrawable(R.drawable.textholderdisabled));
+                                dtb.Ok.setBackground(AppCompatResources.getDrawable(getContext(),R.drawable.textholderdisabled));
                                 dtb.Ok.setHeight(90);
                                 dtb.Ok.setWidth(90);
                                 dtb.Cancel.setWidth(90);
@@ -216,7 +216,7 @@ public class AccountFragment extends Fragment {
 
                                             @Override
                                             public void onFinish() {
-                                                dtb.Ok.setBackground(getResources().getDrawable(R.drawable.textholderwarning));
+                                                dtb.Ok.setBackground(AppCompatResources.getDrawable(getContext(),R.drawable.textholderwarning));
                                                 dtb.Ok.setTextColor(getResources().getColor(R.color.white));
                                                 dtb.Ok.setText("Delete");
                                                 dtb.Ok.setEnabled(true);

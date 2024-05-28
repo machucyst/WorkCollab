@@ -79,7 +79,7 @@
                         android:fontFamily="@font/bahnschrift"
                         android:textSize="10dp"
                         android:text="By agreeing to this Agreement, the User acknowledges that they have read and understood the terms and conditions outlined herein and consent to the access and use of their personal information by the Application."
-                        android:textColor="@color/deviceThemeInverted" />
+                        android:textColor="@color/black" />
 
                 </LinearLayout>
 

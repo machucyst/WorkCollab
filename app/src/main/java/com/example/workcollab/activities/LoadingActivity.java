@@ -24,12 +24,10 @@ public class LoadingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(getUserEmail().equals("")){
-            if(mAuth.getCurrentUser() == null){
+        if(getUserEmail().equals("") || mAuth.getCurrentUser() == null){
                 Intent intent = new Intent(LoadingActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();
-            }
         }else{
                 db.InitDB(getUserEmail(), new DatabaseFuncs.DataListener() {
                 @Override

@@ -87,6 +87,7 @@ public class DatabaseFuncs {
                 listener.onDelete();
             }
         });
+
     }
     public interface MessagesReceivedListener {
         void onMessageReceived(List<Message> newMessages, List<Message> updatedMessages);

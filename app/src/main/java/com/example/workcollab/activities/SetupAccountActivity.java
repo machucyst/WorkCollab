@@ -43,6 +43,7 @@ public class SetupAccountActivity extends AppCompatActivity {
     ActivitySetupAccountBinding b;
     DialogAgreementFormBinding dafb;
     Bundle bu;
+    boolean x = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,10 +82,7 @@ public class SetupAccountActivity extends AppCompatActivity {
                 dafb.Ok.setOnClickListener(k -> {
                     if (resultUri == null) {
                         Toast.makeText(SetupAccountActivity.this, "Pick a profile image", Toast.LENGTH_SHORT).show();
-                        resultUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE +
-                                "://" + getResources().getResourcePackageName(R.drawable.icon_test)
-                                + '/' + getResources().getResourceTypeName(R.drawable.icon_test)
-                                + '/' + getResources().getResourceEntryName(R.drawable.icon_test));
+                        return;
                     }
                     if (StrValOf(b.etCN).length() != 11) {
                         Toast.makeText(SetupAccountActivity.this, "Invalid Phone Number", Toast.LENGTH_SHORT).show();
@@ -154,7 +152,7 @@ public class SetupAccountActivity extends AppCompatActivity {
                 if (resultCode == RESULT_OK) {
                     resultUri = UCrop.getOutput(data);
                     try{
-                        Glide.with(this).asBitmap().load(resultUri).into(b.profileImage);
+                        Glide.with(SetupAccountActivity.this).load(resultUri).into(b.profileImage);
                     } catch (Exception e){
                         e.printStackTrace();
                     }
@@ -163,9 +161,9 @@ public class SetupAccountActivity extends AppCompatActivity {
                     // Handle the error
                 }
                 String result = data.getStringExtra("RESULT");
-                resultUri = null;
                 if (result != null) {
                     resultUri = Uri.parse(result);
+                    x = true;
                 }
             break;
 

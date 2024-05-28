@@ -28,13 +28,15 @@
                 android:textAlignment="center"
                 android:textColor="@color/deviceThemeInverted"
                 android:textSize="30dp"
-                android:visibility="gone" />
+                android:visibility="gone"
+                tools:visibility="visible"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_groups"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/fui_transparent" />
+                android:background="@color/fui_transparent"
+                android:paddingBottom="70dp"/>
         </LinearLayout>
 
     </FrameLayout>

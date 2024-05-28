@@ -71,7 +71,7 @@ public class InvitesSubFragment extends Fragment  {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         b = FragmentInvitesBinding.inflate(inflater,container,false);
-        InvitesAdapter a = new InvitesAdapter(new ArrayList<>(), new PositionListener() {
+        InvitesAdapter a = new InvitesAdapter(new ArrayList<>(), getContext(), new PositionListener() {
             @Override
             public void onDeny(Map group) {
                 PositionListener.super.onDeny(group);
