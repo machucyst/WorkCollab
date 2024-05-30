@@ -25,7 +25,7 @@
                     android:layout_height="match_parent"
                     android:layout_width="wrap_content"
                     android:src="@drawable/ic_back_arrow"
-                    app:tint="@color/deviceThemeInverted" />
+                    app:tint="@color/textColor" />
 
                 <TextView
                     android:id="@+id/textView"
@@ -33,7 +33,7 @@
                     android:layout_height="match_parent"
                     style="@style/SecondTextStyle"
                     android:layout_marginStart="5dp"
-                    android:textColor="@color/deviceThemeInverted"
+                    android:textColor="@color/textColor"
                     android:layout_weight="1"
                     android:text="Settings" />
             </LinearLayout>

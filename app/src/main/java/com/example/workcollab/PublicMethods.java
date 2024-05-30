@@ -6,6 +6,9 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.OpenableColumns;
+import android.widget.TextView;
+
+import com.google.android.material.navigation.NavigationView;
 
 import java.io.File;
 
@@ -34,7 +37,7 @@ public class PublicMethods {
             result = uri.getPath();
             int cut = result.lastIndexOf('/');
             if (cut != -1) {
-                result = result.substring(cut + 1);
+                result = result.substring(0, cut);
             }
         }
         return result;
@@ -99,5 +102,9 @@ public class PublicMethods {
                 return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
         }
 
+    }
+    public static void menuTextChange(NavigationView nv, int id, int ItemId, String text){
+        TextView a = (nv.getMenu().findItem(ItemId).getActionView().findViewById(id));
+        a.setText(text);
     }
 }

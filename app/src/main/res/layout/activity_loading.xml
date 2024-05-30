@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -11,18 +12,24 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
+        android:background="@drawable/background_default"
         tools:context=".activities.LoadingActivity"
         android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/textView3"
-            android:textAlignment="center"
-            android:textColor="@color/deviceThemeInverted"
+        <ProgressBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textSize="40dp"
-            android:text="Loading..." />
+            android:backgroundTint="@color/deviceTheme"
+            app:tint="@color/textColor"
+            android:indeterminate="true" />
+<!--        <TextView-->
+<!--            android:id="@+id/textView3"-->
+<!--            android:textAlignment="center"-->
+<!--            android:textColor="@color/textColor"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_weight="1"-->
+<!--            android:textSize="40dp"-->
+<!--            android:text="Loading..." />-->
 
     </LinearLayout>
 </layout>

@@ -40,7 +40,7 @@
                     android:layout_height="wrap_content"
                     android:text="Task name goes here woah kelangan mo daw gawin kung ano ano"
                     style="@style/SecondTextStyle"
-                    android:textColor="@color/deviceThemeInverted2"
+                    android:textColor="@color/textColor"
                     android:id="@+id/taskName" />
 
                 <TextView
@@ -50,7 +50,7 @@
                     android:layout_height="wrap_content"
                     android:text="Woah this is group name"
                     style="@style/SecondTextStyle"
-                    android:textColor="@color/deviceThemeInverted2"
+                    android:textColor="@color/textColor"
                     android:id="@+id/groupName" />
 
                 <TextView
@@ -60,7 +60,7 @@
                     android:layout_height="wrap_content"
                     android:text="Submit before May 21, 2077"
                     style="@style/SecondTextStyle"
-                    android:textColor="@color/deviceThemeInverted2"
+                    android:textColor="@color/textColor"
                     android:id="@+id/deadline" />
             </LinearLayout>
 

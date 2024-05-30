@@ -22,15 +22,15 @@
 
             android:text="Loading..."
             android:gravity="end|center"
-            android:fontFamily="@font/bahnschrift"
-            android:textColor="@color/deviceThemeInverted"
-            android:textSize="15dp" />
+            android:textColor="@color/textColor"
+            android:textFontWeight="@integer/material_motion_duration_long_1"
+            android:textSize="13dp" />
 
         <ImageView
             android:id="@+id/nextMenuArrow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_kb_right_24"
-            app:tint="@color/deviceThemeInverted" />
+            app:tint="@color/textColor" />
     </LinearLayout>
 </layout>

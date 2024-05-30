@@ -24,10 +24,10 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
     public final List<Map> members;
     private final Context context;
     DatabaseFuncs db = new DatabaseFuncs();
-     GroupMembersAdapter.PositionListener listener;
+    GroupMembersAdapter.PositionListener listener;
 
     public interface PositionListener{
-        void onMemberClicked();
+        void onMemberClicked(Map user);
     }
 
     @NonNull
@@ -42,6 +42,12 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
     public void onBindViewHolder(@NonNull MyHandler holder, @SuppressLint("RecyclerView") int position) {
         holder.tv_g.setText((members.get(position).get("Username")).toString());
         Glide.with(context).load(members.get(position).get("Profile").toString()).into(holder.iv);
+        holder.parent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onMemberClicked(members.get(position));
+            }
+        });
     }
 
     @Override

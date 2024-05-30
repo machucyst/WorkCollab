@@ -20,7 +20,7 @@
             android:layout_margin="20dp"
             android:fontFamily="@font/bahnschrift"
             android:text="Tasks"
-            android:textColor="@color/deviceThemeInverted"
+            android:textColor="@color/textColor"
             android:textSize="30dp" />
 
         <androidx.recyclerview.widget.RecyclerView

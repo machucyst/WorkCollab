@@ -161,7 +161,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:textColor="@color/deviceThemeInverted"
+                android:textColor="@color/white"
                 android:checked="true"
                 android:text="@string/stay_signed_in"
                 android:textSize="15sp"
@@ -177,7 +177,7 @@
                 android:fontFamily="@font/bahnschrift"
                 android:onClick="toggleButtons"
                 android:text="@string/sign_up_instead"
-                android:textColor="@color/deviceThemeInverted"
+                android:textColor="@color/white"
                 android:textSize="15sp" />
 
             <androidx.appcompat.widget.AppCompatButton
@@ -338,7 +338,7 @@
                 android:layout_height="wrap_content"
                 android:text="Stay Signed In?"
                 style="@style/DefaultTextStyle"
-                android:textColor="@color/deviceThemeInverted"
+                android:textColor="@color/white"
                 android:textSize="15sp"
                 android:layout_gravity="center"
                 android:checked="true"
@@ -354,7 +354,7 @@
                 android:fontFamily="@font/rubik_regular"
                 android:onClick="toggleButtons"
                 android:text="@string/already_have_an_account"
-                android:textColor="@color/deviceThemeInverted"
+                android:textColor="@color/white"
                 android:textSize="15sp" />
 
             <androidx.appcompat.widget.AppCompatButton

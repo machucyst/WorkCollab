@@ -31,6 +31,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.workcollab.DatabaseFuncs;
+import com.example.workcollab.PublicMethods;
 import com.example.workcollab.R;
 import com.example.workcollab.activities.MainMenuActivity;
 import com.example.workcollab.databinding.DialogLogoutConfirmBinding;
@@ -79,10 +80,6 @@ public class AccountFragment extends Fragment {
         }
     }
 
-    public void menuTextChange(NavigationView nv, int ItemId,String text){
-        TextView a = (nv.getMenu().findItem(ItemId).getActionView().findViewById(R.id.additionalText));
-        a.setText(text);
-    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,9 +95,12 @@ public class AccountFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         b = FragmentAccountBinding.inflate(inflater,container,false);
-        menuTextChange(b.nvAccountMenu,R.id.menu_password, "");
-        menuTextChange(b.nvAccountMenu, R.id.menu_deleteAccount,"");
-        menuTextChange(b.nvAccountMenu, R.id.menu_profilePicture,"");
+        PublicMethods.menuTextChange(b.nvAccountMenu,R.id.additionalText,R.id.menu_password, "");
+        PublicMethods.menuTextChange(b.nvAccountMenu,R.id.additionalText, R.id.menu_deleteAccount,"");
+        PublicMethods.menuTextChange(b.nvAccountMenu,R.id.additionalText, R.id.menu_profilePicture,"");
+        PublicMethods.menuTextChange(b.nvSettings,R.id.additionalText,R.id.menu_logOut,"Log Out");
+        PublicMethods.menuTextChange(b.nvSettings,R.id.additionalText,R.id.menu_settings,"Settings");
+        PublicMethods.menuTextChange(b.nvSettings,R.id.additionalText,R.id.menu_appearance,"Appearance");
 
         b.nvAccountMenu.getMenu().findItem(R.id.menu_email).setEnabled(false);
         TextView a = b.nvAccountMenu.getMenu().findItem(R.id.menu_email).getActionView().findViewById(R.id.additionalText);
@@ -117,9 +117,9 @@ public class AccountFragment extends Fragment {
         db.InitDB(MainMenuActivity.user.get("Email").toString(), new DatabaseFuncs.DataListener() {
             @Override
             public void onDataFound(Map user) {
-                menuTextChange(b.nvAccountMenu,R.id.menu_username, "\"" + user.get("Username").toString() + "\"");
-                menuTextChange(b.nvAccountMenu,R.id.menu_contactNumber, "\"" + user.get("ContactNumber").toString().substring(0,3)+"*******" + "\"");
-                menuTextChange(b.nvAccountMenu,R.id.menu_email, "\"" + user.get("Email").toString() + "\"");
+                PublicMethods.menuTextChange(b.nvAccountMenu,R.id.additionalText,R.id.menu_username,  "\"" + user.get("Username").toString() + "\"");
+                PublicMethods.menuTextChange(b.nvAccountMenu,R.id.additionalText,R.id.menu_contactNumber,  "\"" + user.get("ContactNumber").toString().substring(0,3)+"*******" + "\"");
+                PublicMethods.menuTextChange(b.nvAccountMenu,R.id.additionalText,R.id.menu_email,  "\"" + user.get("Email").toString() + "\"");
             }
             @Override
             public void noDuplicateUser() {

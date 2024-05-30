@@ -51,17 +51,12 @@
                         style="@style/DefaultTextStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:autoSizeTextType="uniform"
                         android:text="TextView"
-                        android:textColor="@color/deviceThemeInverted"
-                        android:textSize="20dp" />
+                        android:textColor="@color/textColor"
+                        android:textSize="30dp" />
 
-                    <TextView
-                        android:id="@+id/tv_latestMessage"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="TextView"
-                        android:textColor="@color/deviceThemeInverted" />
                     <LinearLayout
                         android:layout_gravity="right"
                         android:layout_width="wrap_content"

@@ -56,7 +56,7 @@
                 android:layout_margin="20dp"
                 android:fontFamily="@font/bahnschrift"
                 android:text="Select Group"
-                android:textColor="@color/deviceThemeInverted"
+                android:textColor="@color/textColor"
                 android:textSize="30dp"
                 android:visibility="gone" />
 

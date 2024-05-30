@@ -115,8 +115,9 @@ public class InviteMoreMembersFragment extends Fragment {
                 GroupMembersAdapter a = new GroupMembersAdapter(members, getContext(), new GroupMembersAdapter.PositionListener() {
 
                     @Override
-                    public void onMemberClicked() {
-
+                    public void onMemberClicked(Map user) {
+                        BottomDialogViewProfileFragment bdvf = new BottomDialogViewProfileFragment(user.get("Id").toString());
+                        bdvf.show(requireActivity().getSupportFragmentManager(),new BottomDialogViewProfileFragment(user.get("Id").toString()).getTag());
                     }
                 });
                 if(members!=null){

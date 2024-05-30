@@ -10,7 +10,6 @@
             android:checkable="true"
             app:actionLayout="@layout/menu_you_custom_layout"
             app:showAsAction="always"
-            android:title=""
             tools:ignore="MenuTitle" />
     </group>
 </menu>

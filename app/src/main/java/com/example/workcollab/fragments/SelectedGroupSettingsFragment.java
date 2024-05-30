@@ -6,13 +6,13 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.example.workcollab.DatabaseFuncs;
+import com.example.workcollab.PublicMethods;
 import com.example.workcollab.R;
 import com.example.workcollab.activities.MainMenuActivity;
 import com.example.workcollab.databinding.DialogLogoutConfirmBinding;
@@ -75,8 +75,7 @@ public class SelectedGroupSettingsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         b = FragmentSelectedGroupSettingsBinding.inflate(inflater, container, false);
-        TextView a = b.nvAccountMenu.getMenu().findItem(R.id.menu_groupname).getActionView().findViewById(R.id.additionalText);
-        a.setText(group.get("GroupName").toString());
+        PublicMethods.menuTextChange(b.nvAccountMenu, R.id.additionalText,R.id.menu_groupname,"GroupName");
         b.nvAccountMenu.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {

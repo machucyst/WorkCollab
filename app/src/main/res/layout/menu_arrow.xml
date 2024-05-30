@@ -17,6 +17,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end|center_vertical"
             android:src="@drawable/ic_kb_right_24"
-            app:tint="@color/deviceThemeInverted" />
+            app:tint="@color/textColor" />
     </LinearLayout>
 </layout>

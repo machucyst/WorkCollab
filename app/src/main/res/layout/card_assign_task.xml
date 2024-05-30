@@ -52,7 +52,7 @@
                     android:layout_weight="1"
                     android:autoSizeTextType="uniform"
                     android:text="TextView"
-                    android:textColor="@color/deviceThemeInverted"
+                    android:textColor="@color/textColor"
                     android:textSize="20dp" />
 
             </LinearLayout>

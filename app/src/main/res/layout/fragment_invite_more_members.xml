@@ -38,7 +38,7 @@
                     android:layout_marginLeft="5dp"
                     android:fontFamily="@font/bahnschrift"
                     android:text="Members:"
-                    android:textColor="@color/deviceThemeInverted"
+                    android:textColor="@color/textColor"
                     android:textSize="20dp" />
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -81,7 +81,7 @@
                             android:layout_marginTop="10dp"
                             android:fontFamily="@font/bahnschrift"
                             android:text="Invite Members:"
-                            android:textColor="@color/deviceThemeInverted"
+                            android:textColor="@color/textColor"
                             android:textSize="20dp" />
 
                         <androidx.recyclerview.widget.RecyclerView

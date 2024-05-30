@@ -45,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:autoSizeTextType="uniform"
                 android:text="TextView"
-                android:textColor="@color/deviceThemeInverted"
+                android:textColor="@color/textColor"
                 android:textSize="20dp" />
 
             <TextView
@@ -54,7 +54,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="TextView"
-                android:textColor="@color/deviceThemeInverted" />
+                android:textColor="@color/textColor" />
         </LinearLayout>
 
         <androidx.cardview.widget.CardView

@@ -26,7 +26,7 @@
 
                 <ImageView
                     android:id="@+id/backbtn"
-                    app:tint="@color/deviceThemeInverted"
+                    app:tint="@color/textColor"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:src="@drawable/ic_back_arrow" />
@@ -39,7 +39,7 @@
                     android:layout_marginStart="5dp"
                     android:layout_weight="1"
                     android:text="Account"
-                    android:textColor="@color/deviceThemeInverted" />
+                    android:textColor="@color/textColor" />
 
                 <TextView
                     android:id="@+id/saveEdit"
@@ -82,7 +82,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             style="@style/SecondTextStyle"
-                            android:textColor="@color/deviceThemeInverted"
+                            android:textColor="@color/textColor"
                             android:padding="10dp"
                             android:textSize="28dp"
                             android:background="@color/deviceTheme"

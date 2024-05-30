@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.example.workcollab.PublicMethods;
 import com.example.workcollab.R;
 import com.example.workcollab.databinding.FragmentSettingsBinding;
 import com.google.android.material.navigation.NavigationView;
@@ -30,7 +31,7 @@ public class SettingsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v =inflater.inflate(R.layout.fragment_settings, container, false);
         b = FragmentSettingsBinding.bind(v);
-
+        PublicMethods.menuTextChange(b.nvAccountMenu, R.id.additionalText,R.id.menu_notifications,"Notification Settings");
         b.nvAccountMenu.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {

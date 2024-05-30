@@ -82,7 +82,7 @@ public class SubmitTaskFragment extends Fragment {
         try{
         b.tvFileName.setText(PublicMethods.getFileName(fileUri,getContext()));
         }catch (Exception ex){
-            b.tvFileName.setHint("no file uploaded yet");
+
         }
         b.btnUpload.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,13 +100,21 @@ public class SubmitTaskFragment extends Fragment {
         b.btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String filename = b.tvFileName.getText().toString();
                 if(fileUri == null){
                     Toast.makeText(getContext(), "Upload a file before submitting",Toast.LENGTH_SHORT).show();
                     return;
                 }
+                if(b.tvFileName.getText().toString().equals("")){
+                    filename = MainMenuActivity.user.get("Username").toString() + "'s task";
+                }
+                if(b.tvFileName.getText().toString().matches(".*[~\"#%&*:<>?/\\{|}].*")){
+                    Toast.makeText(getContext(),"Invalid File Name",Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 b.btnSubmit.setBackground(AppCompatResources.getDrawable(requireContext(),R.drawable.textholderdisabled));
                 b.btnSubmit.setEnabled(false);
-                db.submitTask(MainMenuActivity.user, fileUri, task.get("ParentId").toString(),task.get("Id").toString(),b.tvFileName.getText().toString(), b.btnSubmit,requireContext(), new DatabaseFuncs.BasicListener() {
+                db.submitTask(MainMenuActivity.user, fileUri, task.get("ParentId").toString(),task.get("Id").toString(),filename, b.btnSubmit,requireContext(), new DatabaseFuncs.BasicListener() {
                     @Override
                     public void BasicListener() {
                         Toast.makeText(getContext(),"File Submitted Successfully",Toast.LENGTH_SHORT).show();
@@ -115,7 +123,6 @@ public class SubmitTaskFragment extends Fragment {
                             public void onDataFound(Map user) {
                                 MainMenuActivity.selectedgroup = user;
                                 requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), SelectedGroupFragment.newInstance(MainMenuActivity.selectedgroup)).addToBackStack(null).commit();
-
                             }
 
                             @Override
