@@ -82,6 +82,13 @@ public class AccountEditFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         b = FragmentAccountEditBinding.inflate(inflater, container, false);
+        b.backbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainMenuActivity.backFlow.pop();
+                requireActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
         b.editTextText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {

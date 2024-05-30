@@ -68,6 +68,27 @@ public class MainFragment extends Fragment {
         }, user);
         b.rvDeadlines.setLayoutManager(new LinearLayoutManager(getContext()));
         b.rvDeadlines.setAdapter(adapter);
+        adapter.setHeaderClickListener(new DeadlinesAdapter.HeaderClickListener() {
+            @Override
+            public void onInvitesClick() {
+                MainMenuActivity.backFlow.clear();
+                MainMenuActivity.backFlow.push("groups");
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment,new GroupsFragment(true)).commit();
+            }
+
+            @Override
+            public void onCreateGroupClick() {
+                MainMenuActivity.backFlow.push("creategroups");
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment,CreateGroupFragment.newInstance()).commit();
+            }
+
+            @Override
+            public void onProfileClick() {
+                MainMenuActivity.backFlow.clear();
+                MainMenuActivity.backFlow.push("profile");
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment,AccountFragment.newInstance()).commit();
+            }
+        });
         db.getTasks(MainMenuActivity.user.get("Id").toString(), new DatabaseFuncs.TaskListener() {
             @Override
             public void onTaskRecieved(List<Map> tasks) {
@@ -80,27 +101,6 @@ public class MainFragment extends Fragment {
 
                 adapter.addRange(tasks);
 
-                adapter.setHeaderClickListener(new DeadlinesAdapter.HeaderClickListener() {
-                    @Override
-                    public void onInvitesClick() {
-                        MainMenuActivity.backFlow.clear();
-                        MainMenuActivity.backFlow.push("groups");
-                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment,new GroupsFragment(true)).commit();
-                    }
-
-                    @Override
-                    public void onCreateGroupClick() {
-                        MainMenuActivity.backFlow.push("creategroups");
-                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment,CreateGroupFragment.newInstance()).commit();
-                    }
-
-                    @Override
-                    public void onProfileClick() {
-                        MainMenuActivity.backFlow.clear();
-                        MainMenuActivity.backFlow.push("profile");
-                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment,AccountFragment.newInstance()).commit();
-                    }
-                });
             }
 
             @Override
