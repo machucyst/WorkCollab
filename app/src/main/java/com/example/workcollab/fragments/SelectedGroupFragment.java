@@ -68,7 +68,6 @@ public class SelectedGroupFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        //TODO: Edit Group, Add Tasks!!!!!!!!!!, Leave Group.
         b = FragmentSelectedGroupBinding.inflate(inflater,container,false);
         b.tvGroupName.setText(group.get("GroupName").toString());
         try {
@@ -105,7 +104,12 @@ public class SelectedGroupFragment extends Fragment {
         });
 
         adapter = new DeadlinesAdapter(new ArrayList<>(), getContext(), (position, task) -> {
-            // TODO: Task item click
+            MainMenuActivity.backFlow.push("viewtask");
+            if(Boolean.parseBoolean(group.get("isLeader").toString())){
+                requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), ViewMemberTasks.newInstance(task)).addToBackStack(null).commit();
+            }else{
+                requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), SubmitTaskFragment.newInstance(task)).addToBackStack(null).commit();
+            }
         }, MainMenuActivity.user);
         b.rvDeadlines.setLayoutManager(new LinearLayoutManager(getContext()));
         b.rvDeadlines.setAdapter(adapter);

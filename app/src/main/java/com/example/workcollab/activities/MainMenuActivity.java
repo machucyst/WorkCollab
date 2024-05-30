@@ -30,6 +30,7 @@ import com.example.workcollab.DatabaseFuncs;
 import com.example.workcollab.NotifiationsService;
 import com.example.workcollab.R;
 import com.example.workcollab.Utils;
+import com.example.workcollab.adapters.DeadlinesAdapter;
 import com.example.workcollab.adapters.GroupMembersAdapter;
 import com.example.workcollab.databinding.ActivityMainMenuBinding;
 import com.example.workcollab.databinding.DialogLogoutConfirmBinding;
@@ -57,7 +58,7 @@ import java.io.File;
 import java.util.Map;
 import java.util.Stack;
 
-public class MainMenuActivity extends AppCompatActivity implements GroupMembersAdapter.PositionListener,SelectedGroupSettingsFragment.GroupPFP,AccountEditFragment.UpdateListener, AccountFragment.ButtonListeners, JoinedGroupsSubFragment.PositionListener, InvitesSubFragment.PositionListener, TaskListFragment.PositionListener, SubmitTaskFragment.onSubmitClick, ViewMemberTasks.PositionListener {
+public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdapter.ClickItemListener,GroupMembersAdapter.PositionListener,SelectedGroupSettingsFragment.GroupPFP,AccountEditFragment.UpdateListener, AccountFragment.ButtonListeners, JoinedGroupsSubFragment.PositionListener, InvitesSubFragment.PositionListener, TaskListFragment.PositionListener, SubmitTaskFragment.onSubmitClick, ViewMemberTasks.PositionListener {
     private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 32;
     private static final int PICK_FILE_REQUEST = 123;
     private static final long MAX_FILE_SIZE = 20 * 1024 * 1024; // 20 MB
@@ -520,5 +521,10 @@ public class MainMenuActivity extends AppCompatActivity implements GroupMembersA
     public void onMemberClicked(Map user) {
         BottomDialogViewProfileFragment bd = new BottomDialogViewProfileFragment(user.get("Id").toString());
         bd.show(getSupportFragmentManager(),new BottomDialogViewProfileFragment(user.get("Id").toString()).getTag());
+    }
+
+    @Override
+    public void onItemClick(int position, Map task) {
+        replaceFragment(SubmitTaskFragment.newInstance(task),"taskselected");
     }
 }

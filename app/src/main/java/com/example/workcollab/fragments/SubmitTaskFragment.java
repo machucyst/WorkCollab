@@ -114,7 +114,7 @@ public class SubmitTaskFragment extends Fragment {
                 }
                 b.btnSubmit.setBackground(AppCompatResources.getDrawable(requireContext(),R.drawable.textholderdisabled));
                 b.btnSubmit.setEnabled(false);
-                db.submitTask(MainMenuActivity.user, fileUri, task.get("ParentId").toString(),task.get("Id").toString(),filename, b.btnSubmit,requireContext(), new DatabaseFuncs.BasicListener() {
+                db.submitTask(MainMenuActivity.user, fileUri, task.get("ParentId").toString(),task.get("Id").toString(),filename+PublicMethods.getFileType(fileUri,getContext()), b.btnSubmit,requireContext(), new DatabaseFuncs.BasicListener() {
                     @Override
                     public void BasicListener() {
                         Toast.makeText(getContext(),"File Submitted Successfully",Toast.LENGTH_SHORT).show();

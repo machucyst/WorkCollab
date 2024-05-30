@@ -3,6 +3,7 @@ package com.example.workcollab;
 import static android.content.ContentValues.TAG;
 
 import android.content.Context;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
@@ -196,6 +197,7 @@ public class DatabaseFuncs {
             @Override
             public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                 Toast.makeText(context, "File downloaded successfully",Toast.LENGTH_SHORT).show();
+                scanFile(context,localFile);
             }
         });
     }
@@ -228,6 +230,15 @@ public class DatabaseFuncs {
             }
         });
 
+    }
+    private static void scanFile(Context context, File file) {
+        // Use MediaScannerConnection to scan the file and make it available in the gallery
+        MediaScannerConnection.scanFile(context, new String[]{file.getAbsolutePath()}, null, new MediaScannerConnection.OnScanCompletedListener() {
+            @Override
+            public void onScanCompleted(String path, Uri uri) {
+                Log.d(TAG, "Scan completed: " + path);
+            }
+        });
     }
     public void saveProfile(Map user, Uri value, UpdateListener listener){
         reference.child("AccountProfiles/"+user.get("Id").toString()+"/Profile.png").putFile(value)

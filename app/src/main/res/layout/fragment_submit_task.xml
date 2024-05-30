@@ -91,7 +91,7 @@
                         android:layout_height="match_parent"
                         android:orientation="vertical">
 
-                        <TextView
+                        <EditText
                             android:id="@+id/tv_fileName"
                             style="@style/TextHolder"
                             android:layout_width="match_parent"

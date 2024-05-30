@@ -30,16 +30,31 @@ public class PublicMethods {
             try (Cursor cursor = context.getContentResolver().query(uri,null,null,null,null)){
                 if(cursor != null && cursor.moveToFirst()){
                     result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                    int cut = result.lastIndexOf('.');
+                    if (cut != -1) {
+                        result = result.substring(0, cut);
+                    }
                 }
             }
         }
-        if (result == null) {
-            result = uri.getPath();
-            int cut = result.lastIndexOf('/');
-            if (cut != -1) {
-                result = result.substring(0, cut);
+        System.out.println(result);
+        return result;
+    }
+    @SuppressLint("Range")
+    public static String getFileType(Uri uri, Context context){
+        String result = null;
+        if (uri.getScheme().equals("content")){
+            try (Cursor cursor = context.getContentResolver().query(uri,null,null,null,null)){
+                if(cursor != null && cursor.moveToFirst()){
+                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                    int cut = result.lastIndexOf('.');
+                    if (cut != -1) {
+                        result = result.substring(cut-1);
+                    }
+                }
             }
         }
+        System.out.println(result);
         return result;
     }
     @SuppressLint("Range")
@@ -59,6 +74,9 @@ public class PublicMethods {
 
             if (cut != -1) {
                 result = result.substring(cut);
+                if(result.equals(".jpeg")){
+                    result = ".jpg";
+                }
             }
             if(cut2 != -1){
                 System.out.println(fileName);
@@ -88,19 +106,20 @@ public class PublicMethods {
             }
             System.out.println(result);
         }
+        System.out.println(result+"aaaaaaaaaa");
         switch (result){
-            case "jpeg":
-            case "jpg":
-            case "png":
-            case "gif":
-            case "apng":
-            case "mp4":
+            case ".jpeg":
+            case ".jpg":
+            case ".png":
+            case ".gif":
+            case ".apng":
+            case ".mp4":
                 return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-            case "mp3":
+            case ".mp3":
                 return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC);
             default:
-                return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
         }
+        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
 
     }
     public static void menuTextChange(NavigationView nv, int id, int ItemId, String text){

@@ -53,11 +53,7 @@ public class MainFragment extends Fragment {
             db.getGroupData(task.get("ParentId").toString(), new DatabaseFuncs.DataListener() {
                 @Override
                 public void onDataFound(Map group) {
-                    if(Boolean.parseBoolean(group.get("isLeader").toString())){
-                        requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), ViewMemberTasks.newInstance(task)).addToBackStack(null).commit();
-                    }else{
-                        requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), SubmitTaskFragment.newInstance(task)).addToBackStack(null).commit();
-                    }
+                    requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), SubmitTaskFragment.newInstance(task)).addToBackStack(null).commit();
                 }
 
                 @Override
@@ -89,6 +85,7 @@ public class MainFragment extends Fragment {
                 MainMenuActivity.backFlow.push("profile");
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment,AccountFragment.newInstance()).commit();
             }
+
         });
         db.getTasks(MainMenuActivity.user.get("Id").toString(), new DatabaseFuncs.TaskListener() {
             @Override
