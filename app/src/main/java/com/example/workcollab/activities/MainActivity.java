@@ -19,6 +19,7 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.databinding.DataBindingUtil;
 
 import com.example.workcollab.DatabaseFuncs;
+import com.example.workcollab.PublicMethods;
 import com.example.workcollab.R;
 import com.example.workcollab.databinding.ActivityMainBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -97,19 +98,22 @@ public class MainActivity extends AppCompatActivity {
                                         userDb.InitDB(email, new DatabaseFuncs.DataListener() {
                                             @Override
                                             public void onDataFound(Map user) {
-                                                if (email.equals(user.get("Email")) && password.equals((DecryptPassword(String.valueOf(user.get("Password")))))) {
+                                                if (email.equals(user.get("Email")) && password.equals((PublicMethods.DecryptPassword(String.valueOf(user.get("Password")))))) {
                                                     Intent toMenu = new Intent(MainActivity.this, MainMenuActivity.class);
                                                     toMenu.putExtra("user-name", user.get("Username").toString());
                                                     toMenu.putExtra("user-email", user.get("Email").toString());
                                                     if (b.cbStaySignedInLogIn.isChecked()) {
                                                         stayLogIn(user.get("Email").toString());
                                                     } else {
-                                                        mAuth.signOut();
+                                                        toMenu.putExtra("notStayLog",true);
                                                     }
                                                     startActivity(toMenu);
                                                     finish();
                                                 } else {
                                                     Toast.makeText(MainActivity.this, "User not found", Toast.LENGTH_SHORT).show();
+                                                    b.btnSubmitLogIn.setEnabled(true);
+                                                    b.btnSubmitLogIn.setBackground(AppCompatResources.getDrawable(MainActivity.this,R.drawable.textholder));
+                                                    b.btnSubmitLogIn.setText("Log In");
                                                 }
                                             }
 
@@ -119,8 +123,6 @@ public class MainActivity extends AppCompatActivity {
                                             }
                                         });
                                     }
-                                } else {
-                                    Toast.makeText(MainActivity.this, "Please verify your email", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         }).addOnFailureListener(new OnFailureListener() {
@@ -160,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
                         toMenu.putExtra("user-name", username);
                         toMenu.putExtra("user-email", email);
                         toMenu.putExtra("user-password",password);
-//                        toMenu.putExtra("StayLogIn", b.cbStaySignedInSignUp.isChecked());
+                        toMenu.putExtra("StayLogIn", b.cbStaySignedInSignUp.isChecked());
                         startActivity(toMenu);
                     }
 
@@ -187,16 +189,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private String DecryptPassword(String password){
-        char[] encpass = password.toCharArray();
-        StringBuilder pass = new StringBuilder();
-        for(char c: encpass){
-            c-=7;
-            pass.append(c);
-        }
-        System.out.println(pass);
-        return pass.toString();
-    }
+
     private String EncryptPassword(String password){
         char[] encpass = password.toCharArray();
         StringBuilder pass = new StringBuilder();

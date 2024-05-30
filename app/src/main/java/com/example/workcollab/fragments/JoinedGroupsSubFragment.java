@@ -2,6 +2,8 @@ package com.example.workcollab.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.workcollab.DatabaseFuncs;
 import com.example.workcollab.activities.MainMenuActivity;
@@ -56,6 +57,7 @@ public class JoinedGroupsSubFragment extends Fragment {
         return f;
     }
 
+    List<Map> filteredgroups = new ArrayList<>();
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,6 +87,49 @@ public class JoinedGroupsSubFragment extends Fragment {
                 try {
                     b.rvGroups.setAdapter(ga);
                     b.rvGroups.setLayoutManager(new GridLayoutManager(getContext(), 2));
+                    b.etSearch.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+                            filteredgroups = new ArrayList<>();
+                            if(b.etSearch.getText().toString().isEmpty()){
+                                filteredgroups = newList;
+                            }else{
+                                newList.forEach(map -> {
+                                    if(map.get("GroupName").toString().matches("(?i).*"+b.etSearch.getText().toString()+".*")){
+                                        filteredgroups.add(map);
+                                    }
+                                });
+                            }
+                            ga.refreshList(filteredgroups);
+//                            GroupsAdapter ga = new GroupsAdapter(filteredgroups, getContext(), new PositionListener() {
+//                                @Override
+//                                public void itemClicked(Map group) {
+//                                    if(test){
+//                                        PositionListener.super.itemClicked(group);
+//                                        MainMenuActivity.selected = "groups";
+//                                        listener.itemClicked(group);
+//                                    }else{
+//                                        test = true;
+//                                        requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), AssignTaskFragment.newInstance(group)).addToBackStack(null).commit();
+//                                    }
+//
+//                                }
+//                            });
+//                            b.rvGroups.setAdapter(ga);
+//                            b.rvGroups.setLayoutManager(new GridLayoutManager(getContext(), 2));
+                        }
+
+
+                        @Override
+                        public void afterTextChanged(Editable s) {
+
+                        }
+                    });
                 } catch (Exception ex) {
 
                 }
@@ -102,13 +147,15 @@ public class JoinedGroupsSubFragment extends Fragment {
             }
         });
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         b = FragmentJoinedGroupsBinding.inflate(inflater, container, false);
-        if(!test) b.textView6.setVisibility(View.VISIBLE);
+        if(!test) {
+            b.textView2.setVisibility(View.VISIBLE);
+            b.rvGroups.setPadding(0, 0, 0, 200);
+        }
         return b.getRoot();
     }
 

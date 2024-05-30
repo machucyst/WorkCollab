@@ -73,7 +73,6 @@ public class AccountEditFragment extends Fragment {
             conditionValue = condition;
         }
 
-
     }
 
 

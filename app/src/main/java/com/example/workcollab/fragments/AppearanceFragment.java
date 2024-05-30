@@ -13,28 +13,18 @@ import androidx.fragment.app.Fragment;
 import com.example.workcollab.R;
 import com.example.workcollab.databinding.FragmentApperanceBinding;
 import com.google.android.material.navigation.NavigationView;
-import com.google.gson.Gson;
-
-import java.util.Map;
 
 public class AppearanceFragment extends Fragment {
-    Gson gson = new Gson();
-    Map group;
     FragmentApperanceBinding b;
+
     public static AppearanceFragment newInstance() {
-        Bundle args = new Bundle();
-        Gson gson = new Gson();
-        AppearanceFragment f = new AppearanceFragment();
-        f.setArguments(args);
-        return f;
+        return new AppearanceFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
 
-        }
     }
 
     @Override
@@ -53,7 +43,6 @@ public class AppearanceFragment extends Fragment {
                 if(a == R.id.menu_dark){
                     //Dark
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-
                 }
                 if(a == R.id.menu_system){
                     //Dark

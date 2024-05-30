@@ -1,21 +1,18 @@
 package com.example.workcollab.fragments;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.OpenableColumns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.appcompat.content.res.AppCompatResources;
-import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import com.example.workcollab.DatabaseFuncs;
+import com.example.workcollab.PublicMethods;
 import com.example.workcollab.R;
 import com.example.workcollab.activities.MainMenuActivity;
 import com.example.workcollab.databinding.FragmentSubmitTaskBinding;
@@ -83,7 +80,7 @@ public class SubmitTaskFragment extends Fragment {
         b.tvTaskName.setText(task.get("TaskName").toString());
         b.etTD.setText(task.get("TaskDescription").toString());
         try{
-        b.tvFileName.setText(getFileName(fileUri));
+        b.tvFileName.setText(PublicMethods.getFileName(fileUri,getContext()));
         }catch (Exception ex){
             b.tvFileName.setHint("no file uploaded yet");
         }
@@ -109,11 +106,23 @@ public class SubmitTaskFragment extends Fragment {
                 }
                 b.btnSubmit.setBackground(AppCompatResources.getDrawable(requireContext(),R.drawable.textholderdisabled));
                 b.btnSubmit.setEnabled(false);
-                db.submitTask(MainMenuActivity.user, fileUri, task.get("ParentId").toString(),task.get("Id").toString(), b.btnSubmit,requireContext(), new DatabaseFuncs.BasicListener() {
+                db.submitTask(MainMenuActivity.user, fileUri, task.get("ParentId").toString(),task.get("Id").toString(),b.tvFileName.getText().toString(), b.btnSubmit,requireContext(), new DatabaseFuncs.BasicListener() {
                     @Override
                     public void BasicListener() {
                         Toast.makeText(getContext(),"File Submitted Successfully",Toast.LENGTH_SHORT).show();
-                        requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), SelectedGroupFragment.newInstance(TaskListFragment.group)).addToBackStack(null).commit();
+                        db.getGroupData(task.get("ParentId").toString(), new DatabaseFuncs.DataListener() {
+                            @Override
+                            public void onDataFound(Map user) {
+                                MainMenuActivity.selectedgroup = user;
+                                requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), SelectedGroupFragment.newInstance(MainMenuActivity.selectedgroup)).addToBackStack(null).commit();
+
+                            }
+
+                            @Override
+                            public void noDuplicateUser() {
+
+                            }
+                        });
 
                     }
                 });
@@ -121,23 +130,5 @@ public class SubmitTaskFragment extends Fragment {
         });
         return b.getRoot();
     }
-    @SuppressLint("Range")
-    public String getFileName(Uri uri){
-        String result = null;
-        if (uri.getScheme().equals("content")){
-            try (Cursor cursor = requireContext().getContentResolver().query(uri,null,null,null,null)){
-                if(cursor != null && cursor.moveToFirst()){
-                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
-                }
-            }
-        }
-        if (result == null) {
-            result = uri.getPath();
-            int cut = result.lastIndexOf('/');
-            if (cut != -1) {
-                result = result.substring(cut + 1);
-            }
-        }
-        return result;
-    }
+
 }

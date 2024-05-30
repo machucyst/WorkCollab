@@ -23,11 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link InviteMoreMembersFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class InviteMoreMembersFragment extends Fragment {
 
     Gson gson = new Gson();

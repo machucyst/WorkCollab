@@ -79,7 +79,7 @@ public class AccountFragment extends Fragment {
         }
     }
 
-    private void menuTextChange(NavigationView nv, int ItemId,String text){
+    public void menuTextChange(NavigationView nv, int ItemId,String text){
         TextView a = (nv.getMenu().findItem(ItemId).getActionView().findViewById(R.id.additionalText));
         a.setText(text);
     }
@@ -101,6 +101,7 @@ public class AccountFragment extends Fragment {
         menuTextChange(b.nvAccountMenu,R.id.menu_password, "");
         menuTextChange(b.nvAccountMenu, R.id.menu_deleteAccount,"");
         menuTextChange(b.nvAccountMenu, R.id.menu_profilePicture,"");
+
         b.nvAccountMenu.getMenu().findItem(R.id.menu_email).setEnabled(false);
         TextView a = b.nvAccountMenu.getMenu().findItem(R.id.menu_email).getActionView().findViewById(R.id.additionalText);
         a.setTextColor(AppCompatResources.getColorStateList(getContext(),R.color.stroke_gray));
@@ -117,7 +118,7 @@ public class AccountFragment extends Fragment {
             @Override
             public void onDataFound(Map user) {
                 menuTextChange(b.nvAccountMenu,R.id.menu_username, "\"" + user.get("Username").toString() + "\"");
-                menuTextChange(b.nvAccountMenu,R.id.menu_contactNumber, "\"" + user.get("ContactNumber").toString() + "\"");
+                menuTextChange(b.nvAccountMenu,R.id.menu_contactNumber, "\"" + user.get("ContactNumber").toString().substring(0,3)+"*******" + "\"");
                 menuTextChange(b.nvAccountMenu,R.id.menu_email, "\"" + user.get("Email").toString() + "\"");
             }
             @Override

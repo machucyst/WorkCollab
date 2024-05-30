@@ -16,41 +16,26 @@ import com.example.workcollab.activities.MainMenuActivity;
 import com.example.workcollab.adapters.DeadlinesAdapter;
 import com.example.workcollab.databinding.FragmentMainBinding;
 import com.google.firebase.Timestamp;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class MainFragment extends Fragment {
 
     FragmentMainBinding b;
-    Map user;
     DatabaseFuncs db = new DatabaseFuncs();
-    Gson gson = new Gson();
     DeadlinesAdapter adapter;
 
-    public MainFragment() {
-    }
-
-    public MainFragment(Map user) {
-        this.user = user;
-    }
 
 
     public static MainFragment newInstance() {
-        Bundle args = new Bundle();
-        MainFragment f = new MainFragment();
-        f.setArguments(args);
-        return f;
+        return new MainFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
     }
 
 
@@ -64,8 +49,24 @@ public class MainFragment extends Fragment {
         tasks1.add("");
 
         adapter = new DeadlinesAdapter(tasks1, getContext(), (position, task) -> {
-            // TODO: Task item click
-        }, user);
+            MainMenuActivity.backFlow.push("viewtask");
+            db.getGroupData(task.get("ParentId").toString(), new DatabaseFuncs.DataListener() {
+                @Override
+                public void onDataFound(Map group) {
+                    if(Boolean.parseBoolean(group.get("isLeader").toString())){
+                        requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), ViewMemberTasks.newInstance(task)).addToBackStack(null).commit();
+                    }else{
+                        requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), SubmitTaskFragment.newInstance(task)).addToBackStack(null).commit();
+                    }
+                }
+
+                @Override
+                public void noDuplicateUser() {
+
+                }
+            });
+
+        }, MainMenuActivity.user);
         b.rvDeadlines.setLayoutManager(new LinearLayoutManager(getContext()));
         b.rvDeadlines.setAdapter(adapter);
         adapter.setHeaderClickListener(new DeadlinesAdapter.HeaderClickListener() {
@@ -73,7 +74,7 @@ public class MainFragment extends Fragment {
             public void onInvitesClick() {
                 MainMenuActivity.backFlow.clear();
                 MainMenuActivity.backFlow.push("groups");
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment,new GroupsFragment(true)).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment,GroupsFragment.newInstance(true)).commit();
             }
 
             @Override

@@ -24,7 +24,6 @@ import com.google.firebase.Timestamp;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -128,7 +127,7 @@ public class SelectedGroupFragment extends Fragment {
                     public void onInvitesClick() {
                         MainMenuActivity.backFlow.clear();
                         MainMenuActivity.backFlow.push("groups");
-                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment,new GroupsFragment(true)).commit();
+                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment,GroupsFragment.newInstance(true)).commit();
                     }
 
                     @Override

@@ -41,7 +41,7 @@ public class MemberTaskAdapter extends RecyclerView.Adapter<MemberTaskAdapter.My
         holder.tv_head.setText((tasks.get(position).get("Username")).toString());
         Glide.with(context).load(tasks.get(position).get("Profile").toString()).into(holder.iv);
         holder.download.setOnClickListener(v -> {
-            db.downloadFile(tasks.get(position).get("file").toString(),tasks.get(position).get("fileCreator").toString(),context);
+            db.downloadFile(tasks.get(position).get("file").toString(),tasks.get(position).get("fileName").toString(),context);
             }
 
         );

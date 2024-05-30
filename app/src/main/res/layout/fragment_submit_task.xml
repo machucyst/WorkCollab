@@ -67,6 +67,7 @@
                         android:background="@drawable/textholder"
                         android:ems="10"
                         android:fontFamily="@font/bahnschrift"
+                        android:enabled="false"
                         android:hint="Clear text...etc \n(10 MB file only)"
                         android:inputType="text"
                         android:paddingVertical="10dp"
@@ -103,7 +104,7 @@
                             android:layout_marginVertical="5dp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="UploadFile.exe" />
+                            android:hint="FileName.exe" />
 
                         <androidx.cardview.widget.CardView
                             android:layout_marginTop="20dp"

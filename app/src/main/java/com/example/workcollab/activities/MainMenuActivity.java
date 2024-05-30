@@ -67,7 +67,7 @@ public class MainMenuActivity extends AppCompatActivity implements SelectedGroup
     static int index;
     public static Stack<String> backFlow = new Stack<>();
     public static Map selectedgroup;
-
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
     public static String selected = "main";
     Bundle bu = new Bundle();
 
@@ -133,11 +133,11 @@ public class MainMenuActivity extends AppCompatActivity implements SelectedGroup
 
                 int a = menuItem.getItemId();
                 if(a == R.id.menu_home){
-                    replaceFragment(new MainFragment(user),"main");
+                    replaceFragment(MainFragment.newInstance(),"main");
                     backFlow.clear();
                     backFlow.push("main");
                 } else if (a == R.id.menu_groups) {
-                    replaceFragment(GroupsFragment.newInstance(),"groups");
+                    replaceFragment(GroupsFragment.newInstance(false),"groups");
                     backFlow.clear();
                     backFlow.push("groups");
                 }else if (a == R.id.menu_tasks){
@@ -158,11 +158,11 @@ public class MainMenuActivity extends AppCompatActivity implements SelectedGroup
             public void onNavigationItemReselected(@NonNull MenuItem menuItem) {
                 int a = menuItem.getItemId();
                 if(a == R.id.menu_home){
-                    replaceFragment(new MainFragment(user),"main");
+                    replaceFragment(MainFragment.newInstance(),"main");
                     backFlow.clear();
                     backFlow.push("main");
                 } else if (a == R.id.menu_groups) {
-                    replaceFragment(GroupsFragment.newInstance(),"groups");
+                    replaceFragment(GroupsFragment.newInstance(false),"groups");
                     backFlow.clear();
                     backFlow.push("groups");
                 }else if (a == R.id.menu_tasks){
@@ -322,7 +322,7 @@ public class MainMenuActivity extends AppCompatActivity implements SelectedGroup
 
 //        replaceFragment(MainFragment.newInstance(user), "main");
         if (backFlow.isEmpty()) {
-            replaceFragment(new MainFragment(user), "main");
+            replaceFragment(MainFragment.newInstance(), "main");
         } else {
             Log.e("woah", backFlow.peek());
             replaceFragment(changeFragment(backFlow.peek()), backFlow.peek());
@@ -418,9 +418,9 @@ public class MainMenuActivity extends AppCompatActivity implements SelectedGroup
     public Fragment changeFragment(String fragmentTag) {
         switch (fragmentTag) {
             case "main":
-                return new MainFragment(user);
+                return MainFragment.newInstance();
             case "groups":
-                return GroupsFragment.newInstance();
+                return GroupsFragment.newInstance(false);
             case "profile":
                 return AccountFragment.newInstance();
             case "creategroups":
@@ -432,7 +432,7 @@ public class MainMenuActivity extends AppCompatActivity implements SelectedGroup
             case "tasks":
                 return TaskListFragment.newInstance(false);
         }
-        return new MainFragment(user);
+        return MainFragment.newInstance();
     }
 
     public void viewMemberTask(Map task) {
@@ -440,12 +440,12 @@ public class MainMenuActivity extends AppCompatActivity implements SelectedGroup
     }
     public void reload(){
         if(selected.equals("main")){
-            getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), new MainFragment(user)).commitAllowingStateLoss();
+            getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), MainFragment.newInstance()).commitAllowingStateLoss();
             b.bottomNavView.setSelectedItemId(R.id.menu_home);
             return;
         }
         if(selected.equals("groups")){
-            getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), new MainFragment(user)).commitAllowingStateLoss();
+            getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), MainFragment.newInstance()).commitAllowingStateLoss();
             b.bottomNavView.setSelectedItemId(R.id.menu_home);
             return;
         }
@@ -455,7 +455,7 @@ public class MainMenuActivity extends AppCompatActivity implements SelectedGroup
             return;
         }
         if(selected.equals("tasks")){
-            getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), new MainFragment(user)).commitAllowingStateLoss();
+            getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), MainFragment.newInstance()).commitAllowingStateLoss();
             b.bottomNavView.setSelectedItemId(R.id.menu_tasks);
             return;
         }
@@ -493,15 +493,21 @@ public class MainMenuActivity extends AppCompatActivity implements SelectedGroup
     @Override
     protected void onResume() {
         super.onResume();
-
         activityRunning = true;
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-
         activityRunning = false;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(bu.getBoolean("notStayLog")){
+            mAuth.signOut();
+        }
     }
 
     public static boolean isActivityRunning() {

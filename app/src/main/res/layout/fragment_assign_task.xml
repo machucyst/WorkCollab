@@ -13,11 +13,6 @@
         android:background="@color/fui_transparent"
         tools:context=".fragments.CreateGroupFragment">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -36,19 +31,16 @@
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/textView2"
-                            style="@style/DefaultTextStyle"
+                            style="@style/SecondTextStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_weight="1"
+                            android:layout_margin="20dp"
                             android:fontFamily="@font/bahnschrift"
-                            android:text="Create Task"
+                            android:text="Create Group"
                             android:textColor="@color/deviceThemeInverted"
                             android:textSize="30dp" />
 
                         <androidx.cardview.widget.CardView
-                            android:layout_marginTop="20dp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="20dp"
@@ -57,7 +49,7 @@
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="0.2"
+                                android:layout_weight="1"
                                 android:background="@drawable/background_default"
                                 android:orientation="vertical">
 
@@ -67,7 +59,6 @@
                                     android:layout_height="wrap_content"
                                     android:fontFamily="@font/bahnschrift"
                                     android:text="Task Title:"
-                                    android:layout_marginTop="10dp"
                                     android:paddingHorizontal="15dp"
                                     style="@style/LightTextStyle"
                                     android:textSize="20dp" />
@@ -235,10 +226,5 @@
                     </LinearLayout>
                 </ScrollView>
             </LinearLayout>
-
-
-
-        </LinearLayout>
-
     </FrameLayout>
 </layout>

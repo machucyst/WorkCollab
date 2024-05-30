@@ -34,18 +34,14 @@ public class AssignTaskFragment extends Fragment {
     DatabaseFuncs db = new DatabaseFuncs();
     Calendar today = Calendar.getInstance();
     long deadline;
-
-    public static List<String> members = new ArrayList<>();
     DialogDateInputBinding di;
     MembersAdapter ma;
     FragmentAssignTaskBinding b;
+
+    public static List<String> members = new ArrayList<>();
+
     public interface PositionListener{
         default void itemClicked(String id){}
-    }
-    AssignTaskFragment.PositionListener listener;
-
-    public AssignTaskFragment() {
-
     }
 
     public static AssignTaskFragment newInstance(Map group) {
@@ -146,25 +142,24 @@ public class AssignTaskFragment extends Fragment {
                             return;
                         }
                             Toast.makeText(requireContext(),"Please add description to task",Toast.LENGTH_SHORT).show();
-                        b.btnShowPass.setBackgroundDrawable(AppCompatResources.getDrawable(requireActivity(), R.drawable.textholder));
-                        b.btnShowPass.setText("Submit");
-                        b.btnShowPass.setEnabled(true);
+                        enableButtons();
                         return;
                     }
                     Toast.makeText(requireContext(),"Please input task name",Toast.LENGTH_SHORT).show();
-                    b.btnShowPass.setBackgroundDrawable(AppCompatResources.getDrawable(requireActivity(), R.drawable.textholder));
-                    b.btnShowPass.setText("Submit");
-                    b.btnShowPass.setEnabled(true);
+                    enableButtons();
                 return;
                 }
                 Toast.makeText(requireContext(),"Deadline Invalid",Toast.LENGTH_SHORT).show();
-                b.btnShowPass.setBackgroundDrawable(AppCompatResources.getDrawable(requireActivity(), R.drawable.textholder));
-                b.btnShowPass.setText("Submit");
-                b.btnShowPass.setEnabled(true);
+
             }
         });
 
 
         return b.getRoot();
+    }
+    private void enableButtons(){
+        b.btnShowPass.setBackgroundDrawable(AppCompatResources.getDrawable(requireActivity(), R.drawable.textholder));
+        b.btnShowPass.setText("Submit");
+        b.btnShowPass.setEnabled(true);
     }
 }

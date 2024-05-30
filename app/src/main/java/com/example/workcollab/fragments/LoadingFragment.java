@@ -18,18 +18,12 @@ public class LoadingFragment extends Fragment {
     }
 
     public static LoadingFragment newInstance() {
-        LoadingFragment fragment = new LoadingFragment();
-        Bundle args = new Bundle();
-
-        fragment.setArguments(args);
-        return fragment;
+        return new LoadingFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-        }
     }
 
     @Override

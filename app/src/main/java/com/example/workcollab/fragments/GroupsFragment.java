@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,18 +13,15 @@ import androidx.fragment.app.Fragment;
 import com.example.workcollab.R;
 import com.example.workcollab.databinding.FragmentGroupsBinding;
 import com.google.android.material.navigation.NavigationBarView;
-import com.google.gson.Gson;
 
 
 public class GroupsFragment extends Fragment {
 //    Map user;
-    FragmentGroupsBinding b;
-    Gson gson = new Gson();
     boolean a = false;
-    public static GroupsFragment newInstance() {
+    FragmentGroupsBinding b;
+    public static GroupsFragment newInstance(boolean a) {
         Bundle args = new Bundle();
-        Gson gson = new Gson();
-//        args.putString("user", gson.toJson(user));
+        args.putBoolean("bool", a);
         GroupsFragment f = new GroupsFragment();
         f.setArguments(args);
         return f;
@@ -34,17 +30,13 @@ public class GroupsFragment extends Fragment {
     public GroupsFragment() {
 
     }
-    public GroupsFragment(boolean a) {
-        this.a = a;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        if (getArguments() != null) {
-//            System.out.println(getArguments().getString("user") + "awjgoiaehgoaeig");
-//            user = gson.fromJson(getArguments().getString("user"), Map.class);
-//        }
+        if (getArguments() != null) {
+            a = getArguments().getBoolean("bool");
+        }
     }
 
     @Override

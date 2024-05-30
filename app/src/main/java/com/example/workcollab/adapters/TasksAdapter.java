@@ -9,7 +9,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.workcollab.DatabaseFuncs;
 import com.example.workcollab.R;
 import com.example.workcollab.activities.MainMenuActivity;
 import com.example.workcollab.fragments.TaskListFragment;
@@ -21,7 +20,6 @@ import java.util.Map;
 public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.MyHandler>{
 
     public List<Object> tasks;
-    DatabaseFuncs db = new DatabaseFuncs();
     private final TaskListFragment.PositionListener listener;
 
 

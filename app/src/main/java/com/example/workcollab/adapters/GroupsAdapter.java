@@ -23,7 +23,7 @@ import java.util.Map;
 
 public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyHandler>{
 
-    public final List<Map> groups;
+    public List<Map> groups;
     DatabaseFuncs db = new DatabaseFuncs();
     private final JoinedGroupsSubFragment.PositionListener listener;
     Context c;
@@ -50,9 +50,11 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyHandler>
                 MainMenuActivity.selected = "notGroups";
             }
         );
-
     }
-
+    public void refreshList(List<Map> a){
+        this.groups = a;
+        notifyDataSetChanged();
+    }
     @Override
     public int getItemCount() {
         return groups.size();

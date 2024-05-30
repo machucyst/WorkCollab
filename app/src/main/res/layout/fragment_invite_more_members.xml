@@ -105,7 +105,7 @@
                             app:hintEnabled="false">
 
                             <EditText
-                                android:id="@+id/et_add"
+                                android:id="@+id/etAdd"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_margin="10dp"
