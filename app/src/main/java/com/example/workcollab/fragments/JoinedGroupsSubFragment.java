@@ -68,7 +68,7 @@ public class JoinedGroupsSubFragment extends Fragment {
         db.getJoinedGroups(MainMenuActivity.user.get("Id").toString(), new DatabaseFuncs.GroupListener() {
             @Override
             public void onReceive(List<Map> groups, List<Map> groupLeaders) {
-                List<Map> newList = new ArrayList<Map>();
+                List<Map> newList = new ArrayList<>();
                 if(test){
                     newList.addAll(groups);
                     newList.addAll(groupLeaders);
