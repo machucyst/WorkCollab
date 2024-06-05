@@ -40,7 +40,7 @@ public class InvitesAdapter extends RecyclerView.Adapter<InvitesAdapter.MyHandle
     @Override
     public void onBindViewHolder(@NonNull MyHandler holder, @SuppressLint("RecyclerView") int position) {
         holder.tv_g.setText((groups.get(position).get("GroupName")).toString());
-        holder.waa.setVisibility(View.GONE);
+//        holder.waa.setVisibility(View.GONE);
         if (groups.get(position).get("GroupImage") != null) {
             Glide.with(context).load(groups.get(position).get("GroupImage")).into(holder.iv);
         }

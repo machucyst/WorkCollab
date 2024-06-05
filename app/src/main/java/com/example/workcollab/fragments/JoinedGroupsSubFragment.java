@@ -69,8 +69,12 @@ public class JoinedGroupsSubFragment extends Fragment {
             @Override
             public void onReceive(List<Map> groups, List<Map> groupLeaders) {
                 List<Map> newList = new ArrayList<Map>();
-                newList.addAll(groups);
-                newList.addAll(groupLeaders);
+                if(test){
+                    newList.addAll(groups);
+                    newList.addAll(groupLeaders);
+                }else{
+                    newList.addAll(groupLeaders);
+                }
                 GroupsAdapter ga = new GroupsAdapter(newList, getContext(), new PositionListener() {
                     @Override
                     public void itemClicked(Map group) {
