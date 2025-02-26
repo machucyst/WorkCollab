@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.workcollab.DatabaseFuncs;
 import com.example.workcollab.R;
 
 import java.util.List;
@@ -39,8 +38,8 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
 
     @Override
     public void onBindViewHolder(@NonNull MyHandler holder, @SuppressLint("RecyclerView") int position) {
-        holder.tv_g.setText((members.get(position).get("Username")).toString());
-        Glide.with(context).load(members.get(position).get("Profile").toString()).into(holder.iv);
+        holder.tv_g.setText((String.valueOf( members.get(position).get("Username") )));
+        Glide.with(context).load(String.valueOf( members.get(position).get("Profile") )).into(holder.iv);
         holder.parent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

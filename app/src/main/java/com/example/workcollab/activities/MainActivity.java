@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         //Initialize Database
         userDb.InitDB(checkLoggedIn(), new DatabaseFuncs.DataListener() {
             @Override
-            public void onDataFound(Map user) {
+            public void onDataFound(Map<String,Object> user) {
                 MainMenuActivity.selected = "main";
                 if (checkLoggedIn().equals(user.get("Email"))) {
                     Intent toMenu = new Intent(MainActivity.this, MainMenuActivity.class);
@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     b.btnSubmitLogIn.setEnabled(false);
                     b.btnSubmitLogIn.setBackground(AppCompatResources.getDrawable(MainActivity.this,R.drawable.textholderdisabled));
-                    b.btnSubmitLogIn.setText("Loading...");
+                    b.btnSubmitLogIn.setText(R.string.loading);
 
                     FirebaseAuth mAuth = FirebaseAuth.getInstance();
                         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -200,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
     void EnableLogIn(){
         b.btnSubmitLogIn.setEnabled(true);
         b.btnSubmitLogIn.setBackground(AppCompatResources.getDrawable(MainActivity.this,R.drawable.textholder));
-        b.btnSubmitLogIn.setText("Log In");
+        b.btnSubmitLogIn.setText(R.string.log_in);
     }
     private void clearFocusFromEditText(View view) {
         if (view instanceof ViewGroup) {

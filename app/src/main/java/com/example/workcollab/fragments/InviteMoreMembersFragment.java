@@ -185,7 +185,7 @@ public class InviteMoreMembersFragment extends Fragment {
 
                     db.inviteMembers(String.valueOf(group.get("Id")), filteredIds, new DatabaseFuncs.BasicListener() {
                         @Override
-                        public void BasicListener() {
+                        public void basicListener() {
                             if(a){
                                 requireActivity().getSupportFragmentManager().popBackStack();
                                 filteredIds = new ArrayList<>();

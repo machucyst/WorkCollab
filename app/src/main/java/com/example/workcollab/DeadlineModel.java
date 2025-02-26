@@ -5,8 +5,8 @@ import android.net.Uri;
 import java.util.Map;
 
 public class DeadlineModel {
-    private String groupId, groupName;
-    private Uri image;
+    private final String groupId, groupName;
+    private final Uri image;
     private Map<String,Object> task;
 
     public DeadlineModel(String groupId, String groupName, Uri image, Map<String,Object> task) {

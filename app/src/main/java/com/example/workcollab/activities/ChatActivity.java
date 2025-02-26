@@ -1,16 +1,15 @@
 package com.example.workcollab.activities;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Application;
+import android.content.res.Resources;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
-import android.widget.LinearLayout;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -34,7 +33,6 @@ import com.google.firebase.Timestamp;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +44,7 @@ public class ChatActivity extends AppCompatActivity {
     boolean activityIsActive = true;
     List<Message> backlog = new ArrayList<>();
     Uri attachedFile;
-    private LinearLayout bottomSheetLayout;
+//    private LinearLayout bottomSheetLayout;
     String fileType,replyId = "";
     ActivityChatBinding bind;
     DatabaseFuncs db;
@@ -54,6 +52,7 @@ public class ChatActivity extends AppCompatActivity {
     public interface onProfileLongHoldPress{
         void onHoldPressed(String id);
     }
+    @SuppressLint({"InternalInsetResource", "NotifyDataSetChanged", "SetTextI18n"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,7 +80,7 @@ public class ChatActivity extends AppCompatActivity {
                 @Override
                 public void onActivityResumed(@NonNull Activity activity) {
                     activityIsActive = true;
-                    Collections.sort(backlog, Comparator.comparing(Message::getTimestamp));
+                    backlog.sort(Comparator.comparing(Message::getTimestamp));
                     if (adapter != null) adapter.addRange(backlog, bind.recyclerView);
                     backlog = new ArrayList<>();
                 }
@@ -112,9 +111,8 @@ public class ChatActivity extends AppCompatActivity {
 
         bind.bottomPadding.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
             now = Timestamp.now();
-            Rect r = new Rect();
-            bind.bottomPadding.getWindowVisibleDisplayFrame(r);
-            bind.bottomPadding.setPadding(0, bind.bottomPadding.getRootView().getHeight() - r.bottom - getResources().getDimensionPixelSize(getResources().getIdentifier("navigation_bar_height", "dimen", "android")), 0, 0);
+
+            bind.bottomPadding.setPadding(0, getTopPadding(bind,getResources()), 0, 0);
         });
 
         user = gson.fromJson(getIntent().getStringExtra("user"), Map.class);
@@ -150,7 +148,7 @@ public class ChatActivity extends AppCompatActivity {
             ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
             itemTouchHelper.attachToRecyclerView(bind.recyclerView);
 
-            db.setReceivedMessagesListener(user.get("Id").toString(), group.get("Id").toString(), new DatabaseFuncs.MessagesReceivedListener() {
+            db.setReceivedMessagesListener(String.valueOf(user.get("Id")), String.valueOf(group.get("Id")), new DatabaseFuncs.MessagesReceivedListener() {
                 @Override
                 public void onMessageReceived(List<Message> newMessages, List<Message> updatedMessages) {
                     if (activityIsActive) {
@@ -187,15 +185,23 @@ public class ChatActivity extends AppCompatActivity {
             adapter.notifyDataSetChanged();
         });
     }
+    private int getTopPadding(ActivityChatBinding bind, Resources res){
+        Rect r = new Rect();
+        bind.bottomPadding.getWindowVisibleDisplayFrame(r);
+        int bottomPaddingHeight = bind.bottomPadding.getRootView().getHeight();
+        int rectangleBottom = r.bottom;
+        @SuppressLint({"DiscouragedApi", "InternalInsetResource"})
+        int phoneSize = res.getDimensionPixelSize(res.getIdentifier("navigation_bar_height", "dimen", "android"));
+
+        return (bottomPaddingHeight - rectangleBottom - phoneSize);
+    }
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event){
-      switch (keyCode){
-          case KeyEvent.KEYCODE_ENTER:
-              sendMessage(bind);
-              return true;
-          default:
-              return super.onKeyUp(keyCode,event);
-      }
+        if (keyCode == KeyEvent.KEYCODE_ENTER) {
+            sendMessage(bind);
+            return true;
+        }
+        return super.onKeyUp(keyCode, event);
 
     }
     private void sendMessage(ActivityChatBinding bind){
@@ -233,16 +239,16 @@ public class ChatActivity extends AppCompatActivity {
             ChatActivity.this.replyId = "";
         });
     }
-    private void animateBottomSheet() {
-        Animation slideUpAnimation = new TranslateAnimation(
-                Animation.RELATIVE_TO_SELF, 0.0f,
-                Animation.RELATIVE_TO_SELF, 0.0f,
-                Animation.RELATIVE_TO_SELF, 1.0f,
-                Animation.RELATIVE_TO_SELF, 0.5f);
-
-        slideUpAnimation.setDuration(500);
-        slideUpAnimation.setFillAfter(true);
-        bottomSheetLayout.startAnimation(slideUpAnimation);
-        bottomSheetLayout.setVisibility(View.VISIBLE);
-    }
+//    private void animateBottomSheet() {
+//        Animation slideUpAnimation = new TranslateAnimation(
+//                Animation.RELATIVE_TO_SELF, 0.0f,
+//                Animation.RELATIVE_TO_SELF, 0.0f,
+//                Animation.RELATIVE_TO_SELF, 1.0f,
+//                Animation.RELATIVE_TO_SELF, 0.5f);
+//
+//        slideUpAnimation.setDuration(500);
+//        slideUpAnimation.setFillAfter(true);
+//        bottomSheetLayout.startAnimation(slideUpAnimation);
+//        bottomSheetLayout.setVisibility(View.VISIBLE);
+//    }
 }

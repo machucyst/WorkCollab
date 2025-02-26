@@ -12,16 +12,16 @@ public class BootReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
             Intent serviceIntent = new Intent(context, NotifiationsService.class);
-            if (!isServiceRunning(NotifiationsService.class, context)) {
+            if (!isServiceRunning(context)) {
                 context.startService(serviceIntent);
             }
         }
     }
 
-    private boolean isServiceRunning(Class<?> serviceClass, Context context) {
+    private boolean isServiceRunning(Context context) {
         ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
+            if (NotifiationsService.class.getName().equals(service.service.getClassName())) {
                 return true;
             }
         }

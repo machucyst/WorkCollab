@@ -69,7 +69,6 @@ public class MembersAdapter extends RecyclerView.Adapter<MembersAdapter.MyHandle
         TextView tv_u;
         boolean k;
         ImageView toggleBtn,img;
-        View parent;
         public MyHandler(@NonNull View v){
             super(v);
             toggleBtn = v.findViewById(R.id.toggleAssign);

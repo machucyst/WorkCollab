@@ -18,7 +18,6 @@ import androidx.core.app.NotificationManagerCompat;
 
 import com.example.workcollab.activities.MainMenuActivity;
 import com.google.firebase.Timestamp;
-import com.google.firebase.firestore.ListenerRegistration;
 
 import java.util.List;
 import java.util.Map;
@@ -65,8 +64,22 @@ public class NotifiationsService extends Service {
                 if (!newLaunch && !MainMenuActivity.isActivityRunning()) {
                     for (Map<String,Object> group :
                             groups) {
-                        NotificationUtils.postNotificationGrouper(NotifiationsService.this, 2, "invites", "Invite Received", "You have been invited to " + group.get("GroupName").toString(), R.drawable.ic_mail, "invites");
-                        NotificationUtils.postNotification(NotifiationsService.this, (int)System.currentTimeMillis(), "invites", "Invite Received", "You have been invited to " + group.get("GroupName").toString(), R.drawable.ic_mail, "invites");
+                        NotificationUtils.postNotificationGrouper(
+                                NotifiationsService.this,
+                                2,
+                                "invites",
+                                "Invite Received",
+                                "You have been invited to " + group.get("GroupName"),
+                                R.drawable.ic_mail,
+                                "invites");
+                        NotificationUtils.postNotification(
+                                NotifiationsService.this,
+                                (int)System.currentTimeMillis(),
+                                "invites",
+                                "Invite Received",
+                                "You have been invited to " + group.get("GroupName"),
+                                R.drawable.ic_mail,
+                                "invites");
                     }
                 }
                 newLaunch = false;
@@ -80,8 +93,8 @@ public class NotifiationsService extends Service {
 
         df.InitDB(checkLoggedIn(), new DatabaseFuncs.DataListener() {
             @Override
-            public void onDataFound(Map user) {
-                df.getInvites(user.get("Id").toString(), listener);
+            public void onDataFound(Map<String ,Object> user) {
+                df.getInvites(String.valueOf(user.get("Id")), listener);
             }
 
             @Override
@@ -117,8 +130,8 @@ public class NotifiationsService extends Service {
                 PackageManager packageManager = getPackageManager();
                 ApplicationInfo applicationInfo = packageManager.getApplicationInfo(getPackageName(), 0);
                 appName = packageManager.getApplicationLabel(applicationInfo).toString();
-            } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
+            } catch (PackageManager.NameNotFoundException ignored) {
+
             }
 
             Notification notification = new Notification.Builder(this, "channel-notifier")

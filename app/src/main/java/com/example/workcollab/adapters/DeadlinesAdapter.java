@@ -49,21 +49,27 @@ public class DeadlinesAdapter extends RecyclerView.Adapter<DeadlinesAdapter.VH> 
     @Override
     public void onBindViewHolder(@NonNull DeadlinesAdapter.VH holder, int position) {
         if (holder.bind instanceof CardDeadlineBinding) {
-            Map<String,Object> task = (Map) tasks.get(position);
+            Map<String,Object> task = (Map<String, Object>) tasks.get(position);
             if(String.valueOf(task.get("TaskName")).equals("No tasks :)")){
                 return;
             }
             DeadlineModel d;
             try {
-                d = new DeadlineModel(task.get("ParentId").toString(), task.get("GroupName").toString(), Uri.parse(task.get("GroupImage").toString()), task);
+                d = new DeadlineModel(String.valueOf(task.get("ParentId")), String.valueOf(task.get("GroupName")), Uri.parse(String.valueOf(task.get("GroupImage"))), task);
             } catch (Exception e) {
-                d = new DeadlineModel(task.get("ParentId").toString(), task.get("GroupName").toString(), Uri.parse(""), task);
+                d = new DeadlineModel(String.valueOf(task.get("ParentId")), String.valueOf(task.get("GroupName")), Uri.parse(""), task);
             }
             // deadline card
             CardDeadlineBinding bind = (CardDeadlineBinding) holder.bind;
-            bind.deadline.setText("Submit before " + new SimpleDateFormat("MMMM d, yyyy", Locale.getDefault()).format(((Timestamp)d.getTask().get("TaskDeadline")).toDate()));
-            bind.groupName.setText("Group: "+d.getGroupName());
-            bind.taskName.setText(d.getTask().get("TaskName").toString());
+            bind.deadline.setText(String.format("Submit before %s",
+                    new SimpleDateFormat("MMMM d, yyyy", Locale.getDefault())
+                            .format(
+                                    (
+                                            (Timestamp) d.getTask().get("TaskDeadline")).toDate()
+                            )
+            ));
+            bind.groupName.setText(String.format("Group: %s", d.getGroupName()));
+            bind.taskName.setText(String.valueOf(d.getTask().get("TaskName")));
 
             if (!(task.get("GroupImage") == null)) {
                 Glide.with(context).load(d.getImage().toString()).into(bind.image);
@@ -98,10 +104,14 @@ public class DeadlinesAdapter extends RecyclerView.Adapter<DeadlinesAdapter.VH> 
                 headerClickListener.onProfileClick();
             });
             try{
-                Glide.with(context).load(user.get("Profile").toString()).into(bind.userImage);
-                bind.username.setText("Welcome\nto Work Collab, " + user.get("Username"));
+                Glide.with(context)
+                        .load(String.valueOf(user.get("Profile")))
+                        .into(bind.userImage);
+                bind.username.setText(String.format("Welcome\nto Work Collab, %s", user.get("Username")));
             }catch (Exception ex){
-                Glide.with(context).load(AppCompatResources.getDrawable(context, R.drawable.icon_test)).into(bind.userImage);
+                Glide.with(context)
+                        .load(AppCompatResources.getDrawable(context, R.drawable.icon_test))
+                        .into(bind.userImage);
             }
         }
     }

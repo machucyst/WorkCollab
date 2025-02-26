@@ -116,7 +116,7 @@ public class SelectedGroupFragment extends Fragment {
 
         db.getTasks(group.get("Id").toString(), group.get("GroupName").toString(), group.get("GroupImage") == null ? null : Uri.parse(group.get("GroupImage").toString()), new DatabaseFuncs.TaskListener() {
             @Override
-            public void onTaskRecieved(List<Map<String, Object>> tasks) {
+            public void onTaskReceived(List<Map<String, Object>> tasks) {
                 adapter.addRange(tasks);
                 if (adapter.tasks.size() > 0) {
                     b.rvDeadlines.setVisibility(View.VISIBLE);

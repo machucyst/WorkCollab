@@ -8,7 +8,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Message {
-    private String id, message, senderId, senderUsername, groupId, fileType, replyId = "";
+    private String id, senderUsername, replyId = "";
+    private final String groupId, fileType, message, senderId;
     private Uri file;
     private Timestamp timestamp;
 

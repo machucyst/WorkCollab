@@ -66,7 +66,7 @@ public class ViewMemberTasks extends Fragment {
         b = FragmentViewMemberTasksBinding.inflate(inflater,container,false);
         db.getMemberSubmissions(task, new DatabaseFuncs.TaskListener() {
             @Override
-            public void onTaskRecieved(List<Map<String, Object>> tasks) {
+            public void onTaskReceived(List<Map<String, Object>> tasks) {
                 MemberTaskAdapter mta = new MemberTaskAdapter(tasks, getContext(), new PositionListener() {
                     @Override
                     public void viewMemberTask(Map task) {

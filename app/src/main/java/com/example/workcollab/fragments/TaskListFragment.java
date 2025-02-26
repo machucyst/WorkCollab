@@ -96,7 +96,7 @@ public class TaskListFragment extends Fragment {
             b.rvTasks.setAdapter(adapter);
             db.getTasks(group.get("Id").toString(), group.get("GroupName").toString(), group.get("GroupImage") == null ? null : Uri.parse(group.get("GroupImage").toString()), new DatabaseFuncs.TaskListener() {
                 @Override
-                public void onTaskRecieved(List<Map<String, Object>> tasks) {
+                public void onTaskReceived(List<Map<String, Object>> tasks) {
                     adapter.addRange(tasks);
                 }
 
@@ -115,7 +115,7 @@ public class TaskListFragment extends Fragment {
             b.rvTasks.setAdapter(adapter);
            db.getTasks(MainMenuActivity.user.get("Id").toString(), new DatabaseFuncs.TaskListener() {
                @Override
-               public void onTaskRecieved(List<Map<String, Object>> tasks) {
+               public void onTaskReceived(List<Map<String, Object>> tasks) {
                    adapter.addRange(tasks);
 
                }

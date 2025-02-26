@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -57,6 +58,7 @@ import com.yalantis.ucrop.UCrop;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Stack;
 
 public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdapter.ClickItemListener,GroupMembersAdapter.PositionListener,SelectedGroupSettingsFragment.GroupPFP,AccountEditFragment.UpdateListener, AccountFragment.ButtonListeners, JoinedGroupsSubFragment.PositionListener, InvitesSubFragment.PositionListener, TaskListFragment.PositionListener, SubmitTaskFragment.onSubmitClick, ViewMemberTasks.PositionListener {
@@ -77,6 +79,7 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
 
     DatabaseFuncs db = new DatabaseFuncs();
 
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,7 +96,7 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 201);
         } else {
             Intent a = new Intent(this, NotifiationsService.class);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !Utils.isServiceRunning(this, NotifiationsService.class)) {
+            if (!Utils.isServiceRunning(this, NotifiationsService.class)) {
                 startForegroundService(a);
             }
 
@@ -133,54 +136,39 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
         b.bottomNavView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-
-                int a = menuItem.getItemId();
-                if(a == R.id.menu_home){
-                    replaceFragment(MainFragment.newInstance(),"main");
-                    backFlow.clear();
-                    backFlow.push("main");
-                } else if (a == R.id.menu_groups) {
-                    replaceFragment(GroupsFragment.newInstance(false),"groups");
-                    backFlow.clear();
-                    backFlow.push("groups");
-                }else if (a == R.id.menu_tasks){
-                    backFlow.clear();
-                    backFlow.push("tasks");
-                    replaceFragment(TaskListFragment.newInstance(false),"tasks");
-                }else if (a == R.id.menu_profile){
-                    replaceFragment(AccountFragment.newInstance(), "account");
-                    backFlow.clear();
-                    backFlow.push("profile");
-                }
-                return true;
+                navItemReselect(menuItem);
+                return false;
             }
 
         });
+
         b.bottomNavView.setOnItemReselectedListener(new NavigationBarView.OnItemReselectedListener() {
             @Override
             public void onNavigationItemReselected(@NonNull MenuItem menuItem) {
-                int a = menuItem.getItemId();
-                if(a == R.id.menu_home){
-                    replaceFragment(MainFragment.newInstance(),"main");
-                    backFlow.clear();
-                    backFlow.push("main");
-                } else if (a == R.id.menu_groups) {
-                    replaceFragment(GroupsFragment.newInstance(false),"groups");
-                    backFlow.clear();
-                    backFlow.push("groups");
-                }else if (a == R.id.menu_tasks){
-                    backFlow.clear();
-                    backFlow.push("tasks");
-                    replaceFragment(TaskListFragment.newInstance(false),"tasks");
-                }else if (a == R.id.menu_profile){
-                    replaceFragment(AccountFragment.newInstance(), "account");
-                    backFlow.clear();
-                    backFlow.push("profile");
-                }
+                navItemReselect(menuItem);
             }
         });
     }
-
+    private void navItemReselect(MenuItem menuItem){
+        int a = menuItem.getItemId();
+        if(a == R.id.menu_home){
+            replaceFragment(MainFragment.newInstance(),"main");
+            backFlow.clear();
+            backFlow.push("main");
+        } else if (a == R.id.menu_groups) {
+            replaceFragment(GroupsFragment.newInstance(false),"groups");
+            backFlow.clear();
+            backFlow.push("groups");
+        }else if (a == R.id.menu_tasks){
+            backFlow.clear();
+            backFlow.push("tasks");
+            replaceFragment(TaskListFragment.newInstance(false),"tasks");
+        }else if (a == R.id.menu_profile){
+            replaceFragment(AccountFragment.newInstance(), "account");
+            backFlow.clear();
+            backFlow.push("profile");
+        }
+    }
 
     // Image Editor Cropper Code
     @Override
@@ -203,6 +191,7 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
                     options.setSaturationEnabled(false);
                     options.setSharpnessEnabled(false);
                     options.setShowCropGrid(false);
+                    assert sourceUri != null;
                     UCrop.of(sourceUri, destinationUri)
                             .withAspectRatio(1, 1)
                             .withMaxResultSize(450, 450)
@@ -213,6 +202,7 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
                 break;
             case UCrop.REQUEST_CROP:
             if (resultCode == RESULT_OK) {
+                assert data != null;
                 final Uri resultUri = UCrop.getOutput(data);
                 try {
                     switch (index){
@@ -228,17 +218,17 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
                         case 20:
                             db.saveGroupProfile(selectedGroup, resultUri, new DatabaseFuncs.UpdateListener() {
                                 @Override
-                                public void onUpdate(Map user) {
+                                public void onUpdate(Map<String,Object> user) {
                                     replaceFragment(SelectedGroupFragment.newInstance(user),"selectedgroup");
                                 }
                             });
                             break;
                     }
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                } catch (Exception ignored) {}
+
             } else if (resultCode == UCrop.RESULT_ERROR) {
+                assert data != null;
                 final Throwable cropError = UCrop.getError(data);
                 // Handle the error
             }
@@ -246,7 +236,10 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
             case PICK_FILE_REQUEST:
                 if (data != null) {
                     if(getFileSize(data.getData())<=MAX_FILE_SIZE){
-                        getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment,SubmitTaskFragment.newInstance(MainMenuActivity.this.task,data.getData())).commit();
+                        getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.frame_fragment,SubmitTaskFragment.newInstance(MainMenuActivity.this.task, Objects.requireNonNull(data.getData())))
+                                .commit();
                     }else{
                         Toast.makeText(this,"File size too large (20 MB Only)",Toast.LENGTH_SHORT).show();
                     }
@@ -259,6 +252,7 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
     }
     private long getFileSize(Uri uri) {
         Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+        assert cursor != null;
         int sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE);
         cursor.moveToFirst();
         long size = cursor.getLong(sizeIndex);
@@ -297,7 +291,7 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
         bl = DialogLogoutConfirmBinding.inflate(getLayoutInflater().from(this));
         builder.setView(bl.getRoot());
         AlertDialog dialog = builder.create();
-        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawableResource(android.R.color.transparent);
         bl.Cancel.setOnClickListener(k->{
             dialog.cancel();
         });
@@ -317,20 +311,21 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
 
     @Override
     public void onBackPressed() {
-        if (false) {
+
+
+        try{
+            if (!backFlow.isEmpty()) {
+                backFlow.pop();
+            }
+            if (backFlow.isEmpty()) {
+                replaceFragment(MainFragment.newInstance(), "main");
+            } else {
+                Log.e("woah", backFlow.peek());
+                replaceFragment(changeFragment(backFlow.peek()), backFlow.peek());
+            }
+        } catch (Exception e){
             super.onBackPressed();
-        }
 
-        if (!backFlow.isEmpty()) {
-            backFlow.pop();
-        }
-
-//        replaceFragment(MainFragment.newInstance(user), "main");
-        if (backFlow.isEmpty()) {
-            replaceFragment(MainFragment.newInstance(), "main");
-        } else {
-            Log.e("woah", backFlow.peek());
-            replaceFragment(changeFragment(backFlow.peek()), backFlow.peek());
         }
     }
     @Override
@@ -381,10 +376,9 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE) {
-            System.out.println(Arrays.toString(grantResults) + " waawgaw");
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 openFilePicker();
             } else {

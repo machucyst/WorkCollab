@@ -63,7 +63,7 @@ public class SetupAccountActivity extends AppCompatActivity {
         b.btnShowPass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                b.btnShowPass.setText("Loading...");
+                b.btnShowPass.setText(R.string.loading);
                 b.btnShowPass.setBackgroundDrawable(AppCompatResources.getDrawable(SetupAccountActivity.this,R.drawable.textholderdisabled));
                 b.btnShowPass.setEnabled(false);
                 AlertDialog.Builder builder = new AlertDialog.Builder(SetupAccountActivity.this);
@@ -72,7 +72,7 @@ public class SetupAccountActivity extends AppCompatActivity {
                 AlertDialog dialog = builder.create();
                 dafb.Cancel.setOnClickListener(k -> {
                     dialog.dismiss();
-                    b.btnShowPass.setText("Submit");
+                    b.btnShowPass.setText(R.string.submit);
                     b.btnShowPass.setBackgroundDrawable(AppCompatResources.getDrawable(SetupAccountActivity.this,R.drawable.textholder));
                     b.btnShowPass.setEnabled(true);
 
@@ -129,6 +129,7 @@ public class SetupAccountActivity extends AppCompatActivity {
         switch (requestCode){
             case 101:
                 if (resultCode == -1) {
+                    assert data != null;
                     Uri sourceUri = data.getData();
                     // Destination URI
                     Uri destinationUri = Uri.fromFile(new File(getCacheDir(), "IMG_" + System.currentTimeMillis()));
@@ -148,12 +149,12 @@ public class SetupAccountActivity extends AppCompatActivity {
               }
             break;
             case UCrop.REQUEST_CROP:
+                assert data != null;
                 if (resultCode == RESULT_OK) {
                     resultUri = UCrop.getOutput(data);
                     try{
                         Glide.with(SetupAccountActivity.this).load(resultUri).into(b.profileImage);
-                    } catch (Exception e){
-                        e.printStackTrace();
+                    } catch (Exception ignored){
                     }
                 } else if (resultCode == UCrop.RESULT_ERROR) {
                     final Throwable cropError = UCrop.getError(data);

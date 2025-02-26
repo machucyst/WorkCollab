@@ -116,7 +116,7 @@ public class SubmitTaskFragment extends Fragment {
                 b.btnSubmit.setEnabled(false);
                 db.submitTask(MainMenuActivity.user, fileUri, task.get("ParentId").toString(),task.get("Id").toString(),filename+PublicMethods.getFileType(fileUri,getContext()), b.btnSubmit,requireContext(), new DatabaseFuncs.BasicListener() {
                     @Override
-                    public void BasicListener() {
+                    public void basicListener() {
                         Toast.makeText(getContext(),"File Submitted Successfully",Toast.LENGTH_SHORT).show();
                         db.getGroupData(task.get("ParentId").toString(), new DatabaseFuncs.DataListener() {
                             @Override

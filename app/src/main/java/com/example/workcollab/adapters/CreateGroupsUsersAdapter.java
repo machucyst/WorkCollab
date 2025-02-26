@@ -45,10 +45,10 @@ public class CreateGroupsUsersAdapter extends RecyclerView.Adapter<CreateGroupsU
     @Override
     public void onBindViewHolder(@NonNull MyHandler holder, @SuppressLint("RecyclerView") int position) {
         System.out.println(groups);
-        holder.username.setText(groups.get(position).get("Username").toString());
-        holder.useremail.setText(groups.get(position).get("Email").toString());
+        holder.username.setText(String.valueOf(groups.get(position).get("Username")));
+        holder.useremail.setText(String.valueOf(groups.get(position).get("Email")));
         try {
-            Glide.with(context).asBitmap().load(Uri.parse(groups.get(position).get("Profile").toString())).into(holder.img);
+            Glide.with(context).asBitmap().load(Uri.parse(String.valueOf( groups.get(position).get("Profile") ))).into(holder.img);
         } catch (Exception ex) {
             Glide.with(context).asBitmap().load(R.drawable.icon_test).into(holder.img);
         }

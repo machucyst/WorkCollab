@@ -99,7 +99,7 @@ public class SelectedGroupSettingsFragment extends Fragment {
                     dlc.Ok.setOnClickListener(k -> {
                         db.leaveGroup(MainMenuActivity.user.get("Id").toString(), group.get("Id").toString(), new DatabaseFuncs.BasicListener() {
                             @Override
-                            public void BasicListener() {
+                            public void basicListener() {
                                 listener.otherOne();
                                 dialog.dismiss();
                             }
