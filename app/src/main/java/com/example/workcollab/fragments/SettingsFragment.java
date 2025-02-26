@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.workcollab.PublicMethods;
 import com.example.workcollab.R;
+import com.example.workcollab.activities.MainMenuActivity;
 import com.example.workcollab.databinding.FragmentSettingsBinding;
 import com.google.android.material.navigation.NavigationView;
 
@@ -49,6 +50,13 @@ public class SettingsFragment extends Fragment {
             }
         });
         // Inflate the layout for this fragment
+        b.backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MainMenuActivity.backFlow.pop();
+                requireActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
         return v;
     }
 }

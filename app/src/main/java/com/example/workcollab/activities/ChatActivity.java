@@ -6,6 +6,7 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
@@ -39,16 +40,16 @@ import java.util.List;
 import java.util.Map;
 
 public class ChatActivity extends AppCompatActivity {
-    Map user;
-    Map group;
+    Map<String,Object> user,group;
     Timestamp now;
     ChatAdapter adapter;
     boolean activityIsActive = true;
     List<Message> backlog = new ArrayList<>();
     Uri attachedFile;
     private LinearLayout bottomSheetLayout;
-    String fileType;
-    String replyId = "";
+    String fileType,replyId = "";
+    ActivityChatBinding bind;
+    DatabaseFuncs db;
 
     public interface onProfileLongHoldPress{
         void onHoldPressed(String id);
@@ -57,7 +58,7 @@ public class ChatActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        ActivityChatBinding bind = DataBindingUtil.setContentView(this, R.layout.activity_chat);
+        bind = DataBindingUtil.setContentView(this, R.layout.activity_chat);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
 
@@ -119,8 +120,8 @@ public class ChatActivity extends AppCompatActivity {
         user = gson.fromJson(getIntent().getStringExtra("user"), Map.class);
         group = gson.fromJson(getIntent().getStringExtra("group"), Map.class);
 
-        DatabaseFuncs db = new DatabaseFuncs();
-        db.setAllMessagesReceivedListener(group.get("Id").toString(), messages -> {
+        db = new DatabaseFuncs();
+        db.setAllMessagesReceivedListener(String.valueOf(group.get("Id")), messages -> {
             adapter = new ChatAdapter(messages, ChatActivity.this, user, db, ((message, messageId, replyTo) -> {
                 bind.replyWrapper.setVisibility(View.VISIBLE);
                 ConstraintSet cs = new ConstraintSet();
@@ -129,7 +130,7 @@ public class ChatActivity extends AppCompatActivity {
                 cs.connect(bind.recyclerView.getId(), ConstraintSet.BOTTOM, bind.replyWrapper.getId(), ConstraintSet.TOP);
                 bind.main1.setConstraintSet(cs);
                 bind.reply.setText(message);
-                if (replyTo.equals(user.get("Username").toString())) replyTo = "Yourself";
+                if (replyTo.equals(String.valueOf(user.get("Username")))) replyTo = "Yourself";
                 bind.replyTo.setText("Replying to: " + replyTo);
                 ChatActivity.this.replyId = messageId;
             }), new onProfileLongHoldPress() {
@@ -167,31 +168,7 @@ public class ChatActivity extends AppCompatActivity {
         });
 
         bind.send.setOnClickListener(v -> {
-            if (bind.chat.getText().toString().isEmpty()) return;
-
-            if (fileType == null) {
-                fileType = "";
-            }
-
-            Message message = new Message("A", bind.chat.getText().toString(), user.get("Id").toString(), user.get("Username").toString(), group.get("Id").toString(), attachedFile, fileType, now);
-
-            bind.chat.setText("");
-
-            if (!replyId.isEmpty()) message.setReplyId(replyId);
-
-            db.sendMessage(message, attachedFile, (id) -> {
-                message.setId(id);
-                adapter.addMessage(message, bind.recyclerView);
-                bind.replyWrapper.setVisibility(View.GONE);
-                ConstraintSet cs = new ConstraintSet();
-                cs.clone(bind.main1);
-
-                cs.connect(bind.recyclerView.getId(), ConstraintSet.BOTTOM, bind.wrapper.getId(), ConstraintSet.TOP);
-
-                bind.main1.setConstraintSet(cs);
-
-                ChatActivity.this.replyId = "";
-            });
+            sendMessage(bind);
         });
 
         bind.cancelReply.setOnClickListener(v -> {
@@ -208,6 +185,52 @@ public class ChatActivity extends AppCompatActivity {
 
         bind.attachFile.setOnClickListener(v -> {
             adapter.notifyDataSetChanged();
+        });
+    }
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event){
+      switch (keyCode){
+          case KeyEvent.KEYCODE_ENTER:
+              sendMessage(bind);
+              return true;
+          default:
+              return super.onKeyUp(keyCode,event);
+      }
+
+    }
+    private void sendMessage(ActivityChatBinding bind){
+        if (bind.chat.getText().toString().isEmpty()) return;
+
+        if (fileType == null) {
+            fileType = "";
+        }
+
+        Message message = new Message(
+                "A",
+                String.valueOf(bind.chat.getText()),
+                String.valueOf(user.get("Id")),
+                String.valueOf(user.get("Username")),
+                String.valueOf(group.get("Id")),
+                attachedFile,
+                fileType,
+                now );
+
+        bind.chat.setText("");
+
+        if (!replyId.isEmpty()) message.setReplyId(replyId);
+
+        db.sendMessage(message, attachedFile, (id) -> {
+            message.setId(id);
+            adapter.addMessage(message, bind.recyclerView);
+            bind.replyWrapper.setVisibility(View.GONE);
+
+            ConstraintSet cs = new ConstraintSet();
+            cs.clone(bind.main1);
+            cs.connect(bind.recyclerView.getId(), ConstraintSet.BOTTOM, bind.wrapper.getId(), ConstraintSet.TOP);
+
+            bind.main1.setConstraintSet(cs);
+
+            ChatActivity.this.replyId = "";
         });
     }
     private void animateBottomSheet() {

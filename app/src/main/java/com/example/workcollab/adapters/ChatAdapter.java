@@ -33,19 +33,18 @@ import java.util.Optional;
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     List<Message> messages;
     Context context;
-    Map currentUser;
+    Map<String,Object> currentUser;
     List<UserData> data = new ArrayList<>();
     DatabaseFuncs db;
     ReplyListener replyListener;
     ChatActivity.onProfileLongHoldPress listener;
 
-    public final static int TYPE_SELF = 1;
-    public final static int TYPE_OTHER = 2;
+    public final static int TYPE_SELF = 1, TYPE_OTHER = 2;
     public interface ReplyListener {
         void onReplySwiped(String message, String messageId, String replyTo);
     }
 
-    public ChatAdapter(List<Message> messages, Context context, Map user, DatabaseFuncs db, ReplyListener replyListener, ChatActivity.onProfileLongHoldPress listener) {
+    public ChatAdapter(List<Message> messages, Context context, Map<String,Object> user, DatabaseFuncs db, ReplyListener replyListener, ChatActivity.onProfileLongHoldPress listener) {
         this.messages = messages;
         this.context = context;
         this.currentUser = user;

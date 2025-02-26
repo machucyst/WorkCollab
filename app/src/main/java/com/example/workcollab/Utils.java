@@ -21,8 +21,8 @@ public class Utils {
                 inputStream.close();
             }
             return bitmap;
-        } catch (Exception e) {}
-
+        } catch (Exception ignored) {
+        }
         return null;
     }
     /**

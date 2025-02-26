@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 
 import com.example.workcollab.R;
+import com.example.workcollab.activities.MainMenuActivity;
 import com.example.workcollab.databinding.FragmentApperanceBinding;
 import com.google.android.material.navigation.NavigationView;
 
@@ -51,6 +52,14 @@ public class AppearanceFragment extends Fragment {
                 return false;
             }
         });
+        b.backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MainMenuActivity.backFlow.pop();
+                requireActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
         return b.getRoot();
+
     }
 }

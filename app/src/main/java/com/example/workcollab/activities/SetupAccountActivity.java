@@ -34,11 +34,7 @@ import java.util.Map;
 
 public class SetupAccountActivity extends AppCompatActivity {
     DatabaseFuncs db = new DatabaseFuncs();
-    String userEmail,userPassword,userName;
-    ActivityResultLauncher<String> mGetCont;
     Uri resultUri = null;
-    SignInClient oneTapClient;
-    BeginSignInRequest signInRequest;
     FirebaseAuth mAuth;
     ActivitySetupAccountBinding b;
     DialogAgreementFormBinding dafb;
@@ -53,6 +49,7 @@ public class SetupAccountActivity extends AppCompatActivity {
         Intent intent = getIntent();
         bu = intent.getExtras();
 
+        //Change Profile
         b.profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,6 +59,7 @@ public class SetupAccountActivity extends AppCompatActivity {
                 startActivityForResult(Intent.createChooser(intent,"Select Picture"), 101);
             }
         });
+        //Show Password Visibility
         b.btnShowPass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,7 +94,7 @@ public class SetupAccountActivity extends AppCompatActivity {
                         public void changeLayout(boolean test) {
                             db.createAccount(bu.getString("user-name"), EncryptPassword(bu.getString("user-password")), bu.getString("user-email"), StrValOf(b.etCN), new DatabaseFuncs.UpdateListener() {
                                 @Override
-                                public void onUpdate(Map user) {
+                                public void onUpdate(Map<String,Object> user) {
                                     System.out.println("tesyseys");
                                     db.saveProfile(user, resultUri, new DatabaseFuncs.UpdateListener() {
                                         @Override
@@ -106,7 +104,7 @@ public class SetupAccountActivity extends AppCompatActivity {
                                             Machu[0] = user.get("Id").toString();
                                             db.createGroup(user.get("Username").toString() + "'s Group", Arrays.asList(Machu), new DatabaseFuncs.UpdateListener() {
                                                 @Override
-                                                public void onUpdate(Map user) {
+                                                public void onUpdate(Map<String,Object> user) {
                                                     System.out.println("Group Created");
                                                     finish();
                                                 }
@@ -124,6 +122,7 @@ public class SetupAccountActivity extends AppCompatActivity {
                 });
 
     }
+    // Crop image Activity
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         System.out.println(resultCode + " " + requestCode);
@@ -170,16 +169,6 @@ public class SetupAccountActivity extends AppCompatActivity {
 
 
         }
-    }
-
-    private void stayLogIn(String email) {
-        SharedPreferences sharedPreferences = getSharedPreferences("UserLogInPreferences", Context.MODE_PRIVATE);
-        sharedPreferences.edit().putString("user-email", email).apply();
-    }
-    private void complete(){
-        SharedPreferences sharedPreferences = getSharedPreferences("UserLogInPreferences", Context.MODE_PRIVATE);
-        sharedPreferences.edit().remove("incomplete").apply();
-        mAuth.signOut();
     }
     private String EncryptPassword(String password){
         char[] encpass = password.toCharArray();

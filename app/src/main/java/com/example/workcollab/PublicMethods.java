@@ -114,12 +114,14 @@ public class PublicMethods {
             case ".gif":
             case ".apng":
             case ".mp4":
+            case ".mkv":
+            case ".webp":
                 return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
             case ".mp3":
                 return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC);
             default:
+            return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
         }
-        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
 
     }
     public static void menuTextChange(NavigationView nv, int id, int ItemId, String text){

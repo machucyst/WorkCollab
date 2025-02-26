@@ -8,15 +8,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Message {
-    private String id;
-    private String message;
-    private String senderId;
-    private String senderUsername;
-    private String groupId;
+    private String id, message, senderId, senderUsername, groupId, fileType, replyId = "";
     private Uri file;
-    private String fileType;
     private Timestamp timestamp;
-    private String replyId = "";
 
     public Message(String id, String message, String senderId, String senderUsername, String groupId, Uri file, String fileType, Timestamp timestamp) {
         this.id = id;
@@ -73,44 +67,15 @@ public class Message {
     public void setId(String id) {
         this.id = id;
     }
-
     public String getMessage() {
         return message;
     }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
     public String getSenderId() {
         return senderId;
-    }
-
-    public void setSenderId(String senderId) {
-        this.senderId = senderId;
-    }
-
-    public String getGroupId() {
-        return groupId;
-    }
-
-    public void setGroupId(String groupId) {
-        this.groupId = groupId;
-    }
-
-    public Uri getFile() {
-        return file;
     }
 
     public void setFile(Uri file) {
         this.file = file;
     }
 
-    public String getFileType() {
-        return fileType;
-    }
-
-    public void setFileType(String fileType) {
-        this.fileType = fileType;
-    }
 }

@@ -55,26 +55,25 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Stack;
 
 public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdapter.ClickItemListener,GroupMembersAdapter.PositionListener,SelectedGroupSettingsFragment.GroupPFP,AccountEditFragment.UpdateListener, AccountFragment.ButtonListeners, JoinedGroupsSubFragment.PositionListener, InvitesSubFragment.PositionListener, TaskListFragment.PositionListener, SubmitTaskFragment.onSubmitClick, ViewMemberTasks.PositionListener {
-    private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 32;
-    private static final int PICK_FILE_REQUEST = 123;
+    private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 32, PICK_FILE_REQUEST = 123;
     private static final long MAX_FILE_SIZE = 20 * 1024 * 1024; // 20 MB
 
     ActivityMainMenuBinding b;
     DialogLogoutConfirmBinding bl;
     static boolean activityRunning = false;
-    Map task;
+    Map<String,Object> task;
     static int index;
     public static Stack<String> backFlow = new Stack<>();
-    public static Map selectedgroup;
+    public static Map<String,Object> selectedGroup;
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     public static String selected = "main";
     Bundle bu = new Bundle();
-
-    public static Map user;
+    public static Map<String,Object> user;
 
     DatabaseFuncs db = new DatabaseFuncs();
 
@@ -87,7 +86,7 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
+        //Notifications stuff ask Plant
         backFlow.push("main");
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -102,18 +101,16 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
 
 
         String email;
-        System.out.println(getUserEmail() + "EmailBeLike2");
-        if (!getUserEmail().equals("")) {
+        if (!getUserEmail().isEmpty()) {
             email = getUserEmail();
         } else {
             email = bu.getString("user-email");
         }
         FirebaseApp.initializeApp(this);
-        System.out.println(email + "whaiohgoeihaoieug aogoiaea");
         db.InitDB(email, new DatabaseFuncs.DataListener() {
 
             @Override
-            public void onDataFound(Map user) {
+            public void onDataFound(Map<String,Object> user) {
                 MainMenuActivity.user = user;
                     reload();
                 }
@@ -123,6 +120,8 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
 
             }
         });
+
+        // Add Groups || Tasks Button
         b.btnFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -130,6 +129,7 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
                 dba.show(getSupportFragmentManager(),new BottomDialogCreateFragment().getTag());
             }
         });
+        // Bottom Nav View Button functions
         b.bottomNavView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -179,8 +179,10 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
                 }
             }
         });
-
     }
+
+
+    // Image Editor Cropper Code
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -217,14 +219,14 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
                         case 10:
                         db.saveProfile(user, resultUri, new DatabaseFuncs.UpdateListener() {
                             @Override
-                            public void onUpdate(Map user) {
+                            public void onUpdate(Map<String,Object>  user) {
                                 MainMenuActivity.user = user;
                                 replaceFragment(AccountFragment.newInstance(), "Profile");
                             }
                         });
                         break;
                         case 20:
-                            db.saveGroupProfile(selectedgroup, resultUri, new DatabaseFuncs.UpdateListener() {
+                            db.saveGroupProfile(selectedGroup, resultUri, new DatabaseFuncs.UpdateListener() {
                                 @Override
                                 public void onUpdate(Map user) {
                                     replaceFragment(SelectedGroupFragment.newInstance(user),"selectedgroup");
@@ -263,22 +265,22 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
         cursor.close();
         return size;
     }
-
     private String getUserEmail() {
         SharedPreferences sharedPreferences = getSharedPreferences("UserLogInPreferences", Context.MODE_PRIVATE);
         return sharedPreferences.getString("user-email", "");
     }
-
     public void stayLogIn(String email) {
         SharedPreferences sharedPreferences = getSharedPreferences("UserLogInPreferences", Context.MODE_PRIVATE);
         sharedPreferences.edit().putString("user-email", email).apply();
     }
     void complete(){
+        //Clear auto login
         SharedPreferences sharedPreferences = getSharedPreferences("UserLogInPreferences", Context.MODE_PRIVATE);
         sharedPreferences.edit().remove("user-email").apply();
         FirebaseAuth.getInstance().signOut();
     }
     public void replaceFragment(Fragment fragment, String condition){
+        //Change Display
         String waa = "";
         if (!backFlow.isEmpty()) {
             waa = backFlow.peek();
@@ -331,29 +333,24 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
             replaceFragment(changeFragment(backFlow.peek()), backFlow.peek());
         }
     }
-
-
     @Override
     public void onLogOutPress() {
         logOutConfirm();
     }
 
     @Override
-    public void onUpdatedEmail(Map user) {
-        stayLogIn(user.get("Email").toString());
+    public void onUpdatedEmail(Map<String,Object> user) {
+        stayLogIn(String.valueOf(user.get("Email")));
         MainMenuActivity.user = user;
     }
-
     @Override
     public void onPressChangePFP() {
-//        mGetCont.launch("image/*");
         index = 10;
         Intent intent = new Intent();
         intent.setType("image/*");  // For .doc files
         intent.setAction(Intent.ACTION_PICK);
         startActivityForResult(Intent.createChooser(intent,"Select Picture"), 101);
     }
-
     @Override
     public void onDeletedAccount() {
         complete();
@@ -361,48 +358,33 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
         startActivity(intent);
         finish();
     }
-
     @Override
-    public void itemClicked(Map group) {
+    public void itemClicked(Map<String,Object>  group) {
         JoinedGroupsSubFragment.PositionListener.super.itemClicked(group);
         backFlow.push("selectedgroup");
         getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(),SelectedGroupFragment.newInstance(group)).commit();
     }
     @Override
-    public void taskItemClicked(Map task){
-
-    }
-
-    @Override
-    public void onDeny(Map group) {
+    public void onDeny(Map<String,Object>  group) {
         InvitesSubFragment.PositionListener.super.onDeny(group);
     }
 
     @Override
-    public void onAccept(Map group) {
+    public void onAccept(Map<String,Object>  group) {
         InvitesSubFragment.PositionListener.super.onAccept(group);
     }
 
     @Override
-    public void onSubmitClick(Map task) {
+    public void onSubmitClick(Map<String,Object>  task) {
         MainMenuActivity.this.task = task;
-//        System.out.println("ajieoghaoie");
-//        if (ContextCompat.checkSelfPermission(MainMenuActivity.this,
-//                android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-//            System.out.println("ajieoghaoie11");
-//            ActivityCompat.requestPermissions(MainMenuActivity.this,
-//                    new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
-//        } else {
-//            System.out.println("ajieoghaoie23452");
-            openFilePicker();
-//        }
+        openFilePicker();
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE) {
-            System.out.println(grantResults + " waawgaw");
+            System.out.println(Arrays.toString(grantResults) + " waawgaw");
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 openFilePicker();
             } else {
@@ -416,8 +398,6 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
         intent.setType("*/*");
         startActivityForResult(intent, PICK_FILE_REQUEST);
     }
-
-
     public Fragment changeFragment(String fragmentTag) {
         switch (fragmentTag) {
             case "main":
@@ -429,7 +409,7 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
             case "creategroups":
                 return CreateGroupFragment.newInstance();
             case "selectgroup":
-                return SelectedGroupFragment.newInstance(selectedgroup);
+                return SelectedGroupFragment.newInstance(selectedGroup);
             case "appearance":
                 return AppearanceFragment.newInstance();
             case "tasks":
@@ -438,44 +418,43 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
         return MainFragment.newInstance();
     }
 
-    public void viewMemberTask(Map task) {
-
+    public void viewMemberTask(Map<String,Object> task) {
+        //TODO: yeah idk
     }
     public void reload(){
-        if(selected.equals("main")){
-            getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), MainFragment.newInstance()).commitAllowingStateLoss();
-            b.bottomNavView.setSelectedItemId(R.id.menu_home);
-            return;
-        }
-        if(selected.equals("groups")){
-            getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), MainFragment.newInstance()).commitAllowingStateLoss();
-            b.bottomNavView.setSelectedItemId(R.id.menu_home);
-            return;
-        }
-        if(selected.equals("account")){
-            getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), AccountFragment.newInstance()).commit();
-            b.bottomNavView.setSelectedItemId(R.id.menu_profile);
-            return;
-        }
-        if(selected.equals("tasks")){
-            getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), MainFragment.newInstance()).commitAllowingStateLoss();
-            b.bottomNavView.setSelectedItemId(R.id.menu_tasks);
-            return;
-        }
-        if (selected.equals("creategroups")) {
-            getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), CreateGroupFragment.newInstance()).commit();
-            return;
-        }
-        if (selected.equals("selectgroup")) {
-            getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), SelectedGroupFragment.newInstance(selectedgroup)).commit();
-            return;
-        }
-        if(selected.equals("appearance")) {
-            getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), AppearanceFragment.newInstance()).commit();
-            return;
-        }
-        if(selected.equals("tasks")) {
-            getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), TaskListFragment.newInstance(false)).commit();
+    //In case of Activity crash/changes reload fragment
+        switch (selected) {
+            case "main":
+                getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), MainFragment.newInstance()).commitAllowingStateLoss();
+                b.bottomNavView.setSelectedItemId(R.id.menu_home);
+                return;
+            case "groups":
+                getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), GroupsFragment.newInstance(false)).commitAllowingStateLoss();
+                b.bottomNavView.setSelectedItemId(R.id.menu_home);
+                return;
+            case "account":
+                getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), AccountFragment.newInstance()).commit();
+                b.bottomNavView.setSelectedItemId(R.id.menu_profile);
+                return;
+            case "creategroups":
+                getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), CreateGroupFragment.newInstance()).commit();
+                return;
+            case "selectgroup":
+                getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), SelectedGroupFragment.newInstance(selectedGroup)).commit();
+                return;
+            case "appearance":
+                getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), AppearanceFragment.newInstance()).commit();
+                return;
+            case "tasks":
+                getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), TaskListFragment.newInstance(false)).commit();
+                break;
+//        if(selected.equals("tasks")){
+//            getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), MainFragment.newInstance()).commitAllowingStateLoss();
+//            b.bottomNavView.setSelectedItemId(R.id.menu_tasks);
+//            return;
+//        }
+//              >  idk why theres 2 tasks
+//              >  im very confused
         }
     }
 
@@ -490,6 +469,7 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
 
     @Override
     public void otherOne() {
+        //TODO:???????????????????????
         getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(),MainFragment.newInstance()).commit();
     }
 
@@ -518,13 +498,13 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
     }
 
     @Override
-    public void onMemberClicked(Map user) {
-        BottomDialogViewProfileFragment bd = new BottomDialogViewProfileFragment(user.get("Id").toString());
-        bd.show(getSupportFragmentManager(),new BottomDialogViewProfileFragment(user.get("Id").toString()).getTag());
+    public void onMemberClicked(Map<String,Object> user) {
+        BottomDialogViewProfileFragment bd = new BottomDialogViewProfileFragment(String.valueOf(user.get("Id")));
+        bd.show(getSupportFragmentManager(),new BottomDialogViewProfileFragment(String.valueOf(user.get("Id"))).getTag());
     }
 
     @Override
-    public void onItemClick(int position, Map task) {
+    public void onItemClick(int position, Map<String,Object> task) {
         replaceFragment(SubmitTaskFragment.newInstance(task),"taskselected");
     }
 }

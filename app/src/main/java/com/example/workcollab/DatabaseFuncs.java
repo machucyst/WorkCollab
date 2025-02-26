@@ -50,20 +50,18 @@ public class DatabaseFuncs {
     //Initializations
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseStorage fbs = FirebaseStorage.getInstance();
-    FirebaseAuth fauth = FirebaseAuth.getInstance();
     StorageReference reference = fbs.getReference();
     CollectionReference account = db.collection("Account");
     CollectionReference groups = db.collection("Groups");
     CollectionReference messages = db.collection("Messages");
-    Map user;
+    Map<String,Object> user;
     //Interfaces
     public interface TaskListener{
-        void onTaskRecieved(List<Map> tasks);
-
+        void onTaskRecieved(List<Map<String, Object>> tasks);
         void getDeadline(Timestamp timestamp);
     }
     public interface UpdateListener{
-        void onUpdate(Map user);
+        void onUpdate(Map<String,Object> user);
     }
     public interface EmailAuthListener{
         void changeLayout(boolean test);
@@ -95,14 +93,14 @@ public class DatabaseFuncs {
         void onDelete();
     }
     public interface UserListener{
-        void onUserFound(Map user);
+        void onUserFound(Map<String,Object>user);
     }
     public interface MembersListener {
-        void onReceiveMembers(List<Map> members);
+        void onReceiveMembers(List<Map<String,Object>> members);
     }
 
     public interface DataListener {
-        void onDataFound(Map user);
+        void onDataFound(Map<String,Object>user);
 
         void noDuplicateUser();
     }
@@ -110,9 +108,9 @@ public class DatabaseFuncs {
         void onMessageSent(String newId);
     }
     public interface GroupListener {
-        void onReceive(List<Map> groups, List<Map> groupLeaders);
+        void onReceive(List<Map<String,Object>> groups, List<Map<String,Object>> groupLeaders);
 
-        void onReceive(List<Map> groups);
+        void onReceive(List<Map<String,Object>> groups);
 
         void getDeadline(Timestamp timestamp);
     }
@@ -162,8 +160,8 @@ public class DatabaseFuncs {
                     }
                 });
     }
-    public void getMemberSubmissions(Map task, TaskListener listener){
-        List<Map> taskDetails = new ArrayList<>();
+    public void getMemberSubmissions(Map<String,Object>task, TaskListener listener){
+        List<Map<String,Object>> taskDetails = new ArrayList<Map<String,Object>>();
         groups.document(task.get("ParentId").toString()).collection("Tasks").document(task.get("Id").toString()).collection("Submitted").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -171,8 +169,8 @@ public class DatabaseFuncs {
                     for (DocumentSnapshot document : task.getResult()) {
                         getUserById(document.getId(), new DataListener() {
                             @Override
-                            public void onDataFound(Map user) {
-                                Map task2 = document.getData();
+                            public void onDataFound(Map<String,Object> user) {
+                                Map<String,Object> task2 = document.getData();
                                 task2.put("Profile",user.get("Profile").toString());
                                 task2.put("Username",user.get("Username").toString());
                                 taskDetails.add(task2);
@@ -201,7 +199,7 @@ public class DatabaseFuncs {
             }
         });
     }
-    public void submitTask(Map user, Uri value, String groupId, String taskId, String taskName,CardView v, Context c, BasicListener listener){
+    public void submitTask(Map<String,Object>user, Uri value, String groupId, String taskId, String taskName,CardView v, Context c, BasicListener listener){
         Map<String,Object> taskSub = new HashMap<>();
 
         reference.child("Groups/"+groupId+"/SubmittedFiles/"+taskId+"/"+user.get("Id").toString()+"/"+taskName).putFile(value, new StorageMetadata.Builder().setContentType(String.valueOf(MimeTypeMap.getSingleton().getExtensionFromMimeType(c.getContentResolver().getType(value)))).build()).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -226,7 +224,7 @@ public class DatabaseFuncs {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(c,"Error Uploading Document",Toast.LENGTH_SHORT);
+                Toast.makeText(c,"Error Uploading Document",Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -240,7 +238,7 @@ public class DatabaseFuncs {
             }
         });
     }
-    public void saveProfile(Map user, Uri value, UpdateListener listener){
+    public void saveProfile(Map<String,Object>user, Uri value, UpdateListener listener){
         reference.child("AccountProfiles/"+user.get("Id").toString()+"/Profile.png").putFile(value)
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -255,7 +253,7 @@ public class DatabaseFuncs {
                         reference.child("AccountProfiles/"+user.get("Id").toString()+"/Profile.png").getDownloadUrl().addOnSuccessListener(uri->{
                             updateAccount(user.get("Email").toString(), uri.toString(), "Profile", new UpdateListener() {
                                 @Override
-                                public void onUpdate(Map user) {
+                                public void onUpdate(Map<String,Object>user) {
                                    listener.onUpdate(user);
                                 }
                             });
@@ -274,7 +272,7 @@ public class DatabaseFuncs {
             }
         });
     }
-    public void updateGroup(Map group,String value, String condition, UpdateListener listener, int i){
+    public void updateGroup(Map<String,Object>group,String value, String condition, UpdateListener listener, int i){
         group.put(condition,value);
         groups.document(group.get("Id").toString()).update(group).addOnCompleteListener(new OnCompleteListener() {
             @Override
@@ -285,7 +283,7 @@ public class DatabaseFuncs {
             }
         });
     }
-    public void updateGroup(Map group, String path, UpdateListener listener){
+    public void updateGroup(Map<String,Object>group, String path, UpdateListener listener){
         group.put("GroupImage",path);
         groups.document(group.get("Id").toString()).update(group).addOnCompleteListener(new OnCompleteListener() {
             @Override
@@ -296,7 +294,7 @@ public class DatabaseFuncs {
             }
         });
     }
-    public void saveGroupProfile(Map group, Uri value, UpdateListener listener){
+    public void saveGroupProfile(Map<String,Object>group, Uri value, UpdateListener listener){
         reference.child("GroupsProfiles/"+group.get("Id").toString()+"/Profile.png").putFile(value)
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -311,7 +309,7 @@ public class DatabaseFuncs {
                         reference.child("GroupsProfiles/"+group.get("Id").toString()+"/Profile.png").getDownloadUrl().addOnSuccessListener(uri->{
                             updateGroup(group, uri.toString(), new UpdateListener() {
                                 @Override
-                                public void onUpdate(Map user) {
+                                public void onUpdate(Map<String,Object>user) {
                                     listener.onUpdate(user);
                                 }
                             });
@@ -371,7 +369,7 @@ public class DatabaseFuncs {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     Map<String, Object> user = new HashMap<>();
-                    List<Map> documentList = new ArrayList<>();
+                    List<Map<String,Object>> documentList = new ArrayList<>();
                     int i = 0;
                     for (QueryDocumentSnapshot doc : task.getResult()) {
                         i++;
@@ -396,7 +394,7 @@ public class DatabaseFuncs {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     Map<String, Object> user = new HashMap<>();
-                    List<Map> documentList = new ArrayList<>();
+                    List<Map<String,Object>> documentList = new ArrayList<>();
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         user = document.getData();
                         user.put("GroupId",document.getId());
@@ -423,7 +421,7 @@ public class DatabaseFuncs {
                                     Log.d(TAG,"update work");
                                     InitDB(email, new DataListener() {
                                         @Override
-                                        public void onDataFound(Map user) {
+                                        public void onDataFound(Map<String,Object>user) {
                                             try {
                                                 user.put("Id", document.getId());
                                                 listener.onUpdate(user);
@@ -487,7 +485,7 @@ public class DatabaseFuncs {
                                     Log.d(TAG,"update work");
                                     InitDB(user.get("Email").toString(), new DataListener() {
                                         @Override
-                                        public void onDataFound(Map user) {
+                                        public void onDataFound(Map<String,Object>user) {
                                             try {
                                                 listener.onUpdate(user);
                                             } catch (Exception e) {
@@ -517,8 +515,8 @@ public class DatabaseFuncs {
 
     }
     public void getJoinedGroups(String id, GroupListener listener){
-        List<Map> documentList = new ArrayList<>();
-        List<Map> leaderList = new ArrayList<>();
+        List<Map<String,Object>> documentList = new ArrayList<>();
+        List<Map<String,Object>> leaderList = new ArrayList<>();
             groups
                 .whereArrayContains("Members",id)
                 .get()
@@ -527,7 +525,7 @@ public class DatabaseFuncs {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                    Map a = document.getData();
+                                    Map<String,Object>a = document.getData();
                                     a.put("Id",document.getId());
                                     a.put("isLeader",false);
                                     documentList.add(a);
@@ -540,7 +538,7 @@ public class DatabaseFuncs {
                                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                             if (task.isSuccessful()) {
                                                 for (QueryDocumentSnapshot document : task.getResult()) {
-                                                    Map a = document.getData();
+                                                    Map<String,Object>a = document.getData();
                                                     a.put("Id", document.getId());
                                                     a.put("isLeader",true);
                                                     leaderList.add(a);
@@ -568,7 +566,7 @@ public class DatabaseFuncs {
 //                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
 //                        if (task.isSuccessful()) {
 //                            for (QueryDocumentSnapshot document : task.getResult()) {
-//                                Map a = document.getData();
+//                                Map<String,Object>a = document.getData();
 //                                a.put("Id",document.getId());
 //                                documentList.add(a);
 //                            }
@@ -582,12 +580,12 @@ public class DatabaseFuncs {
 
         groups.whereArrayContains("Invites",id)
                 .addSnapshotListener((value, error) -> {
-                    List<Map> documentList = new ArrayList<>();
+                    List<Map<String,Object>> documentList = new ArrayList<>();
                     if (error != null) return;
                     for (DocumentChange d : value.getDocumentChanges()) {
                         if (d.getType() == DocumentChange.Type.ADDED) {
                             DocumentSnapshot document = d.getDocument();
-                            Map a = document.getData();
+                            Map<String,Object>a = document.getData();
                             a.put("Id",document.getId());
                             documentList.add(a);
                         }
@@ -596,7 +594,7 @@ public class DatabaseFuncs {
                 });
     }
     public void getMembers(String id, MembersListener listener){
-        List<Map> ids = new ArrayList<>();
+        List<Map<String,Object>> ids = new ArrayList<>();
         groups.document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -607,7 +605,7 @@ public class DatabaseFuncs {
                             for(String id : members){
                                 getUserById(id, new DataListener() {
                                     @Override
-                                    public void onDataFound(Map user) {
+                                    public void onDataFound(Map<String,Object>user) {
                                         ids.add(user);
                                         listener.onReceiveMembers(ids);
                                     }
@@ -638,14 +636,14 @@ public class DatabaseFuncs {
         });
     }
     public void getTasks(String groupId, String groupName, Uri groupImage, TaskListener listener){
-    List<Map> tasks = new ArrayList<>();
+    List<Map<String,Object>> tasks = new ArrayList<>();
         groups.document(groupId).collection("Tasks").addSnapshotListener((value, error) -> {
             if (error != null) return;
             for (DocumentChange c :
                     value.getDocumentChanges()) {
                 DocumentSnapshot d = c.getDocument();
                 if (c.getType() == DocumentChange.Type.ADDED) {
-                    Map<String, Object> taskMap = d.getData();
+                    Map<String, Object> taskMap= d.getData();
                     taskMap.put("Id",d.getId());
                     taskMap.put("GroupName", groupName);
                     taskMap.put("GroupImage", groupImage);
@@ -661,8 +659,8 @@ public class DatabaseFuncs {
         Log.e("wawa", "woah");
         getJoinedGroups(userId, new GroupListener() {
             @Override
-            public void onReceive(List<Map> groups, List<Map> groupLeaders) {
-                for (Map g : groups){
+            public void onReceive(List<Map<String,Object>> groups, List<Map<String,Object>> groupLeaders) {
+                for (Map<String,Object>g : groups){
 //                    DatabaseFuncs.this.groups.document(g.get("Id").toString()).collection("Tasks").whereArrayContains("Assigned Members",userId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
 //                        @Override
 //                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -670,7 +668,7 @@ public class DatabaseFuncs {
 //                                Log.e("wawa", "whee");
 //                                for (DocumentSnapshot doc : task.getResult()){
 //                                    System.out.println(doc.getData());
-//                                    Map<String, Object> taskMap = doc.getData();
+//                                    Map<String, Object> taskMap<String,Object>= doc.getData();
 //                                    taskMap.put("Id",doc.getId());
 //                                    taskMap.put("GroupName", g.get("GroupName"));
 //                                    taskMap.put("GroupImage", g.get("GroupImage"));
@@ -685,13 +683,13 @@ public class DatabaseFuncs {
                         @Override
                         public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                             if (error != null) return;
-                            List<Map> tasks = new ArrayList<>();
+                            List<Map<String,Object>> tasks = new ArrayList<>();
                             Log.e("wawa", "whee");
                             for (DocumentChange c :
                                     value.getDocumentChanges()) {
                                 DocumentSnapshot d = c.getDocument();
                                 if (c.getType() == DocumentChange.Type.ADDED) {
-                                    Map<String, Object> taskMap = d.getData();
+                                    Map<String, Object> taskMap= d.getData();
                                     taskMap.put("Id",d.getId());
                                     taskMap.put("GroupName", g.get("GroupName"));
                                     taskMap.put("GroupImage", g.get("GroupImage"));
@@ -705,7 +703,7 @@ public class DatabaseFuncs {
             }
 
             @Override
-            public void onReceive(List<Map> groups) {
+            public void onReceive(List<Map<String,Object>> groups) {
             }
 
             @Override
@@ -726,7 +724,7 @@ public class DatabaseFuncs {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                    Map a = document.getData();
+                                    Map<String,Object>a = document.getData();
                                     a.put("Id",document.getId());
                                     dataListener.onDataFound(a);
                                     return;
@@ -749,7 +747,7 @@ public class DatabaseFuncs {
         });
     }
     public void createTask(String groupId, List<String> members,String taskName, String taskDescription, long taskDeadline, Button b, Context c,  CreateTaskListener listener){
-        Map taskBuilder = new HashMap<>();
+        Map<String,Object>taskBuilder = new HashMap<>();
         taskBuilder.put("ParentId",groupId);
         taskBuilder.put("TaskName",taskName);
         taskBuilder.put("TaskDescription",taskDescription);
@@ -879,5 +877,3 @@ public class DatabaseFuncs {
         });
     }
 }
-
-

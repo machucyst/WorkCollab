@@ -56,14 +56,14 @@ public class NotifiationsService extends Service {
 
         listener = new DatabaseFuncs.GroupListener() {
             @Override
-            public void onReceive(List<Map> groups, List<Map> groupLeaders) {
+            public void onReceive(List<Map<String,Object>> groups, List<Map<String,Object>> groupLeaders) {
 
             }
 
             @Override
-            public void onReceive(List<Map> groups) {
+            public void onReceive(List<Map<String,Object>> groups) {
                 if (!newLaunch && !MainMenuActivity.isActivityRunning()) {
-                    for (Map group :
+                    for (Map<String,Object> group :
                             groups) {
                         NotificationUtils.postNotificationGrouper(NotifiationsService.this, 2, "invites", "Invite Received", "You have been invited to " + group.get("GroupName").toString(), R.drawable.ic_mail, "invites");
                         NotificationUtils.postNotification(NotifiationsService.this, (int)System.currentTimeMillis(), "invites", "Invite Received", "You have been invited to " + group.get("GroupName").toString(), R.drawable.ic_mail, "invites");

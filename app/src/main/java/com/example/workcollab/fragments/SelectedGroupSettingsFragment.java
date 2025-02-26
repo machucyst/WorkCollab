@@ -30,7 +30,7 @@ import java.util.Map;
  */
 public class SelectedGroupSettingsFragment extends Fragment {
     Gson gson = new Gson();
-    Map group;
+    Map<String,Object> group;
     DialogLogoutConfirmBinding dlc;
     DialogTextInputBinding dtb;
     public interface GroupPFP{
@@ -52,7 +52,7 @@ public class SelectedGroupSettingsFragment extends Fragment {
     }
 
     FragmentSelectedGroupSettingsBinding b;
-    public static SelectedGroupSettingsFragment newInstance(Map group) {
+    public static SelectedGroupSettingsFragment newInstance(Map<String,Object> group) {
         Bundle args = new Bundle();
         Gson gson = new Gson();
 //       args.putIn("stream",inputStream);
@@ -119,7 +119,7 @@ public class SelectedGroupSettingsFragment extends Fragment {
                     dtb.Ok.setOnClickListener(k -> {
                         db.updateGroup(group, dtb.editText.getText().toString(),"GroupName", new DatabaseFuncs.UpdateListener() {
                             @Override
-                            public void onUpdate(Map user) {
+                            public void onUpdate(Map<String,Object> user) {
                                 requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), SelectedGroupFragment.newInstance(user)).addToBackStack(null).commit();
                                 dialog.dismiss();
                             }

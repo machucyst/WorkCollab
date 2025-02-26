@@ -35,7 +35,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.MyHandler>{
     @Override
     public void onBindViewHolder(@NonNull MyHandler holder, @SuppressLint("RecyclerView") int position) {
         if (tasks.get(position) instanceof Map) {
-            Map task = (Map)tasks.get(position);
+            Map<String,Object> task = (Map<String,Object>) tasks.get(position);
             holder.tv_g.setText((task.get("TaskName")).toString());
             holder.parent.setOnClickListener(v -> {
                 try {

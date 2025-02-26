@@ -34,7 +34,7 @@ public class JoinedGroupsSubFragment extends Fragment {
         // Required empty public constructor
     }
     public interface PositionListener{
-        default void itemClicked(Map group){}
+        default void itemClicked(Map<String,Object> group){}
     }
     PositionListener listener;
 
@@ -57,7 +57,7 @@ public class JoinedGroupsSubFragment extends Fragment {
         return f;
     }
 
-    List<Map> filteredgroups = new ArrayList<>();
+    List<Map<String,Object>> filteredgroups = new ArrayList<>();
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,8 +67,8 @@ public class JoinedGroupsSubFragment extends Fragment {
 //        System.out.println(user);
         db.getJoinedGroups(MainMenuActivity.user.get("Id").toString(), new DatabaseFuncs.GroupListener() {
             @Override
-            public void onReceive(List<Map> groups, List<Map> groupLeaders) {
-                List<Map> newList = new ArrayList<>();
+            public void onReceive(List<Map<String,Object>> groups, List<Map<String,Object>> groupLeaders) {
+                List<Map<String,Object>> newList = new ArrayList<>();
                 if(test){
                     newList.addAll(groups);
                     newList.addAll(groupLeaders);
@@ -77,7 +77,7 @@ public class JoinedGroupsSubFragment extends Fragment {
                 }
                 GroupsAdapter ga = new GroupsAdapter(newList, getContext(), new PositionListener() {
                     @Override
-                    public void itemClicked(Map group) {
+                    public void itemClicked(Map<String,Object> group) {
                         if(test){
                             PositionListener.super.itemClicked(group);
                             MainMenuActivity.selected = "groups";
@@ -112,7 +112,7 @@ public class JoinedGroupsSubFragment extends Fragment {
                             ga.refreshList(filteredgroups);
 //                            GroupsAdapter ga = new GroupsAdapter(filteredgroups, getContext(), new PositionListener() {
 //                                @Override
-//                                public void itemClicked(Map group) {
+//                                public void itemClicked(Map<String,Object> group) {
 //                                    if(test){
 //                                        PositionListener.super.itemClicked(group);
 //                                        MainMenuActivity.selected = "groups";
@@ -140,7 +140,7 @@ public class JoinedGroupsSubFragment extends Fragment {
             }
 
             @Override
-            public void onReceive(List<Map> groups) {
+            public void onReceive(List<Map<String,Object>> groups) {
 
 
             }

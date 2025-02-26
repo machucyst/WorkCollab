@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -26,11 +27,11 @@ import java.util.Map;
 public class InviteMoreMembersFragment extends Fragment {
 
     Gson gson = new Gson();
-    Map group;
+    Map<String,Object> group;
     DatabaseFuncs db = new DatabaseFuncs();
     FragmentInviteMoreMembersBinding b;
     List<String> abae;
-    List<Map> filteredgroups = new ArrayList<>();
+    List<Map<String,Object>> filteredgroups = new ArrayList<>();
 
 
     public static List<String> members = new ArrayList<>();
@@ -46,7 +47,7 @@ public class InviteMoreMembersFragment extends Fragment {
     }
 
 
-    public static InviteMoreMembersFragment newInstance(Map group) {
+    public static InviteMoreMembersFragment newInstance(Map<String,Object> group) {
         Bundle args = new Bundle();
         Gson gson = new Gson();
         args.putString("group", gson.toJson(group));
@@ -65,7 +66,7 @@ public class InviteMoreMembersFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         b = FragmentInviteMoreMembersBinding.inflate(inflater,container,false);
@@ -80,12 +81,12 @@ public class InviteMoreMembersFragment extends Fragment {
                 db.getUsers(new DatabaseFuncs.GroupListener() {
 
                     @Override
-                    public void onReceive(List<Map> groups, List<Map> groupLeaders) {
+                    public void onReceive(List<Map<String,Object>> groups, List<Map<String,Object>> groupLeaders) {
 
                     }
 
                     @Override
-                    public void onReceive(List<Map> groups) {
+                    public void onReceive(List<Map<String,Object>> groups) {
                         System.out.println(groups);
                         for (int i = 0; i < groups.size(); i++) {
                             if (b.etAdd.getText().toString().equals(groups.get(i).get("Email"))) {
@@ -111,11 +112,11 @@ public class InviteMoreMembersFragment extends Fragment {
         });
         db.getMembers(group.get("Id").toString(), new DatabaseFuncs.MembersListener() {
             @Override
-            public void onReceiveMembers(List<Map> members) {
+            public void onReceiveMembers(List<Map<String,Object>> members) {
                 GroupMembersAdapter a = new GroupMembersAdapter(members, getContext(), new GroupMembersAdapter.PositionListener() {
 
                     @Override
-                    public void onMemberClicked(Map user) {
+                    public void onMemberClicked(Map<String,Object> user) {
                         BottomDialogViewProfileFragment bdvf = new BottomDialogViewProfileFragment(user.get("Id").toString());
                         bdvf.show(requireActivity().getSupportFragmentManager(),new BottomDialogViewProfileFragment(user.get("Id").toString()).getTag());
                     }
@@ -126,12 +127,12 @@ public class InviteMoreMembersFragment extends Fragment {
                     public void onClick(View v) {
                 db.getUsers(new DatabaseFuncs.GroupListener() {
                     @Override
-                    public void onReceive(List<Map> groups, List<Map> groupLeaders) {
+                    public void onReceive(List<Map<String,Object>> groups, List<Map<String,Object>> groupLeaders) {
 
                     }
 
                     @Override
-                    public void onReceive(List<Map> groups) {
+                    public void onReceive(List<Map<String,Object>> groups) {
 
                         System.out.println(groups);
                         for (int i = 0; i < groups.size(); i++) {
@@ -147,7 +148,7 @@ public class InviteMoreMembersFragment extends Fragment {
                                         }
                                     }
                                 } else {
-                                    Toast.makeText(requireContext(), "User already selected", Toast.LENGTH_SHORT);
+                                    Toast.makeText(requireContext(), "User already selected", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         }

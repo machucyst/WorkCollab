@@ -23,8 +23,7 @@ import java.util.Map;
 
 public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyHandler>{
 
-    public List<Map> groups;
-    DatabaseFuncs db = new DatabaseFuncs();
+    public List<Map<String,Object>> groups;
     private final JoinedGroupsSubFragment.PositionListener listener;
     Context c;
 
@@ -51,7 +50,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyHandler>
             }
         );
     }
-    public void refreshList(List<Map> a){
+    public void refreshList(List<Map<String,Object>> a){
         this.groups = a;
         notifyDataSetChanged();
     }
@@ -59,7 +58,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyHandler>
     public int getItemCount() {
         return groups.size();
     }
-    public GroupsAdapter(List<Map> groups, Context c,JoinedGroupsSubFragment.PositionListener listener){
+    public GroupsAdapter(List<Map<String,Object>> groups, Context c,JoinedGroupsSubFragment.PositionListener listener){
         this.groups = groups;
         this.c = c;
         this.listener = listener;

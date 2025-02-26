@@ -22,7 +22,7 @@ import java.util.Map;
 
 public class MemberTaskAdapter extends RecyclerView.Adapter<MemberTaskAdapter.MyHandler>{
 
-    public final List<Map> tasks;
+    public final List<Map<String,Object>> tasks;
     private final Context context;
     DatabaseFuncs db = new DatabaseFuncs();
     private final ViewMemberTasks.PositionListener listener;
@@ -52,7 +52,7 @@ public class MemberTaskAdapter extends RecyclerView.Adapter<MemberTaskAdapter.My
     public int getItemCount() {
         return tasks.size();
     }
-    public MemberTaskAdapter(List<Map> tasks, Context context, ViewMemberTasks.PositionListener listener){
+    public MemberTaskAdapter(List<Map<String,Object>> tasks, Context context, ViewMemberTasks.PositionListener listener){
         this.tasks = tasks;
         this.listener = listener;
         this.context = context;

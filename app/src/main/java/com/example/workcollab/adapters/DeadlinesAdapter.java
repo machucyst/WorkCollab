@@ -1,5 +1,6 @@
 package com.example.workcollab.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
 import android.view.LayoutInflater;
@@ -28,9 +29,9 @@ public class DeadlinesAdapter extends RecyclerView.Adapter<DeadlinesAdapter.VH> 
     Context context;
     HeaderClickListener headerClickListener;
     ClickItemListener listener;
-    Map user;
+    Map<String,Object> user;
 
-    public DeadlinesAdapter(List<Object> tasks, Context context, ClickItemListener listener, Map user) {
+    public DeadlinesAdapter(List<Object> tasks, Context context, ClickItemListener listener, Map<String,Object> user) {
         this.tasks = tasks;
         this.context = context;
         this.listener = listener;
@@ -44,11 +45,12 @@ public class DeadlinesAdapter extends RecyclerView.Adapter<DeadlinesAdapter.VH> 
         return new VH(CardDeadlineBinding.inflate(LayoutInflater.from(context), parent, false));
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     public void onBindViewHolder(@NonNull DeadlinesAdapter.VH holder, int position) {
         if (holder.bind instanceof CardDeadlineBinding) {
-            Map task = (Map) tasks.get(position);
-            if(task.get("TaskName").toString().equals("No tasks :)")){
+            Map<String,Object> task = (Map) tasks.get(position);
+            if(String.valueOf(task.get("TaskName")).equals("No tasks :)")){
                 return;
             }
             DeadlineModel d;
@@ -125,7 +127,7 @@ public class DeadlinesAdapter extends RecyclerView.Adapter<DeadlinesAdapter.VH> 
     }
 
     public interface ClickItemListener {
-        void onItemClick(int position, Map task);
+        void onItemClick(int position, Map<String,Object> task);
     }
 
     public interface HeaderClickListener {
@@ -138,7 +140,7 @@ public class DeadlinesAdapter extends RecyclerView.Adapter<DeadlinesAdapter.VH> 
         this.headerClickListener = headerClickListener;
     }
 
-    public void addRange(List<Map> tasks) {
+    public void addRange(List<Map<String, Object>> tasks) {
         int pos = this.tasks.size();
         this.tasks.addAll(tasks);
         notifyItemRangeInserted(pos, tasks.size());

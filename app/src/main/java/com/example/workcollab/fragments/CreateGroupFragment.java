@@ -29,7 +29,7 @@ import java.util.Map;
 
 public class CreateGroupFragment extends Fragment {
     FragmentCreateGroupBinding b;
-    public static List<Map> amabatuhavefun;
+    public static List<Map<String,Object>> amabatuhavefun;
     DatabaseFuncs db = new DatabaseFuncs();
 //    Map user;
     CreateGroupsUsersAdapter ad;
@@ -42,7 +42,7 @@ public class CreateGroupFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         b = FragmentCreateGroupBinding.inflate(inflater, container, false);
-        List<Map> filteredgroups = new ArrayList<>();
+        List<Map<String,Object>> filteredgroups = new ArrayList<>();
         List<String> filteredIds = new ArrayList<>();
         List<String> leader = new ArrayList<>();
         leader.add(MainMenuActivity.user.get("Id").toString());
@@ -52,12 +52,12 @@ public class CreateGroupFragment extends Fragment {
                 db.getUsers(new DatabaseFuncs.GroupListener() {
 
                     @Override
-                    public void onReceive(List<Map> groups, List<Map> groupLeaders) {
+                    public void onReceive(List<Map<String,Object>> groups, List<Map<String,Object>> groupLeaders) {
 
                     }
 
                     @Override
-                    public void onReceive(List<Map> groups) {
+                    public void onReceive(List<Map<String,Object>> groups) {
                         System.out.println(groups);
                         for (int i = 0; i < groups.size(); i++) {
                             if (b.etAdd.getText().toString().equals(groups.get(i).get("Email"))) {

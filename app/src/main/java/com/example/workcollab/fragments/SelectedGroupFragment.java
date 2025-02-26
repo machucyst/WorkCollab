@@ -81,7 +81,7 @@ public class SelectedGroupFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 MainMenuActivity.selected="tasks";
-                MainMenuActivity.selectedgroup = group;
+                MainMenuActivity.selectedGroup = group;
                 requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), TaskListFragment.newInstance(group)).addToBackStack(null).commit();
 
             }
@@ -97,7 +97,7 @@ public class SelectedGroupFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 MainMenuActivity.selected="tasks";
-                MainMenuActivity.selectedgroup = group;
+                MainMenuActivity.selectedGroup = group;
                 requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), SelectedGroupSettingsFragment.newInstance(group)).addToBackStack(null).commit();
 
             }
@@ -116,7 +116,7 @@ public class SelectedGroupFragment extends Fragment {
 
         db.getTasks(group.get("Id").toString(), group.get("GroupName").toString(), group.get("GroupImage") == null ? null : Uri.parse(group.get("GroupImage").toString()), new DatabaseFuncs.TaskListener() {
             @Override
-            public void onTaskRecieved(List<Map> tasks) {
+            public void onTaskRecieved(List<Map<String, Object>> tasks) {
                 adapter.addRange(tasks);
                 if (adapter.tasks.size() > 0) {
                     b.rvDeadlines.setVisibility(View.VISIBLE);

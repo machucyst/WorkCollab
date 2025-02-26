@@ -22,16 +22,16 @@ import java.util.Map;
 
 
 public class SubmitTaskFragment extends Fragment {
-    Map task,user;
+    Map<String,Object>task,user;
     Gson gson = new Gson();
     FragmentSubmitTaskBinding b;
     onSubmitClick listener;
     Uri fileUri;
     DatabaseFuncs db = new DatabaseFuncs();
     public interface onSubmitClick{
-        void onSubmitClick(Map task);
+        void onSubmitClick(Map<String,Object>task);
     }
-    public static SubmitTaskFragment newInstance(Map task) {
+    public static SubmitTaskFragment newInstance(Map<String,Object>task) {
         Bundle args = new Bundle();
         Gson gson = new Gson();
         args.putString("task", gson.toJson(task));
@@ -39,7 +39,7 @@ public class SubmitTaskFragment extends Fragment {
         f.setArguments(args);
         return f;
     }
-    public static SubmitTaskFragment newInstance(Map task, Uri fileUri) {
+    public static SubmitTaskFragment newInstance(Map<String,Object>task, Uri fileUri) {
         Bundle args = new Bundle();
         Gson gson = new Gson();
         args.putString("file",fileUri.toString());
@@ -120,9 +120,9 @@ public class SubmitTaskFragment extends Fragment {
                         Toast.makeText(getContext(),"File Submitted Successfully",Toast.LENGTH_SHORT).show();
                         db.getGroupData(task.get("ParentId").toString(), new DatabaseFuncs.DataListener() {
                             @Override
-                            public void onDataFound(Map user) {
-                                MainMenuActivity.selectedgroup = user;
-                                requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), SelectedGroupFragment.newInstance(MainMenuActivity.selectedgroup)).addToBackStack(null).commit();
+                            public void onDataFound(Map<String,Object>user) {
+                                MainMenuActivity.selectedGroup = user;
+                                requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), SelectedGroupFragment.newInstance(MainMenuActivity.selectedGroup)).addToBackStack(null).commit();
                             }
 
                             @Override

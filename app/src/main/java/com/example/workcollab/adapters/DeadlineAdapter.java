@@ -19,7 +19,7 @@ import java.util.Map;
 
 public class DeadlineAdapter extends RecyclerView.Adapter<DeadlineAdapter.MyHandler>{
 
-    private final List<Map> deadlines;
+    private final List<Map<String,Object>> deadlines;
     DatabaseFuncs db = new DatabaseFuncs();
 
     @NonNull
@@ -35,12 +35,12 @@ public class DeadlineAdapter extends RecyclerView.Adapter<DeadlineAdapter.MyHand
         holder.groups().setText((deadlines.get(position).get("GroupName")).toString());
         db.getDeadlines(deadlines.get(position).get("GroupId").toString(), new DatabaseFuncs.GroupListener() {
             @Override
-            public void onReceive(List<Map> groups, List<Map> groupLeaders) {
+            public void onReceive(List<Map<String,Object>> groups, List<Map<String,Object>> groupLeaders) {
 
             }
 
             @Override
-            public void onReceive(List<Map> groups) {
+            public void onReceive(List<Map<String,Object>> groups) {
 
             }
 
@@ -58,7 +58,7 @@ public class DeadlineAdapter extends RecyclerView.Adapter<DeadlineAdapter.MyHand
     public int getItemCount() {
         return deadlines.size();
     }
-    public DeadlineAdapter(List<Map> deadlines){
+    public DeadlineAdapter(List<Map<String,Object>> deadlines){
         this.deadlines = deadlines;
     }
 

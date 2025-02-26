@@ -1,5 +1,6 @@
 package com.example.workcollab.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -43,14 +44,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         b = DataBindingUtil.setContentView(this, R.layout.activity_main);
+
+        //Initialize Database
         userDb.InitDB(checkLoggedIn(), new DatabaseFuncs.DataListener() {
             @Override
             public void onDataFound(Map user) {
                 MainMenuActivity.selected = "main";
                 if (checkLoggedIn().equals(user.get("Email"))) {
                     Intent toMenu = new Intent(MainActivity.this, MainMenuActivity.class);
-                    toMenu.putExtra("user-name", user.get("Username").toString());
-                    toMenu.putExtra("user-email", user.get("Email").toString());
+                    toMenu.putExtra("user-name", String.valueOf(user.get("Username")));
+                    toMenu.putExtra("user-email", String.valueOf(user.get("Email")));
                     startActivity(toMenu);
                     finish();
                 }
@@ -61,13 +64,14 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+        //Login Button
         b.btnSubmitLogIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    String email = b.etEmailLogIn.getText().toString();
-                    String password = b.etPasswordLogIn.getText().toString();
+                    String email = String.valueOf(b.etEmailLogIn.getText());
+                    String password = String.valueOf(b.etPasswordLogIn.getText());
 
-                    if (email.equals("") || password.equals("")) {
+                    if (email.isEmpty() || password.isEmpty()) {
                         Toast.makeText(MainActivity.this, "Please fill in all text fields", Toast.LENGTH_SHORT).show();
                         return;
                     }
@@ -84,26 +88,26 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 FirebaseUser user = mAuth.getCurrentUser();
-                                if(!user.isEmailVerified()) {
-                                    Toast.makeText(MainActivity.this, "Email not verified", Toast.LENGTH_SHORT).show();
-                                    b.btnSubmitLogIn.setEnabled(true);
-                                    b.btnSubmitLogIn.setBackground(AppCompatResources.getDrawable(MainActivity.this,R.drawable.textholder));
-                                    b.btnSubmitLogIn.setText("Log In");
-                                    return;
-                                }
-                                System.out.println(user);
+                                try{
+                                    assert user != null;
+                                    if(!user.isEmailVerified()) {
+                                        Toast.makeText(MainActivity.this, "Email not verified", Toast.LENGTH_SHORT).show();
+                                        EnableLogIn();
+                                        return;
+                                    }
+                                    System.out.println(user);
                                 if (user.isEmailVerified()) {
                                     if (task.isSuccessful()) {
 
                                         userDb.InitDB(email, new DatabaseFuncs.DataListener() {
                                             @Override
-                                            public void onDataFound(Map user) {
+                                            public void onDataFound(Map<String,Object> user) {
                                                 if (email.equals(user.get("Email")) && password.equals((PublicMethods.DecryptPassword(String.valueOf(user.get("Password")))))) {
                                                     Intent toMenu = new Intent(MainActivity.this, MainMenuActivity.class);
-                                                    toMenu.putExtra("user-name", user.get("Username").toString());
-                                                    toMenu.putExtra("user-email", user.get("Email").toString());
+                                                    toMenu.putExtra("user-name", String.valueOf(user.get("Username")));
+                                                    toMenu.putExtra("user-email", String.valueOf(user.get("Email")));
                                                     if (b.cbStaySignedInLogIn.isChecked()) {
-                                                        stayLogIn(user.get("Email").toString());
+                                                        stayLogIn(String.valueOf(user.get("Email")));
                                                     } else {
                                                         toMenu.putExtra("notStayLog",true);
                                                     }
@@ -111,9 +115,7 @@ public class MainActivity extends AppCompatActivity {
                                                     finish();
                                                 } else {
                                                     Toast.makeText(MainActivity.this, "User not found", Toast.LENGTH_SHORT).show();
-                                                    b.btnSubmitLogIn.setEnabled(true);
-                                                    b.btnSubmitLogIn.setBackground(AppCompatResources.getDrawable(MainActivity.this,R.drawable.textholder));
-                                                    b.btnSubmitLogIn.setText("Log In");
+                                                    EnableLogIn();
                                                 }
                                             }
 
@@ -124,22 +126,29 @@ public class MainActivity extends AppCompatActivity {
                                         });
                                     }
                                 }
+                                }catch (Exception ex){
+                                    Toast.makeText(MainActivity.this,"User not found",Toast.LENGTH_SHORT).show();
+
+                                }
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
                                 Toast.makeText(MainActivity.this, "No Account Found", Toast.LENGTH_SHORT).show();
+                                EnableLogIn();
                             }
                         });
 
         }
         });
+        //Sign Up Button
         b.btnSubmitSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String username = b.etUsernameSignUp.getText().toString();
-                String email = b.etEmailSignUp.getText().toString();
-                String password = b.etPasswordSignUp.getText().toString();
+                String username = String.valueOf(b.etUsernameSignUp.getText());
+                String email = String.valueOf(b.etEmailSignUp.getText());
+                String password = String.valueOf(b.etPasswordSignUp.getText());
+
                 if(password.length()<6){
                     Toast.makeText(MainActivity.this, "Password too short", Toast.LENGTH_SHORT).show();
                     return;
@@ -147,14 +156,14 @@ public class MainActivity extends AppCompatActivity {
                 userDb.InitDB(email, new DatabaseFuncs.DataListener() {
 
                     @Override
-                    public void onDataFound(Map user) {
+                    public void onDataFound(Map<String,Object> user) {
                         Toast.makeText(MainActivity.this, "Email already exists", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void noDuplicateUser() {
 
-                        if (username.equals("") || email.equals("") || password.equals("")) {
+                        if (username.isEmpty() || email.isEmpty() /*|| password.isEmpty()*/ ) {
                             Toast.makeText(MainActivity.this, "Please fill in all text fields", Toast.LENGTH_SHORT).show();
                             return;
                         }
@@ -169,6 +178,7 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         });
+
         parentLayout = findViewById(R.id.parentLayout);
 
 
@@ -187,20 +197,11 @@ public class MainActivity extends AppCompatActivity {
             parentLayout.transitionToState(R.id.signup);
         }
     }
-
-
-
-    private String EncryptPassword(String password){
-        char[] encpass = password.toCharArray();
-        StringBuilder pass = new StringBuilder();
-        for(char c: encpass){
-            c+=7;
-            pass.append(c);
-        }
-        System.out.println(pass);
-        return pass.toString();
+    void EnableLogIn(){
+        b.btnSubmitLogIn.setEnabled(true);
+        b.btnSubmitLogIn.setBackground(AppCompatResources.getDrawable(MainActivity.this,R.drawable.textholder));
+        b.btnSubmitLogIn.setText("Log In");
     }
-
     private void clearFocusFromEditText(View view) {
         if (view instanceof ViewGroup) {
             ViewGroup viewGroup = (ViewGroup) view;
@@ -213,6 +214,10 @@ public class MainActivity extends AppCompatActivity {
             editText.setText("");
         }
     }
+
+
+    @SuppressLint("UseCompatLoadingForDrawables")
+    //Password Visibility
     private void setupPasswordToggle(TextInputLayout inputLayout, TextInputEditText inputField) {
         inputLayout.setEndIconOnClickListener(v -> {
             int inputType = inputField.getInputType();

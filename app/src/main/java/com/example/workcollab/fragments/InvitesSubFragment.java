@@ -27,8 +27,8 @@ public class InvitesSubFragment extends Fragment  {
     DatabaseFuncs db = new DatabaseFuncs();
     FragmentInvitesBinding b;
     public interface PositionListener{
-        default void onDeny(Map group){}
-        default void onAccept(Map group){}
+        default void onDeny(Map<String,Object>  group){}
+        default void onAccept(Map<String,Object>  group){}
     }
     InvitesSubFragment.PositionListener listener;
 
@@ -73,7 +73,7 @@ public class InvitesSubFragment extends Fragment  {
         b = FragmentInvitesBinding.inflate(inflater,container,false);
         InvitesAdapter a = new InvitesAdapter(new ArrayList<>(), getContext(), new PositionListener() {
             @Override
-            public void onDeny(Map group) {
+            public void onDeny(Map<String,Object> group) {
                 PositionListener.super.onDeny(group);
                 db.denyInvite(MainMenuActivity.user.get("Id").toString(), group.get("Id").toString(), new DatabaseFuncs.OptionListener() {
                     @Override
@@ -84,7 +84,7 @@ public class InvitesSubFragment extends Fragment  {
             }
 
             @Override
-            public void onAccept(Map group) {
+            public void onAccept(Map<String,Object> group) {
                 PositionListener.super.onAccept(group);
                 db.acceptInvite(MainMenuActivity.user.get("Id").toString(), group.get("Id").toString(), new DatabaseFuncs.OptionListener() {
                     @Override
@@ -99,12 +99,12 @@ public class InvitesSubFragment extends Fragment  {
         b.rvInvites.setLayoutManager(new LinearLayoutManager(getContext()));
         db.getInvites(MainMenuActivity.user.get("Id").toString(), new DatabaseFuncs.GroupListener() {
             @Override
-            public void onReceive(List<Map> groups, List<Map> groupLeaders) {
+            public void onReceive(List<Map<String,Object> > groups, List<Map<String,Object> > groupLeaders) {
 
             }
 
             @Override
-            public void onReceive(List<Map> groups) {
+            public void onReceive(List<Map<String,Object> > groups) {
                 a.addRange(groups);
             }
 

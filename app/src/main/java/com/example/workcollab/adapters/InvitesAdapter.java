@@ -23,8 +23,7 @@ import java.util.Map;
 
 public class InvitesAdapter extends RecyclerView.Adapter<InvitesAdapter.MyHandler>{
 
-    public final List<Map> groups;
-    DatabaseFuncs db = new DatabaseFuncs();
+    public final List<Map<String,Object>> groups;
     Context context;
     private final InvitesSubFragment.PositionListener listener;
 
@@ -75,7 +74,7 @@ public class InvitesAdapter extends RecyclerView.Adapter<InvitesAdapter.MyHandle
     public int getItemCount() {
         return groups.size();
     }
-    public InvitesAdapter(List<Map> groups, Context context, InvitesSubFragment.PositionListener listener){
+    public InvitesAdapter(List<Map<String,Object>> groups, Context context, InvitesSubFragment.PositionListener listener){
         this.groups = groups;
         this.listener = listener;
         this.context = context;
@@ -98,7 +97,7 @@ public class InvitesAdapter extends RecyclerView.Adapter<InvitesAdapter.MyHandle
 
     }
 
-    public void addRange(List<Map> group) {
+    public void addRange(List<Map<String, Object>> group) {
         int pos = groups.size();
         groups.addAll(group);
         notifyItemRangeInserted(pos, group.size());

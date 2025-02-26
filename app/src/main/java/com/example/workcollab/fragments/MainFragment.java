@@ -89,7 +89,7 @@ public class MainFragment extends Fragment {
         });
         db.getTasks(MainMenuActivity.user.get("Id").toString(), new DatabaseFuncs.TaskListener() {
             @Override
-            public void onTaskRecieved(List<Map> tasks) {
+            public void onTaskRecieved(List<Map<String, Object>> tasks) {
 //                tasks1.addAll(tasks);
 //                adapter = new DeadlinesAdapter(tasks1, getContext(), (position, task) -> {
 //                    // TODO: Task item click

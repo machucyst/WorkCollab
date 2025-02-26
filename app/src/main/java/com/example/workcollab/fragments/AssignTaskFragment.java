@@ -30,7 +30,7 @@ import java.util.Map;
 
 public class AssignTaskFragment extends Fragment {
     Gson gson = new Gson();
-    Map group;
+    Map<String,Object> group;
     DatabaseFuncs db = new DatabaseFuncs();
     Calendar today = Calendar.getInstance();
     long deadline;
@@ -44,7 +44,7 @@ public class AssignTaskFragment extends Fragment {
         default void itemClicked(String id){}
     }
 
-    public static AssignTaskFragment newInstance(Map group) {
+    public static AssignTaskFragment newInstance(Map<String,Object> group) {
         Bundle args = new Bundle();
         Gson gson = new Gson();
         args.putString("user", gson.toJson(group));
@@ -72,7 +72,7 @@ public class AssignTaskFragment extends Fragment {
         b = FragmentAssignTaskBinding.inflate(inflater,container,false);
         db.getMembers(group.get("Id").toString(), new DatabaseFuncs.MembersListener() {
             @Override
-            public void onReceiveMembers(List<Map> members) {
+            public void onReceiveMembers(List<Map<String,Object>> members) {
                 System.out.println(members);
                ma = new MembersAdapter(members, requireContext(), new PositionListener() {
                    @Override

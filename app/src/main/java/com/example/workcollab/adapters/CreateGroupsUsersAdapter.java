@@ -23,13 +23,13 @@ import java.util.Map;
 
 public class CreateGroupsUsersAdapter extends RecyclerView.Adapter<CreateGroupsUsersAdapter.MyHandler> {
 
-    public final List<Map> groups;
+    public final List<Map<String,Object>> groups;
     private final Context context;
-    public List<Map> a;
+    public List<Map<String,Object>> a;
     DatabaseFuncs db = new DatabaseFuncs();
 
 
-    public CreateGroupsUsersAdapter(Context context, List<Map> groups) {
+    public CreateGroupsUsersAdapter(Context context, List<Map<String,Object>> groups) {
         this.context = context;
         this.groups = groups;
     }
@@ -65,7 +65,7 @@ public class CreateGroupsUsersAdapter extends RecyclerView.Adapter<CreateGroupsU
 
     }
 
-    public List<Map> getGroups() {
+    public List<Map<String,Object>> getGroups() {
         System.out.println(a);
         return a;
     }

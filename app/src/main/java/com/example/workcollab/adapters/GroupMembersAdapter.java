@@ -21,13 +21,12 @@ import java.util.Map;
 
 public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapter.MyHandler>{
 
-    public final List<Map> members;
+    public final List<Map<String,Object>> members;
     private final Context context;
-    DatabaseFuncs db = new DatabaseFuncs();
     GroupMembersAdapter.PositionListener listener;
 
     public interface PositionListener{
-        void onMemberClicked(Map user);
+        void onMemberClicked(Map<String,Object> user);
     }
 
     @NonNull
@@ -54,7 +53,7 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
     public int getItemCount() {
         return members.size();
     }
-    public GroupMembersAdapter(List<Map> members,  Context c,GroupMembersAdapter.PositionListener listener){
+    public GroupMembersAdapter(List<Map<String,Object>> members,  Context c,GroupMembersAdapter.PositionListener listener){
         this.members = members;
         this.listener = listener;
         this.context = c;

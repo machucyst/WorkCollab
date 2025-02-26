@@ -36,7 +36,7 @@ public class AccountEditFragment extends Fragment {
 
     UpdateListener listener;
     public interface UpdateListener{
-        void onUpdatedEmail(Map user);
+        void onUpdatedEmail(Map<String,Object> user);
     }
     @Override
     public void onAttach(Context context) {
@@ -81,7 +81,7 @@ public class AccountEditFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         b = FragmentAccountEditBinding.inflate(inflater, container, false);
-        b.backbtn.setOnClickListener(new View.OnClickListener() {
+        b.backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 MainMenuActivity.backFlow.pop();
@@ -134,7 +134,7 @@ public class AccountEditFragment extends Fragment {
 
                             db.updateEmail(MainMenuActivity.user.get("Email").toString(), EncryptPassword(b.editTextText.getText().toString()), new DatabaseFuncs.UpdateListener() {
                                 @Override
-                                public void onUpdate(Map user) {
+                                public void onUpdate(Map<String,Object> user) {
                                     System.out.println(user.get("Email").toString()+"2141240912");
                                     listener.onUpdatedEmail(user);
                                     requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), AccountFragment.newInstance()).addToBackStack(null).commit();
@@ -156,7 +156,7 @@ public class AccountEditFragment extends Fragment {
                     }
                     db.updateAccount(MainMenuActivity.user.get("Email").toString(), pass, condition, new DatabaseFuncs.UpdateListener() {
                         @Override
-                        public void onUpdate(Map user) {
+                        public void onUpdate(Map<String,Object> user) {
                             MainMenuActivity.user = user;
                             requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), AccountFragment.newInstance()).addToBackStack(null).commit();
                         }
