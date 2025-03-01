@@ -40,12 +40,9 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
     public void onBindViewHolder(@NonNull MyHandler holder, @SuppressLint("RecyclerView") int position) {
         holder.tv_g.setText((String.valueOf( members.get(position).get("Username") )));
         Glide.with(context).load(String.valueOf( members.get(position).get("Profile") )).into(holder.iv);
-        holder.parent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listener.onMemberClicked(members.get(position));
-            }
-        });
+        holder.parent.setOnClickListener(v ->
+                listener.onMemberClicked(members.get(position))
+        );
     }
 
     @Override

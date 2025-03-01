@@ -45,6 +45,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class DatabaseFuncs {
     //Initializations
@@ -323,18 +324,17 @@ public class DatabaseFuncs {
         });
     }
     public void saveGroupProfile(Map<String,Object>group, Uri value, UpdateListener listener){
-        reference.child("GroupsProfiles/"+group.get("Id").toString()+"/Profile.png").putFile(value)
+        reference.child("GroupsProfiles/"+group.get("Id")+"/Profile.png").putFile(value)
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
-                    public void onFailure(@NonNull Exception e) {
-                        e.printStackTrace();
-                        System.out.println(e);
+                    public void onFailure(@NonNull Exception ignored) {
+
                     }
                 })
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        reference.child(String.valueOf("GroupsProfiles/"+group.get("Id"))+"/Profile.png").getDownloadUrl().addOnSuccessListener(uri->{
+                        reference.child("GroupsProfiles/"+group.get("Id")+"/Profile.png").getDownloadUrl().addOnSuccessListener(uri->{
                             updateGroup(group, uri.toString(), new UpdateListener() {
                                 @Override
                                 public void onUpdate(Map<String,Object>user) {
@@ -798,7 +798,7 @@ public class DatabaseFuncs {
             for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
                 QueryDocumentSnapshot d = dc.getDocument();
                 if (userId.equals(d.getId())) continue;
-                if (((Timestamp)d.get("timestamp")).compareTo(listener.getCurrentTimestamp()) > 0 ) {
+                if (((Timestamp) Objects.requireNonNull(d.get("timestamp"))).compareTo(listener.getCurrentTimestamp()) > 0 ) {
 
                     Message message = MessageCreator(d);
                     message.setReplyId(String.valueOf(d.get("replyId")));

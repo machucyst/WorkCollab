@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.constraintlayout.motion.widget.MotionLayout;
@@ -23,12 +22,8 @@ import com.example.workcollab.DatabaseFuncs;
 import com.example.workcollab.PublicMethods;
 import com.example.workcollab.R;
 import com.example.workcollab.databinding.ActivityMainBinding;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -65,122 +60,109 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         //Login Button
-        b.btnSubmitLogIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                    String email = String.valueOf(b.etEmailLogIn.getText());
-                    String password = String.valueOf(b.etPasswordLogIn.getText());
+        b.btnSubmitLogIn.setOnClickListener(v -> {
+                String email = String.valueOf(b.etEmailLogIn.getText());
+                String password = String.valueOf(b.etPasswordLogIn.getText());
 
-                    if (email.isEmpty() || password.isEmpty()) {
-                        Toast.makeText(MainActivity.this, "Please fill in all text fields", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    if(password.length()<6){
-                        Toast.makeText(MainActivity.this, "Password too short", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    b.btnSubmitLogIn.setEnabled(false);
-                    b.btnSubmitLogIn.setBackground(AppCompatResources.getDrawable(MainActivity.this,R.drawable.textholderdisabled));
-                    b.btnSubmitLogIn.setText(R.string.loading);
-
-                    FirebaseAuth mAuth = FirebaseAuth.getInstance();
-                        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                FirebaseUser user = mAuth.getCurrentUser();
-                                try{
-                                    assert user != null;
-                                    if(!user.isEmailVerified()) {
-                                        Toast.makeText(MainActivity.this, "Email not verified", Toast.LENGTH_SHORT).show();
-                                        EnableLogIn();
-                                        return;
-                                    }
-                                    System.out.println(user);
-                                if (user.isEmailVerified()) {
-                                    if (task.isSuccessful()) {
-
-                                        userDb.InitDB(email, new DatabaseFuncs.DataListener() {
-                                            @Override
-                                            public void onDataFound(Map<String,Object> user) {
-                                                if (email.equals(user.get("Email")) && password.equals((PublicMethods.DecryptPassword(String.valueOf(user.get("Password")))))) {
-                                                    Intent toMenu = new Intent(MainActivity.this, MainMenuActivity.class);
-                                                    toMenu.putExtra("user-name", String.valueOf(user.get("Username")));
-                                                    toMenu.putExtra("user-email", String.valueOf(user.get("Email")));
-                                                    if (b.cbStaySignedInLogIn.isChecked()) {
-                                                        stayLogIn(String.valueOf(user.get("Email")));
-                                                    } else {
-                                                        toMenu.putExtra("notStayLog",true);
-                                                    }
-                                                    startActivity(toMenu);
-                                                    finish();
-                                                } else {
-                                                    Toast.makeText(MainActivity.this, "User not found", Toast.LENGTH_SHORT).show();
-                                                    EnableLogIn();
-                                                }
-                                            }
-
-                                            @Override
-                                            public void noDuplicateUser() {
-                                                Toast.makeText(MainActivity.this, "User not found", Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
-                                    }
-                                }
-                                }catch (Exception ex){
-                                    Toast.makeText(MainActivity.this,"User not found",Toast.LENGTH_SHORT).show();
-
-                                }
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(MainActivity.this, "No Account Found", Toast.LENGTH_SHORT).show();
-                                EnableLogIn();
-                            }
-                        });
-
-        }
-        });
-        //Sign Up Button
-        b.btnSubmitSignUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String username = String.valueOf(b.etUsernameSignUp.getText());
-                String email = String.valueOf(b.etEmailSignUp.getText());
-                String password = String.valueOf(b.etPasswordSignUp.getText());
-
+                if (email.isEmpty() || password.isEmpty()) {
+                    Toast.makeText(MainActivity.this, "Please fill in all text fields", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 if(password.length()<6){
                     Toast.makeText(MainActivity.this, "Password too short", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                userDb.InitDB(email, new DatabaseFuncs.DataListener() {
+                b.btnSubmitLogIn.setEnabled(false);
+                b.btnSubmitLogIn.setBackground(AppCompatResources.getDrawable(MainActivity.this,R.drawable.textholderdisabled));
+                b.btnSubmitLogIn.setText(R.string.loading);
 
-                    @Override
-                    public void onDataFound(Map<String,Object> user) {
-                        Toast.makeText(MainActivity.this, "Email already exists", Toast.LENGTH_SHORT).show();
-                    }
+                FirebaseAuth mAuth = FirebaseAuth.getInstance();
+                    mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        try{
+                            assert user != null;
+                            if(!user.isEmailVerified()) {
+                                Toast.makeText(MainActivity.this, "Email not verified", Toast.LENGTH_SHORT).show();
+                                EnableLogIn();
+                                return;
+                            }
+                            System.out.println(user);
+                        if (user.isEmailVerified()) {
+                            if (task.isSuccessful()) {
 
-                    @Override
-                    public void noDuplicateUser() {
+                                userDb.InitDB(email, new DatabaseFuncs.DataListener() {
+                                    @Override
+                                    public void onDataFound(Map<String,Object> user) {
+                                        if (email.equals(user.get("Email")) && password.equals((PublicMethods.DecryptPassword(String.valueOf(user.get("Password")))))) {
+                                            Intent toMenu = new Intent(MainActivity.this, MainMenuActivity.class);
+                                            toMenu.putExtra("user-name", String.valueOf(user.get("Username")));
+                                            toMenu.putExtra("user-email", String.valueOf(user.get("Email")));
+                                            if (b.cbStaySignedInLogIn.isChecked()) {
+                                                stayLogIn(String.valueOf(user.get("Email")));
+                                            } else {
+                                                toMenu.putExtra("notStayLog",true);
+                                            }
+                                            startActivity(toMenu);
+                                            finish();
+                                        } else {
+                                            Toast.makeText(MainActivity.this, "User not found", Toast.LENGTH_SHORT).show();
+                                            EnableLogIn();
+                                        }
+                                    }
 
-                        if (username.isEmpty() || email.isEmpty() /*|| password.isEmpty()*/ ) {
-                            Toast.makeText(MainActivity.this, "Please fill in all text fields", Toast.LENGTH_SHORT).show();
-                            return;
+                                    @Override
+                                    public void noDuplicateUser() {
+                                        Toast.makeText(MainActivity.this, "User not found", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
                         }
-                        Intent toMenu = new Intent(MainActivity.this, SetupAccountActivity.class);
-                        toMenu.putExtra("user-name", username);
-                        toMenu.putExtra("user-email", email);
-                        toMenu.putExtra("user-password",password);
-                        toMenu.putExtra("StayLogIn", b.cbStaySignedInSignUp.isChecked());
-                        startActivity(toMenu);
-                    }
+                        }catch (Exception ex){
+                            Toast.makeText(MainActivity.this,"User not found",Toast.LENGTH_SHORT).show();
 
-                });
+                        }
+                    }).addOnFailureListener(e -> {
+                        Toast.makeText(MainActivity.this, "No Account Found", Toast.LENGTH_SHORT).show();
+                        EnableLogIn();
+                    });
+
+    });
+        //Sign Up Button
+        b.btnSubmitSignUp.setOnClickListener(v -> {
+            String username = String.valueOf(b.etUsernameSignUp.getText());
+            String email = String.valueOf(b.etEmailSignUp.getText());
+            String password = String.valueOf(b.etPasswordSignUp.getText());
+
+            if(password.length()<6){
+                Toast.makeText(MainActivity.this, "Password too short", Toast.LENGTH_SHORT).show();
+                return;
             }
+            userDb.InitDB(email, new DatabaseFuncs.DataListener() {
+
+                @Override
+                public void onDataFound(Map<String,Object> user) {
+                    Toast.makeText(MainActivity.this, "Email already exists", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void noDuplicateUser() {
+
+                    if (username.isEmpty() || email.isEmpty()) {
+                        Toast.makeText(MainActivity.this, "Please fill in all text fields", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    Intent toMenu = new Intent(MainActivity.this, SetupAccountActivity.class);
+                    toMenu.putExtra("user-name", username);
+                    toMenu.putExtra("user-email", email);
+                    toMenu.putExtra("user-password",password);
+                    toMenu.putExtra("StayLogIn", b.cbStaySignedInSignUp.isChecked());
+                    startActivity(toMenu);
+                }
+
+            });
         });
 
         parentLayout = findViewById(R.id.parentLayout);
-
 
         rubikFont = ResourcesCompat.getFont(this, R.font.rubik_regular);
         setupPasswordToggle(findViewById(R.id.passwordLayoutLogIn), b.etPasswordLogIn);
@@ -219,6 +201,7 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint("UseCompatLoadingForDrawables")
     //Password Visibility
     private void setupPasswordToggle(TextInputLayout inputLayout, TextInputEditText inputField) {
+        assert inputField.getText() != null;
         inputLayout.setEndIconOnClickListener(v -> {
             int inputType = inputField.getInputType();
             if (inputType == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD) {

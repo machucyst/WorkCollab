@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -74,12 +75,13 @@ public class ChatActivity extends AppCompatActivity {
 
                 @Override
                 public void onActivityStarted(@NonNull Activity activity) {
-
+                    now = Timestamp.now();
                 }
 
                 @Override
                 public void onActivityResumed(@NonNull Activity activity) {
                     activityIsActive = true;
+                    now = Timestamp.now();
                     backlog.sort(Comparator.comparing(Message::getTimestamp));
                     if (adapter != null) adapter.addRange(backlog, bind.recyclerView);
                     backlog = new ArrayList<>();
@@ -151,11 +153,13 @@ public class ChatActivity extends AppCompatActivity {
             db.setReceivedMessagesListener(String.valueOf(user.get("Id")), String.valueOf(group.get("Id")), new DatabaseFuncs.MessagesReceivedListener() {
                 @Override
                 public void onMessageReceived(List<Message> newMessages, List<Message> updatedMessages) {
-                    if (activityIsActive) {
+
+                    Toast.makeText(ChatActivity.this,activityIsActive + ", " + newMessages + updatedMessages,Toast.LENGTH_SHORT).show();
+//                    if (activityIsActive) {
                         adapter.addRange(newMessages, bind.recyclerView);
-                    } else {
-                        backlog = newMessages;
-                    }
+//                    } else {
+//                        backlog = newMessages;
+//                    }
                 }
 
                 @Override
