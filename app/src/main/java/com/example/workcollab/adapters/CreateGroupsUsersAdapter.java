@@ -21,17 +21,16 @@ import com.example.workcollab.fragments.CreateGroupFragment;
 import java.util.List;
 import java.util.Map;
 
-public class CreateGroupsUsersAdapter extends RecyclerView.Adapter<CreateGroupsUsersAdapter.MyHandler> {
+public class CreateGroupsUsersAdapter extends RecyclerView.Adapter<CreateGroupsUsersAdapter.MyHandler>{
 
     public final List<Map<String,Object>> groups;
     private final Context context;
     public List<Map<String,Object>> a;
-    DatabaseFuncs db = new DatabaseFuncs();
-
-
-    public CreateGroupsUsersAdapter(Context context, List<Map<String,Object>> groups) {
+    private final CreateGroupFragment.onRemoveListener listener;
+    public CreateGroupsUsersAdapter(Context context, List<Map<String,Object>> groups, CreateGroupFragment.onRemoveListener listener) {
         this.context = context;
         this.groups = groups;
+        this.listener = listener;
     }
 
     @NonNull
@@ -57,6 +56,7 @@ public class CreateGroupsUsersAdapter extends RecyclerView.Adapter<CreateGroupsU
             public void onClick(View v) {
                 if (position != RecyclerView.NO_POSITION) {
                     removeItem(position);
+                    listener.onRemovedItem(groups);
                     CreateGroupFragment.amabatuhavefun = groups;
                 }
             }

@@ -78,8 +78,4 @@ public class DeadlineAdapter extends RecyclerView.Adapter<DeadlineAdapter.MyHand
         }
 
     }
-    public interface PositionListener{
-        void onPosClick();
-    }
-
 }

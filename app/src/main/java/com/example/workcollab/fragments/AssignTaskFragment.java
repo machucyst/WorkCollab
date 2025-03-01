@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.workcollab.DatabaseFuncs;
+import com.example.workcollab.PublicMethods;
 import com.example.workcollab.R;
 import com.example.workcollab.adapters.MembersAdapter;
 import com.example.workcollab.databinding.DialogDateInputBinding;
@@ -35,6 +36,7 @@ public class AssignTaskFragment extends Fragment {
     Calendar today = Calendar.getInstance();
     long deadline;
     DialogDateInputBinding di;
+    PublicMethods pb = new PublicMethods();
     MembersAdapter ma;
     FragmentAssignTaskBinding b;
 
@@ -119,27 +121,34 @@ public class AssignTaskFragment extends Fragment {
                 dialog.show();
             }
         });
-        b.btnShowPass.setOnClickListener(new View.OnClickListener() {
+        b.btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String TaskName = String.valueOf(b.etTN.getText());
                 System.out.println(today.getTimeInMillis());
                 System.out.println(deadline);
-                b.btnShowPass.setBackgroundDrawable(AppCompatResources.getDrawable(requireActivity(), R.drawable.textholderdisabled));
-                b.btnShowPass.setText("Loading..");
-                b.btnShowPass.setEnabled(false);
+                b.btnSubmit.setBackgroundDrawable(AppCompatResources.getDrawable(requireActivity(), R.drawable.textholderdisabled));
+                b.btnSubmit.setText(R.string.loading);
+                b.btnSubmit.setEnabled(false);
                 if(today.getTimeInMillis()<deadline){
-                    if(!TaskName.equals("")){
-                        if(!String.valueOf(b.etTD.getText()).equals("")){
-                             db.createTask(group.get("Id").toString(), members, TaskName, b.etTD.getText().toString(), deadline, b.btnShowPass, requireContext(), new DatabaseFuncs.CreateTaskListener() {
-                                 @Override
-                                 public void onCreateTaskListener() {
-                                     Toast.makeText(getContext(),"Task Assigned Successfully",Toast.LENGTH_SHORT).show();
-                                     requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), SelectedGroupFragment.newInstance(group)).addToBackStack(null).commit();
-
-                                 }
-                             });
-                            return;
+                    if(!TaskName.isEmpty()){
+                        if(!String.valueOf(b.etTD.getText()).isEmpty()){
+                             db.createTask(String.valueOf(group.get("Id")),
+                                     members,
+                                     TaskName,
+                                     String.valueOf(b.etTD.getText()),
+                                     deadline,
+                                     b.btnSubmit,
+                                     requireContext(),
+                                     new DatabaseFuncs.CreateTaskListener() {
+                                         @Override
+                                         public void onCreateTaskListener() {
+                                             Toast.makeText(getContext(),"Task Assigned Successfully",Toast.LENGTH_SHORT).show();
+                                             int vgId = ((ViewGroup)(requireView().getParent())).getId();
+                                             pb.replaceFragment(requireActivity(),SelectedGroupFragment.newInstance(group),vgId);
+                                         }
+                                     });
+                                    return;
                         }
                             Toast.makeText(requireContext(),"Please add description to task",Toast.LENGTH_SHORT).show();
                         enableButtons();
@@ -158,8 +167,8 @@ public class AssignTaskFragment extends Fragment {
         return b.getRoot();
     }
     private void enableButtons(){
-        b.btnShowPass.setBackgroundDrawable(AppCompatResources.getDrawable(requireActivity(), R.drawable.textholder));
-        b.btnShowPass.setText("Submit");
-        b.btnShowPass.setEnabled(true);
+        b.btnSubmit.setBackgroundDrawable(AppCompatResources.getDrawable(requireActivity(), R.drawable.textholder));
+        b.btnSubmit.setText(R.string.submit);
+        b.btnSubmit.setEnabled(true);
     }
 }

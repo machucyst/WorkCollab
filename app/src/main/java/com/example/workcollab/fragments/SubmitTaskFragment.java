@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.Fragment;
 
@@ -22,14 +23,15 @@ import java.util.Map;
 
 
 public class SubmitTaskFragment extends Fragment {
-    Map<String,Object>task,user;
+    Map<String,Object>task;
     Gson gson = new Gson();
     FragmentSubmitTaskBinding b;
     onSubmitClick listener;
+    PublicMethods pb = new PublicMethods();
     Uri fileUri;
     DatabaseFuncs db = new DatabaseFuncs();
     public interface onSubmitClick{
-        void onSubmitClick(Map<String,Object>task);
+        void onSubmitClicked(Map<String,Object>task);
     }
     public static SubmitTaskFragment newInstance(Map<String,Object>task) {
         Bundle args = new Bundle();
@@ -49,7 +51,7 @@ public class SubmitTaskFragment extends Fragment {
         return f;
     }
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         if (context instanceof SubmitTaskFragment.onSubmitClick) {
             listener = (SubmitTaskFragment.onSubmitClick) context;
@@ -77,8 +79,9 @@ public class SubmitTaskFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         b = FragmentSubmitTaskBinding.inflate(inflater,container,false);
-        b.tvTaskName.setText(task.get("TaskName").toString());
-        b.etTD.setText(task.get("TaskDescription").toString());
+        b.tvTaskName.setText(String.valueOf(task.get("TaskName"))
+        );
+        b.etTD.setText(String.valueOf(task.get("TaskDescription")));
         try{
         b.tvFileName.setText(PublicMethods.getFileName(fileUri,getContext()));
         }catch (Exception ex){
@@ -88,7 +91,7 @@ public class SubmitTaskFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 System.out.println(task);
-                listener.onSubmitClick(task);
+                listener.onSubmitClicked(task);
             }
         });
         b.btnReturn.setOnClickListener(new View.OnClickListener() {
@@ -105,34 +108,42 @@ public class SubmitTaskFragment extends Fragment {
                     Toast.makeText(getContext(), "Upload a file before submitting",Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if(b.tvFileName.getText().toString().equals("")){
-                    filename = MainMenuActivity.user.get("Username").toString() + "'s task";
+                if(b.tvFileName.getText().toString().isEmpty()){
+                    filename = MainMenuActivity.user.get("Username") + "'s task";
                 }
-                if(b.tvFileName.getText().toString().matches(".*[~\"#%&*:<>?/\\{|}].*")){
+                if(b.tvFileName.getText().toString().matches(".*[~\"#%&*:<>?/{|}].*")){
                     Toast.makeText(getContext(),"Invalid File Name",Toast.LENGTH_SHORT).show();
                     return;
                 }
                 b.btnSubmit.setBackground(AppCompatResources.getDrawable(requireContext(),R.drawable.textholderdisabled));
                 b.btnSubmit.setEnabled(false);
-                db.submitTask(MainMenuActivity.user, fileUri, task.get("ParentId").toString(),task.get("Id").toString(),filename+PublicMethods.getFileType(fileUri,getContext()), b.btnSubmit,requireContext(), new DatabaseFuncs.BasicListener() {
-                    @Override
-                    public void basicListener() {
-                        Toast.makeText(getContext(),"File Submitted Successfully",Toast.LENGTH_SHORT).show();
-                        db.getGroupData(task.get("ParentId").toString(), new DatabaseFuncs.DataListener() {
+                db.submitTask(MainMenuActivity.user,
+                        fileUri,
+                        String.valueOf(task.get("ParentId")),
+                        String.valueOf(task.get("Id")),
+                        filename+PublicMethods.getFileType(fileUri,getContext()),
+                        b.btnSubmit,
+                        requireContext(),
+                        new DatabaseFuncs.BasicListener() {
                             @Override
-                            public void onDataFound(Map<String,Object>user) {
-                                MainMenuActivity.selectedGroup = user;
-                                requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), SelectedGroupFragment.newInstance(MainMenuActivity.selectedGroup)).addToBackStack(null).commit();
+                            public void basicListener() {
+                                Toast.makeText(getContext(),"File Submitted Successfully",Toast.LENGTH_SHORT).show();
+                                db.getGroupData(task.get("ParentId").toString(), new DatabaseFuncs.DataListener() {
+                                    @Override
+                                    public void onDataFound(Map<String,Object>user) {
+                                        MainMenuActivity.selectedGroup = user;
+                                        int vgId = ((ViewGroup) (requireView().getParent())).getId();
+                                        pb.replaceFragment(requireActivity(),SelectedGroupFragment.newInstance(MainMenuActivity.selectedGroup),vgId);
+                                    }
+
+                                    @Override
+                                    public void noDuplicateUser() {
+
+                                    }
+                                });
                             }
-
-                            @Override
-                            public void noDuplicateUser() {
-
-                            }
-                        });
-
-                    }
-                });
+                         }
+                );
             }
         });
         return b.getRoot();

@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.cardview.widget.CardView;
 
+import com.example.workcollab.activities.SetupAccountActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -31,6 +32,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FileDownloadTask;
@@ -49,6 +51,7 @@ import java.util.Objects;
 
 public class DatabaseFuncs {
     //Initializations
+    static boolean iHateThisFix = true;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseStorage fbs = FirebaseStorage.getInstance();
     StorageReference reference = fbs.getReference();
@@ -138,6 +141,8 @@ public class DatabaseFuncs {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Toast.makeText(c,"Failed Registering Account",Toast.LENGTH_SHORT).show();
+                b.setText(R.string.submit);
+                b.setBackgroundDrawable(AppCompatResources.getDrawable(c,R.drawable.textholder));
                 b.setEnabled(true);
             }
         });
@@ -346,10 +351,11 @@ public class DatabaseFuncs {
 
                 });
     }
-    public void createGroup(String name, List<String> Members, UpdateListener listener) {
+    public void createGroup(String name, List<String> Members,String profile, UpdateListener listener) {
         Map<String, Object> group = new HashMap<>();
         group.put("GroupName", name);
         group.put("Leaders", Members);
+        group.put("GroupImage",profile);
         groups.add(group).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
             public void onSuccess(DocumentReference documentReference) {
@@ -358,11 +364,12 @@ public class DatabaseFuncs {
             }
         });
     }
-    public void createGroup(String name, List<String> Leaders, List<String> Members, Context c, Button b, UpdateListener listener) {
+    public void createGroup(String name, List<String> Leaders, List<String> Members, Context c, Button b, String Profile, UpdateListener listener) {
         Map<String, Object> group = new HashMap<>();
         group.put("GroupName", name);
         group.put("Leaders", Leaders);
         group.put("Invites", Members);
+        group.put("GroupImage", Profile);
         group.put("Members",new ArrayList<>());
         groups.add(group).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
@@ -739,7 +746,6 @@ public class DatabaseFuncs {
         account.document(id).get().addOnCompleteListener(task -> {
             DocumentSnapshot d = task.getResult();
             Map<String, Object> user = d.getData();
-            assert user != null;
             user.put("Id", d.getId());
             dataListener.onDataFound(user);
         });
@@ -789,32 +795,69 @@ public class DatabaseFuncs {
         }));
     }
     public void setReceivedMessagesListener(String userId, String groupId, MessagesReceivedListener listener) {
-        messages.whereEqualTo("groupId", groupId).addSnapshotListener((queryDocumentSnapshots, error) -> {
-            if (error != null) return;
+        //
+        //  <TODO>
+        //      Limit the messages to minimize unnescessary consumption
+        //      This shit is not my original code bruh you do it
+        //      I already fixed chat
+        //   </TODO>
+        //
 
-            List<Message> newMessages = new ArrayList<>();
-            List<Message> updatedMessages = new ArrayList<>();
-
-            for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
-                QueryDocumentSnapshot d = dc.getDocument();
-                if (userId.equals(d.getId())) continue;
-                if (((Timestamp) Objects.requireNonNull(d.get("timestamp"))).compareTo(listener.getCurrentTimestamp()) > 0 ) {
-
-                    Message message = MessageCreator(d);
-                    message.setReplyId(String.valueOf(d.get("replyId")));
-                    switch (dc.getType()) {
-                        case ADDED:
-                            newMessages.add(message);
-                            break;
-                        case MODIFIED:
-                            updatedMessages.add(message);
-                            break;
+        messages.whereEqualTo("groupId", groupId)
+                .orderBy("timestamp", Query.Direction.DESCENDING)
+                .limit(50)
+                .addSnapshotListener((queryDocumentSnapshots, error) -> {
+                    if (error != null) {
+                        System.out.println("DEBUG Firestore error: " + error.getMessage());
+                        return;
                     }
-                }
-            }
 
-            listener.onMessageReceived(newMessages, updatedMessages);
-        });
+                    if (queryDocumentSnapshots == null || queryDocumentSnapshots.isEmpty()) {
+                        System.out.println("DEBUG No new messages detected.");
+                        return;
+                    }
+
+                    List<Message> updatedMessages = new ArrayList<>();
+                    List<Message> newMessages = new ArrayList<>();
+
+                    assert queryDocumentSnapshots != null;
+
+                    for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
+                        QueryDocumentSnapshot d = dc.getDocument();
+
+                        if (userId.equals(d.getId())) continue;
+
+                        Timestamp messageTimestamp = (Timestamp) Objects.requireNonNull(d.get("timestamp"));
+                        Timestamp adjustedTimestamp = listener.getCurrentTimestamp();
+
+                        if (messageTimestamp.getSeconds() > adjustedTimestamp.getSeconds() || (messageTimestamp.getSeconds() == adjustedTimestamp.getSeconds() && messageTimestamp.getNanoseconds() > adjustedTimestamp.getNanoseconds())) {
+                            System.out.println(d + " aaaac");
+                            Message message = MessageCreator(d);
+                            message.setReplyId(String.valueOf(d.get("replyId")));
+
+                            switch (dc.getType()) {
+                                case ADDED:
+                                    newMessages.add(message);
+                                    break;
+                                case MODIFIED:
+                                    updatedMessages.add(message);
+                                    break;
+                            }
+                        }
+                        System.out.println("DEBUG Document Change: " + dc.getType() + " for " + d.getId());
+                        System.out.println("DEBUG Message Timestamp: " + d.get("timestamp"));
+                        System.out.println("DEBUG Listener Timestamp: " + listener.getCurrentTimestamp());
+                        System.out.println("DEBUG New Messages List: " + newMessages.size());
+                    }
+
+                    // ✅ Only set iHateThisFix to false if messages were actually processed
+                    if (iHateThisFix && (!newMessages.isEmpty() || !updatedMessages.isEmpty())) {
+                        iHateThisFix = false;
+                    }
+
+                    listener.onMessageReceived(newMessages, updatedMessages);
+                }
+        );
     }
     private Message MessageCreator(DocumentSnapshot d){
         return new Message(

@@ -28,6 +28,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingBottom="70dp"/>
-
+<!--
+    <TODO:>
+        Overhaul Task List
+            - Add progress check
+            - Add rating system
+            - Add comment system
+            - Add checklist for members who submitted system
+    </TODO>
+-->
     </LinearLayout>
 </layout>

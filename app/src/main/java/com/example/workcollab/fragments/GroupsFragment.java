@@ -10,15 +10,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.workcollab.PublicMethods;
 import com.example.workcollab.R;
 import com.example.workcollab.databinding.FragmentGroupsBinding;
 import com.google.android.material.navigation.NavigationBarView;
 
 
 public class GroupsFragment extends Fragment {
-//    Map user;
     boolean a = false;
     FragmentGroupsBinding b;
+    PublicMethods pb = new PublicMethods();
     public static GroupsFragment newInstance(boolean a) {
         Bundle args = new Bundle();
         args.putBoolean("bool", a);
@@ -40,7 +41,7 @@ public class GroupsFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         b = FragmentGroupsBinding.inflate(inflater, container, false);
@@ -50,24 +51,21 @@ public class GroupsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        getChildFragmentManager().beginTransaction().replace(b.groupsFragmentFrame.getId(),JoinedGroupsSubFragment.newInstance(true)).commit();
+        pb.replaceFragment(getChildFragmentManager(),JoinedGroupsSubFragment.newInstance(true),b.groupsFragmentFrame.getId());
         if (a) {
-            getChildFragmentManager().beginTransaction().replace(b.groupsFragmentFrame.getId(),InvitesSubFragment.newInstance()).commit();
+            pb.replaceFragment(getChildFragmentManager(),InvitesSubFragment.newInstance(),b.groupsFragmentFrame.getId());
             b.groupsMenu.setSelectedItemId(R.id.menu_invites);
         }
-        b.groupsMenu.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                int a = menuItem.getItemId();
-                if(a == R.id.menu_joined){
-                    getChildFragmentManager().beginTransaction().replace(b.groupsFragmentFrame.getId(),JoinedGroupsSubFragment.newInstance(true)).commit();
-                    return true;
-                }else if(a == R.id.menu_invites){
-                    getChildFragmentManager().beginTransaction().replace(b.groupsFragmentFrame.getId(),InvitesSubFragment.newInstance()).commit();
-                    return true;
-                }
-                return false;
+        b.groupsMenu.setOnItemSelectedListener(menuItem -> {
+            int a = menuItem.getItemId();
+            if(a == R.id.menu_joined){
+                pb.replaceFragment(getChildFragmentManager(),JoinedGroupsSubFragment.newInstance(true),b.groupsFragmentFrame.getId());
+                return true;
+            }else if(a == R.id.menu_invites){
+                pb.replaceFragment(getChildFragmentManager(),InvitesSubFragment.newInstance(),b.groupsFragmentFrame.getId());
+                return true;
             }
+            return false;
         });
     }
 }

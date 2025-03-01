@@ -20,4 +20,6 @@
     <string name="loading">Loading...</string>
     <string name="submit">Submit</string>
     <string name="create">Create</string>
+    <string name="rename_group">Rename Group</string>
+    <string name="are_you_sure_you_want_to_leave_this_group">Are you sure you want to leave this group?</string>
 </resources>

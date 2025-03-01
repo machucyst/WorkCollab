@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.workcollab.DatabaseFuncs;
+import com.example.workcollab.PublicMethods;
 import com.example.workcollab.R;
 import com.example.workcollab.activities.MainMenuActivity;
 import com.example.workcollab.adapters.CreateGroupsUsersAdapter;
@@ -30,22 +31,24 @@ import java.util.Map;
 public class CreateGroupFragment extends Fragment {
     FragmentCreateGroupBinding b;
     public static List<Map<String,Object>> amabatuhavefun;
+    PublicMethods pb = new PublicMethods();
     DatabaseFuncs db = new DatabaseFuncs();
-//    Map user;
-    CreateGroupsUsersAdapter ad;
     public CreateGroupFragment() {
     }
-
+    public interface onRemoveListener{
+        default void onRemovedItem(List<Map<String,Object>> groups){}
+    }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         b = FragmentCreateGroupBinding.inflate(inflater, container, false);
         List<Map<String,Object>> filteredgroups = new ArrayList<>();
         List<String> filteredIds = new ArrayList<>();
         List<String> leader = new ArrayList<>();
-        leader.add(MainMenuActivity.user.get("Id").toString());
+        leader.add(String.valueOf(MainMenuActivity.user.get("Id")));
+        toggleButtons(false);
         b.tilAddUsers.setEndIconOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -60,17 +63,30 @@ public class CreateGroupFragment extends Fragment {
                     public void onReceive(List<Map<String,Object>> groups) {
                         System.out.println(groups);
                         for (int i = 0; i < groups.size(); i++) {
-                            if (b.etAdd.getText().toString().equals(groups.get(i).get("Email"))) {
+                            if (String.valueOf(b.etAdd.getText()).strip().equals(groups.get(i).get("Email"))) {
                                 System.out.println(filteredgroups);
-                                if (!filteredgroups.contains(groups.get(i)) && !MainMenuActivity.user.get("Email").toString().equals(groups.get(i).get("Email").toString())) {
-                                filteredgroups.add(groups.get(i));
-                                b.textView2.setVisibility(GONE);
+                                if (!filteredgroups.contains(groups.get(i)) && !String.valueOf(MainMenuActivity.user.get("Email")).equals(String.valueOf(groups.get(i).get("Email")))) {
+                                    filteredgroups.add(groups.get(i));
+                                    b.textView2.setVisibility(GONE);
+                                    b.etAdd.setText("");
+                                    toggleButtons(!filteredgroups.isEmpty());
                                 } else {
-                                    Toast.makeText(requireContext(), "User already selected", Toast.LENGTH_SHORT);
+                                    Toast.makeText(requireContext(), "User already selected", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         }
-                        CreateGroupsUsersAdapter ad = new CreateGroupsUsersAdapter(requireContext(), filteredgroups);
+                        CreateGroupsUsersAdapter ad = new CreateGroupsUsersAdapter(requireContext(), filteredgroups, new onRemoveListener() {
+                            @Override
+                            public void onRemovedItem(List<Map<String, Object>> groups) {
+                                onRemoveListener.super.onRemovedItem(groups);
+                                if(groups.isEmpty()||amabatuhavefun.isEmpty()){
+                                    toggleButtons(false);
+                                    b.btnSubmit.setText(R.string.create);
+                                }else{
+                                    toggleButtons(true);
+                                }
+                            }
+                        });
                         b.rvAddUsers.setAdapter(ad);
                         b.rvAddUsers.setLayoutManager(new LinearLayoutManager(getContext()));
                     }
@@ -82,26 +98,25 @@ public class CreateGroupFragment extends Fragment {
                 });
             }
         });
-        b.btnShowPass.setOnClickListener(new View.OnClickListener() {
+
+        b.btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 System.out.println("Public Static my beloved" + amabatuhavefun);
-                b.btnShowPass.setBackgroundDrawable(AppCompatResources.getDrawable(requireContext(),R.drawable.textholderdisabled));
-                b.btnShowPass.setEnabled(false);
-                b.btnShowPass.setText("Loading...");
+                toggleButtons(false);
                 try {
                     for (int i = 0; i < amabatuhavefun.size(); i++) {
-                        filteredIds.add(amabatuhavefun.get(i).get("Id").toString());
+                        filteredIds.add(String.valueOf(amabatuhavefun.get(i).get("Id")));
                     }
                     String a = b.etGN.getText().toString();
-                    if (a.equals("")) a = MainMenuActivity.user.get("Username").toString() + "'s Group";
+                    if (a.isEmpty()) a = MainMenuActivity.user.get("Username") + "'s Group";
 
-                    db.createGroup(a, leader, filteredIds,requireContext(),b.btnShowPass, new DatabaseFuncs.UpdateListener() {
+                    db.createGroup(a, leader, filteredIds,requireContext(),b.btnSubmit,String.valueOf(MainMenuActivity.user.get("Profile")), new DatabaseFuncs.UpdateListener() {
                         @Override
-                        public void onUpdate(Map group) {
+                        public void onUpdate(Map<String,Object> group) {
                             System.out.println("It worked probably");
-                            requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), SelectedGroupFragment.newInstance(group)).addToBackStack(null).commit();
-
+                            int id = ((ViewGroup) requireView().getParent()).getId();
+                            pb.replaceFragment(requireActivity(),SelectedGroupFragment.newInstance(group),id);
                         }
                     });
                 } catch (Exception ex) {
@@ -111,6 +126,17 @@ public class CreateGroupFragment extends Fragment {
             }
         });
         return b.getRoot();
+    }
+    public void toggleButtons(boolean t){
+        if(t){
+            b.btnSubmit.setBackgroundDrawable(AppCompatResources.getDrawable(requireContext(),R.drawable.textholder));
+            b.btnSubmit.setEnabled(true);
+            b.btnSubmit.setText(R.string.create);
+            return;
+        }
+        b.btnSubmit.setBackgroundDrawable(AppCompatResources.getDrawable(requireContext(),R.drawable.textholderdisabled));
+        b.btnSubmit.setEnabled(false);
+        b.btnSubmit.setText(R.string.loading);
     }
     public static CreateGroupFragment newInstance(){
         Bundle args = new Bundle();

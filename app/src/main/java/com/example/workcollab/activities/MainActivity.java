@@ -80,46 +80,43 @@ public class MainActivity extends AppCompatActivity {
                     mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
                         FirebaseUser user = mAuth.getCurrentUser();
                         try{
-                            assert user != null;
-                            if(!user.isEmailVerified()) {
+                            if (user != null && !user.isEmailVerified()) {
                                 Toast.makeText(MainActivity.this, "Email not verified", Toast.LENGTH_SHORT).show();
                                 EnableLogIn();
                                 return;
                             }
-                            System.out.println(user);
-                        if (user.isEmailVerified()) {
-                            if (task.isSuccessful()) {
+                            if (user != null && user.isEmailVerified()) {
+                                if (task.isSuccessful()) {
 
-                                userDb.InitDB(email, new DatabaseFuncs.DataListener() {
-                                    @Override
-                                    public void onDataFound(Map<String,Object> user) {
-                                        if (email.equals(user.get("Email")) && password.equals((PublicMethods.DecryptPassword(String.valueOf(user.get("Password")))))) {
-                                            Intent toMenu = new Intent(MainActivity.this, MainMenuActivity.class);
-                                            toMenu.putExtra("user-name", String.valueOf(user.get("Username")));
-                                            toMenu.putExtra("user-email", String.valueOf(user.get("Email")));
-                                            if (b.cbStaySignedInLogIn.isChecked()) {
-                                                stayLogIn(String.valueOf(user.get("Email")));
+                                    userDb.InitDB(email, new DatabaseFuncs.DataListener() {
+                                        @Override
+                                        public void onDataFound(Map<String, Object> user) {
+                                            if (email.equals(user.get("Email")) && password.equals((PublicMethods.DecryptPassword(String.valueOf(user.get("Password")))))) {
+                                                Intent toMenu = new Intent(MainActivity.this, MainMenuActivity.class);
+                                                toMenu.putExtra("user-name", String.valueOf(user.get("Username")));
+                                                toMenu.putExtra("user-email", String.valueOf(user.get("Email")));
+                                                if (b.cbStaySignedInLogIn.isChecked()) {
+                                                    stayLogIn(String.valueOf(user.get("Email")));
+                                                } else {
+                                                    toMenu.putExtra("notStayLog", true);
+                                                }
+                                                startActivity(toMenu);
+                                                finish();
                                             } else {
-                                                toMenu.putExtra("notStayLog",true);
+                                                Toast.makeText(MainActivity.this, "User not found", Toast.LENGTH_SHORT).show();
+                                                EnableLogIn();
                                             }
-                                            startActivity(toMenu);
-                                            finish();
-                                        } else {
-                                            Toast.makeText(MainActivity.this, "User not found", Toast.LENGTH_SHORT).show();
-                                            EnableLogIn();
                                         }
-                                    }
 
-                                    @Override
-                                    public void noDuplicateUser() {
-                                        Toast.makeText(MainActivity.this, "User not found", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
+                                        @Override
+                                        public void noDuplicateUser() {
+                                            Toast.makeText(MainActivity.this, "User not found", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                }
                             }
-                        }
                         }catch (Exception ex){
                             Toast.makeText(MainActivity.this,"User not found",Toast.LENGTH_SHORT).show();
-
                         }
                     }).addOnFailureListener(e -> {
                         Toast.makeText(MainActivity.this, "No Account Found", Toast.LENGTH_SHORT).show();
