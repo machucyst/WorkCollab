@@ -47,7 +47,7 @@ public class DeadlinesAdapter extends RecyclerView.Adapter<DeadlinesAdapter.VH> 
 
     @SuppressLint("UseCompatLoadingForDrawables")
     @Override
-    public void onBindViewHolder(@NonNull DeadlinesAdapter.VH holder, int position) {
+    public void onBindViewHolder(@NonNull DeadlinesAdapter.VH holder, @SuppressLint("RecyclerView") int position) {
         if (holder.bind instanceof CardDeadlineBinding) {
             Map<String,Object> task = (Map<String, Object>) tasks.get(position);
             if(String.valueOf(task.get("TaskName")).equals("No tasks :)")){
@@ -77,8 +77,11 @@ public class DeadlinesAdapter extends RecyclerView.Adapter<DeadlinesAdapter.VH> 
                 bind.image.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_test));
             }
 
-            bind.parent.setOnClickListener(v -> {
-                listener.onItemClick(position, task);
+            bind.parent.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    listener.onItemClick(position, task);
+                }
             });
         } else if (holder.bind instanceof CardMainHeaderBinding) {
             CardMainHeaderBinding bind = (CardMainHeaderBinding) holder.bind;

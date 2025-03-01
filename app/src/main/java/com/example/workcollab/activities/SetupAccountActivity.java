@@ -3,6 +3,7 @@ package com.example.workcollab.activities;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,75 +46,59 @@ public class SetupAccountActivity extends AppCompatActivity {
         bu = intent.getExtras();
 
         //Change Profile
-        b.profileImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setType("image/*");  // For .doc files
-                intent.setAction(Intent.ACTION_PICK);
-                startActivityForResult(Intent.createChooser(intent,"Select Picture"), 101);
-            }
+        b.profileImage.setOnClickListener(v -> {
+            Intent intent1 = new Intent();
+            intent1.setType("image/*");  // For .doc files
+            intent1.setAction(Intent.ACTION_PICK);
+            startActivityForResult(Intent.createChooser(intent1,"Select Picture"), 101);
         });
         //Show Password Visibility
-        b.btnShowPass.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                b.btnShowPass.setText(R.string.loading);
-                b.btnShowPass.setBackgroundDrawable(AppCompatResources.getDrawable(SetupAccountActivity.this,R.drawable.textholderdisabled));
-                b.btnShowPass.setEnabled(false);
-                AlertDialog.Builder builder = new AlertDialog.Builder(SetupAccountActivity.this);
-                dafb = DialogAgreementFormBinding.inflate(getLayoutInflater());
-                builder.setView(dafb.getRoot());
-                AlertDialog dialog = builder.create();
-                dafb.Cancel.setOnClickListener(k -> {
-                    dialog.dismiss();
-                    b.btnShowPass.setText(R.string.submit);
-                    b.btnShowPass.setBackgroundDrawable(AppCompatResources.getDrawable(SetupAccountActivity.this,R.drawable.textholder));
-                    b.btnShowPass.setEnabled(true);
+        b.btnSubmit.setOnClickListener(v -> {
+            b.btnSubmit.setText(R.string.loading);
+            b.btnSubmit.setBackgroundDrawable(AppCompatResources.getDrawable(SetupAccountActivity.this,R.drawable.textholderdisabled));
+            b.btnSubmit.setEnabled(false);
+            AlertDialog.Builder builder = new AlertDialog.Builder(SetupAccountActivity.this);
+            dafb = DialogAgreementFormBinding.inflate(getLayoutInflater());
+            builder.setView(dafb.getRoot());
+            AlertDialog dialog = builder.create();
+            dafb.Cancel.setOnClickListener(k -> {
+                dialog.dismiss();
+                b.btnSubmit.setText(R.string.submit);
+                b.btnSubmit.setBackgroundDrawable(AppCompatResources.getDrawable(SetupAccountActivity.this,R.drawable.textholder));
+                b.btnSubmit.setEnabled(true);
 
-                });
-                dafb.Ok.setOnClickListener(k -> {
-                    if (resultUri == null) {
-                        Toast.makeText(SetupAccountActivity.this, "Pick a profile image", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    if (StrValOf(b.etCN).length() != 11) {
-                        Toast.makeText(SetupAccountActivity.this, "Invalid Phone Number", Toast.LENGTH_SHORT).show();
-                        return; //TODO: kys
-                    }
-                    dialog.dismiss();
-
-
-                    db.registerAccount(mAuth, bu.getString("user-email"), bu.getString("user-password"), getApplicationContext(), b.btnShowPass,new DatabaseFuncs.EmailAuthListener() {
-                        @Override
-                        public void changeLayout(boolean test) {
-                            db.createAccount(bu.getString("user-name"), EncryptPassword(bu.getString("user-password")), bu.getString("user-email"), StrValOf(b.etCN), new DatabaseFuncs.UpdateListener() {
-                                @Override
-                                public void onUpdate(Map<String,Object> user) {
-                                    System.out.println("tesyseys");
-                                    db.saveProfile(user, resultUri, new DatabaseFuncs.UpdateListener() {
-                                        @Override
-                                        public void onUpdate(Map user) {
-                                            System.out.println("Profile saved");
-                                            String[] Machu = new String[1];
-                                            Machu[0] = user.get("Id").toString();
-                                            db.createGroup(user.get("Username").toString() + "'s Group", Arrays.asList(Machu), new DatabaseFuncs.UpdateListener() {
-                                                @Override
-                                                public void onUpdate(Map<String,Object> user) {
-                                                    System.out.println("Group Created");
-                                                    finish();
-                                                }
-                                            });
-                                        }
+            });
+            dafb.Ok.setOnClickListener(k -> {
+                if (resultUri == null) {
+                    Toast.makeText(SetupAccountActivity.this, "Pick a profile image", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (StrValOf(b.etCN).length() != 11) {
+                    Toast.makeText(SetupAccountActivity.this, "Invalid Phone Number", Toast.LENGTH_SHORT).show();
+                    return; //TODO: kys
+                }
+                dialog.dismiss();
+                String email = bu.getString("user-email");
+                String password = bu.getString("user-password");
+                String username = bu.getString("user-name");
+                assert password != null: "Password is null";
+                db.registerAccount(mAuth, email, password, getApplicationContext(), b.btnSubmit, test ->
+                        db.createAccount(
+                                username,
+                                EncryptPassword(password),
+                                email,
+                                StrValOf(b.etCN), user -> db.saveProfile(user, resultUri, user1 -> {
+                                    System.out.println("Profile saved");
+                                    String[] Machu = new String[1];
+                                    Machu[0] = String.valueOf(user1.get("Id"));
+                                    db.createGroup(user1.get("Username")+ "'s Group", Arrays.asList(Machu), String.valueOf(user1.get("Profile")), user2 -> {
+                                        System.out.println("Group Created");
+                                        finish();
                                     });
-                                }
-                            });
-                        }
-                    });
-                });
-                dialog.show();
+                                })));
+            });
+            dialog.show();
 
-                    }
                 });
 
     }
@@ -124,8 +109,9 @@ public class SetupAccountActivity extends AppCompatActivity {
         switch (requestCode){
             case 101:
                 if (resultCode == -1) {
-                    assert data != null;
+                    assert data != null: "data is null";
                     Uri sourceUri = data.getData();
+                    assert sourceUri != null: "sourceUri is null";
                     // Destination URI
                     Uri destinationUri = Uri.fromFile(new File(getCacheDir(), "IMG_" + System.currentTimeMillis()));
                     // Start UCrop activity
@@ -153,7 +139,7 @@ public class SetupAccountActivity extends AppCompatActivity {
                     }
                 } else if (resultCode == UCrop.RESULT_ERROR) {
                     final Throwable cropError = UCrop.getError(data);
-                    // Handle the error
+                    Log.d("error", String.valueOf(cropError));
                 }
                 String result = data.getStringExtra("RESULT");
                 if (result != null) {
@@ -167,6 +153,7 @@ public class SetupAccountActivity extends AppCompatActivity {
         }
     }
     private String EncryptPassword(String password){
+        assert password != null: "Password is Null";
         char[] encpass = password.toCharArray();
         StringBuilder pass = new StringBuilder();
         for(char c: encpass){

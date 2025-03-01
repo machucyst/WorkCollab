@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -26,9 +27,12 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.workcollab.DatabaseFuncs;
 import com.example.workcollab.NotifiationsService;
+import com.example.workcollab.PublicMethods;
 import com.example.workcollab.R;
 import com.example.workcollab.Utils;
 import com.example.workcollab.adapters.DeadlinesAdapter;
@@ -50,13 +54,14 @@ import com.example.workcollab.fragments.SelectedGroupSettingsFragment;
 import com.example.workcollab.fragments.SubmitTaskFragment;
 import com.example.workcollab.fragments.TaskListFragment;
 import com.example.workcollab.fragments.ViewMemberTasks;
+import com.google.android.material.bottomnavigation.BottomNavigationItemView;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Stack;
@@ -70,6 +75,7 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
     static boolean activityRunning = false;
     Map<String,Object> task;
     static int index;
+    PublicMethods pb = new PublicMethods();
     public static Stack<String> backFlow = new Stack<>();
     public static Map<String,Object> selectedGroup;
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -114,7 +120,7 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
 
             @Override
             public void onDataFound(Map<String,Object> user) {
-                MainMenuActivity.user = user;
+                    MainMenuActivity.user = user;
                     reload();
                 }
 
@@ -133,40 +139,24 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
             }
         });
         // Bottom Nav View Button functions
-        b.bottomNavView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                navItemReselect(menuItem);
-                return false;
-            }
-
-        });
-
-        b.bottomNavView.setOnItemReselectedListener(new NavigationBarView.OnItemReselectedListener() {
-            @Override
-            public void onNavigationItemReselected(@NonNull MenuItem menuItem) {
-                navItemReselect(menuItem);
-            }
-        });
+        b.bottomNavView.setOnItemSelectedListener(menuItem -> {navItemReselect(b.bottomNavView,menuItem); return true;});
+        b.bottomNavView.setOnItemReselectedListener(menuItem -> navItemReselect(b.bottomNavView,menuItem));
     }
-    private void navItemReselect(MenuItem menuItem){
+    private void navItemReselect(BottomNavigationView bnv, MenuItem menuItem){
         int a = menuItem.getItemId();
         if(a == R.id.menu_home){
-            replaceFragment(MainFragment.newInstance(),"main");
-            backFlow.clear();
-            backFlow.push("main");
+//            bnv.setSelected(R.id.menu_home);
+
+            replaceFragment(MainFragment.newInstance(),"main",true);
         } else if (a == R.id.menu_groups) {
-            replaceFragment(GroupsFragment.newInstance(false),"groups");
-            backFlow.clear();
-            backFlow.push("groups");
+//            bnv.setSelectedItemId(R.id.menu_groups);
+            replaceFragment(GroupsFragment.newInstance(false),"groups",true);
         }else if (a == R.id.menu_tasks){
-            backFlow.clear();
-            backFlow.push("tasks");
-            replaceFragment(TaskListFragment.newInstance(false),"tasks");
+//            bnv.setSelectedItemId(R.id.menu_tasks);
+            replaceFragment(TaskListFragment.newInstance(false),"tasks",true);
         }else if (a == R.id.menu_profile){
-            replaceFragment(AccountFragment.newInstance(), "account");
-            backFlow.clear();
-            backFlow.push("profile");
+//            bnv.setSelectedItemId(R.id.menu_profile);
+            replaceFragment(AccountFragment.newInstance(),"profile",true);
         }
     }
 
@@ -211,7 +201,7 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
                             @Override
                             public void onUpdate(Map<String,Object>  user) {
                                 MainMenuActivity.user = user;
-                                replaceFragment(AccountFragment.newInstance(), "Profile");
+                                replaceFragment(AccountFragment.newInstance(),"Profile",false);
                             }
                         });
                         break;
@@ -219,7 +209,7 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
                             db.saveGroupProfile(selectedGroup, resultUri, new DatabaseFuncs.UpdateListener() {
                                 @Override
                                 public void onUpdate(Map<String,Object> user) {
-                                    replaceFragment(SelectedGroupFragment.newInstance(user),"selectedgroup");
+                                    replaceFragment(SelectedGroupFragment.newInstance(user),"selectedgroup",false);
                                 }
                             });
                             break;
@@ -267,28 +257,18 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
         SharedPreferences sharedPreferences = getSharedPreferences("UserLogInPreferences", Context.MODE_PRIVATE);
         sharedPreferences.edit().putString("user-email", email).apply();
     }
-    void complete(){
+    private void complete(){
         //Clear auto login
         SharedPreferences sharedPreferences = getSharedPreferences("UserLogInPreferences", Context.MODE_PRIVATE);
         sharedPreferences.edit().remove("user-email").apply();
         FirebaseAuth.getInstance().signOut();
     }
-    public void replaceFragment(Fragment fragment, String condition){
-        //Change Display
-        String waa = "";
-        if (!backFlow.isEmpty()) {
-            waa = backFlow.peek();
-        }
-        if(!selected.equals(condition) || !waa.equals(condition)){
-            selected = condition;
-            getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(),fragment).addToBackStack(null).commit();
-        }
-    }
     public void logOutConfirm(){
         AlertDialog.Builder builder = new AlertDialog.Builder(MainMenuActivity.this);
 
         // Inflate the layout for the dialog
-        bl = DialogLogoutConfirmBinding.inflate(getLayoutInflater().from(this));
+        getLayoutInflater();
+        bl = DialogLogoutConfirmBinding.inflate(LayoutInflater.from(this));
         builder.setView(bl.getRoot());
         AlertDialog dialog = builder.create();
         Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawableResource(android.R.color.transparent);
@@ -302,26 +282,31 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
             complete();
             finish();
             selected="main";
-
         });
         dialog.show();
 
 
     }
+    private void replaceFragment(Fragment fragment, String condition, boolean bool){
+        PublicMethods pb = new PublicMethods();
+        pb.replaceFragment(getSupportFragmentManager(),fragment,b.frameFragment.getId(),condition,bool);
+    }
+    private void replaceFragment(Fragment activity){
+        PublicMethods pb = new PublicMethods();
+        pb.replaceFragment(getSupportFragmentManager(),activity,b.frameFragment.getId());
+    }
 
     @Override
     public void onBackPressed() {
-
-
         try{
             if (!backFlow.isEmpty()) {
                 backFlow.pop();
             }
             if (backFlow.isEmpty()) {
-                replaceFragment(MainFragment.newInstance(), "main");
+                replaceFragment(MainFragment.newInstance(), "main",false);
             } else {
                 Log.e("woah", backFlow.peek());
-                replaceFragment(changeFragment(backFlow.peek()), backFlow.peek());
+                replaceFragment(changeFragment(backFlow.peek()), backFlow.peek(),false);
             }
         } catch (Exception e){
             super.onBackPressed();
@@ -362,6 +347,9 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
     @Override
     public void onDeny(Map<String,Object>  group) {
         InvitesSubFragment.PositionListener.super.onDeny(group);
+        if (group.isEmpty()){
+            replaceFragment(MainFragment.newInstance());
+        }
     }
 
     @Override
@@ -370,11 +358,10 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
     }
 
     @Override
-    public void onSubmitClick(Map<String,Object>  task) {
+    public void onSubmitClicked(Map<String,Object>  task) {
         MainMenuActivity.this.task = task;
         openFilePicker();
     }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -392,7 +379,7 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
         intent.setType("*/*");
         startActivityForResult(intent, PICK_FILE_REQUEST);
     }
-    public Fragment changeFragment(String fragmentTag) {
+    private Fragment changeFragment(String fragmentTag) {
         switch (fragmentTag) {
             case "main":
                 return MainFragment.newInstance();
@@ -419,28 +406,28 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
     //In case of Activity crash/changes reload fragment
         switch (selected) {
             case "main":
-                getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), MainFragment.newInstance()).commitAllowingStateLoss();
+                replaceFragment(MainFragment.newInstance());
                 b.bottomNavView.setSelectedItemId(R.id.menu_home);
                 return;
             case "groups":
-                getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), GroupsFragment.newInstance(false)).commitAllowingStateLoss();
+                replaceFragment(GroupsFragment.newInstance(false));
                 b.bottomNavView.setSelectedItemId(R.id.menu_home);
                 return;
             case "account":
-                getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), AccountFragment.newInstance()).commit();
+                replaceFragment(AccountFragment.newInstance());
                 b.bottomNavView.setSelectedItemId(R.id.menu_profile);
                 return;
             case "creategroups":
-                getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), CreateGroupFragment.newInstance()).commit();
+                replaceFragment(CreateGroupFragment.newInstance());
                 return;
             case "selectgroup":
-                getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), SelectedGroupFragment.newInstance(selectedGroup)).commit();
+                replaceFragment(SelectedGroupFragment.newInstance(selectedGroup));
                 return;
             case "appearance":
-                getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), AppearanceFragment.newInstance()).commit();
+                replaceFragment(AppearanceFragment.newInstance());
                 return;
             case "tasks":
-                getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), TaskListFragment.newInstance(false)).commit();
+                replaceFragment(TaskListFragment.newInstance(false));
                 break;
 //        if(selected.equals("tasks")){
 //            getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), MainFragment.newInstance()).commitAllowingStateLoss();
@@ -464,7 +451,7 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
     @Override
     public void otherOne() {
         //TODO:???????????????????????
-        getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(),MainFragment.newInstance()).commit();
+        replaceFragment(MainFragment.newInstance());
     }
 
     @Override
@@ -499,6 +486,6 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
 
     @Override
     public void onItemClick(int position, Map<String,Object> task) {
-        replaceFragment(SubmitTaskFragment.newInstance(task),"taskselected");
+        replaceFragment(SubmitTaskFragment.newInstance(task),"taskselected",false);
     }
 }

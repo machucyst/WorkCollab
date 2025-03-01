@@ -31,6 +31,7 @@ import com.example.workcollab.adapters.ChatAdapter;
 import com.example.workcollab.databinding.ActivityChatBinding;
 import com.example.workcollab.fragments.BottomDialogViewProfileFragment;
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -45,7 +46,6 @@ public class ChatActivity extends AppCompatActivity {
     boolean activityIsActive = true;
     List<Message> backlog = new ArrayList<>();
     Uri attachedFile;
-//    private LinearLayout bottomSheetLayout;
     String fileType,replyId = "";
     ActivityChatBinding bind;
     DatabaseFuncs db;
@@ -136,7 +136,6 @@ public class ChatActivity extends AppCompatActivity {
             }), new onProfileLongHoldPress() {
                 @Override
                 public void onHoldPressed(String id) {
-                    System.out.println("yeyeyeyey");
                     BottomDialogViewProfileFragment dba = new BottomDialogViewProfileFragment(id);
                     dba.show(getSupportFragmentManager(),new BottomDialogViewProfileFragment(id).getTag());
                 }
@@ -149,12 +148,16 @@ public class ChatActivity extends AppCompatActivity {
             ItemTouchHelper.Callback callback = new ChatAdapter.SwipeReplyCallback(adapter);
             ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
             itemTouchHelper.attachToRecyclerView(bind.recyclerView);
-
+            FirebaseFirestore.getInstance().disableNetwork().addOnCompleteListener(task->{
+                FirebaseFirestore.getInstance().enableNetwork();
+            });
             db.setReceivedMessagesListener(String.valueOf(user.get("Id")), String.valueOf(group.get("Id")), new DatabaseFuncs.MessagesReceivedListener() {
                 @Override
                 public void onMessageReceived(List<Message> newMessages, List<Message> updatedMessages) {
+                    if (!newMessages.isEmpty()){
+                        Toast.makeText(ChatActivity.this,activityIsActive + ", " + newMessages + updatedMessages,Toast.LENGTH_SHORT).show();
 
-                    Toast.makeText(ChatActivity.this,activityIsActive + ", " + newMessages + updatedMessages,Toast.LENGTH_SHORT).show();
+                    }
 //                    if (activityIsActive) {
                         adapter.addRange(newMessages, bind.recyclerView);
 //                    } else {
@@ -169,9 +172,7 @@ public class ChatActivity extends AppCompatActivity {
             });
         });
 
-        bind.send.setOnClickListener(v -> {
-            sendMessage(bind);
-        });
+        bind.send.setOnClickListener(v -> sendMessage(bind));
 
         bind.cancelReply.setOnClickListener(v -> {
             bind.replyWrapper.setVisibility(View.GONE);
@@ -185,9 +186,7 @@ public class ChatActivity extends AppCompatActivity {
             replyId = "";
         });
 
-        bind.attachFile.setOnClickListener(v -> {
-            adapter.notifyDataSetChanged();
-        });
+        bind.attachFile.setOnClickListener(v -> adapter.notifyDataSetChanged());
     }
     private int getTopPadding(ActivityChatBinding bind, Resources res){
         Rect r = new Rect();
@@ -209,7 +208,7 @@ public class ChatActivity extends AppCompatActivity {
 
     }
     private void sendMessage(ActivityChatBinding bind){
-        if (bind.chat.getText().toString().isEmpty()) return;
+//        if (bind.chat.getText().toString().isEmpty()) return;
 
         if (fileType == null) {
             fileType = "";

@@ -2,7 +2,12 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-
+    <!-- <TODO:
+            -Remove submitted tasks
+            -Preview of chat in the dashboard
+            -something something pass Calculus
+        </TODO:>
+     -->
     <data>
 
     </data>
@@ -122,7 +127,7 @@
                             android:background="@drawable/background_default"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Edit group"
+                            android:text="Group Settings"
                             android:textColor="@color/white"
                             android:drawableRight="@drawable/ic_kb_right_24"/>
                     </androidx.cardview.widget.CardView>

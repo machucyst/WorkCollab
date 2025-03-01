@@ -1,6 +1,7 @@
 package com.example.workcollab.fragments;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import com.example.workcollab.PublicMethods;
@@ -34,6 +36,7 @@ public class SettingsFragment extends Fragment {
         b = FragmentSettingsBinding.bind(v);
         PublicMethods.menuTextChange(b.nvAccountMenu, R.id.additionalText,R.id.menu_notifications,"Notification Settings");
         b.nvAccountMenu.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 int a = menuItem.getItemId();

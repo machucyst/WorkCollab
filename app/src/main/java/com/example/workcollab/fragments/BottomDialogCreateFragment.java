@@ -8,9 +8,13 @@ import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 import com.example.workcollab.DatabaseFuncs;
+import com.example.workcollab.PublicMethods;
 import com.example.workcollab.R;
+import com.example.workcollab.activities.MainActivity;
 import com.example.workcollab.activities.MainMenuActivity;
 import com.example.workcollab.databinding.FragmentDialogBottomCreateBinding;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -19,8 +23,8 @@ import com.google.android.material.navigation.NavigationView;
 
 public class BottomDialogCreateFragment extends BottomSheetDialogFragment {
     FragmentDialogBottomCreateBinding b;
-    DatabaseFuncs db =new DatabaseFuncs();
     String id;
+    PublicMethods pb = new PublicMethods();
     public BottomDialogCreateFragment(){
 
     }
@@ -44,13 +48,11 @@ public class BottomDialogCreateFragment extends BottomSheetDialogFragment {
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 int a = menuItem.getItemId();
                 if(a == R.id.menu_ct){
-                    MainMenuActivity.backFlow.push("Joined_Groups");
-                    requireActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment, JoinedGroupsSubFragment.newInstance(false)).commit();
+                    replaceFragment(JoinedGroupsSubFragment.newInstance(false),"Joined_Groups");
                     dismiss();
                 }
                 if(a == R.id.menu_cg){
-                    MainMenuActivity.backFlow.push("creategroups");
-                    requireActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment, CreateGroupFragment.newInstance()).commit();
+                    replaceFragment(CreateGroupFragment.newInstance(),"creategroups");
                     dismiss();
                 }
                 return false;
@@ -58,5 +60,9 @@ public class BottomDialogCreateFragment extends BottomSheetDialogFragment {
         });
         bottomSheetDialog.setContentView(b.getRoot());
         return bottomSheetDialog;
+    }
+    void replaceFragment(Fragment fragment, String condition){
+        PublicMethods pb = new PublicMethods();
+        pb.replaceFragment(requireActivity(),fragment,R.id.frame_fragment,condition,false);
     }
 }
