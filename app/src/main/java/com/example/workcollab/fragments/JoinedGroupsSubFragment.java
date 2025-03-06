@@ -20,10 +20,12 @@ import com.example.workcollab.activities.MainMenuActivity;
 import com.example.workcollab.adapters.GroupsAdapter;
 import com.example.workcollab.databinding.FragmentJoinedGroupsBinding;
 import com.google.firebase.Timestamp;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 
 public class JoinedGroupsSubFragment extends Fragment {
 
@@ -32,7 +34,7 @@ public class JoinedGroupsSubFragment extends Fragment {
     FragmentJoinedGroupsBinding b;
     boolean test = true;
     PublicMethods pb = new PublicMethods();
-    Map tesxt;
+    Map user;
 
     public JoinedGroupsSubFragment() {
         // Required empty public constructor
@@ -54,9 +56,10 @@ public class JoinedGroupsSubFragment extends Fragment {
         }
     }
 
-    public static JoinedGroupsSubFragment newInstance(boolean test) {
+    public static JoinedGroupsSubFragment newInstance(Map<String,Object> user) {
         Bundle args = new Bundle();
-        args.putBoolean("test",test);
+        Gson gson = new Gson();
+        args.putString("user",gson.toJson(user));
         JoinedGroupsSubFragment f = new JoinedGroupsSubFragment();
         f.setArguments(args);
         return f;
@@ -67,79 +70,81 @@ public class JoinedGroupsSubFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(getArguments() != null){
-           test = getArguments().getBoolean("test");
+            Gson gson = new Gson();
+            user = gson.fromJson(getArguments().getString("user"),Map.class);
         }
-        db.getJoinedGroups(String.valueOf(MainMenuActivity.user.get("Id")), new DatabaseFuncs.GroupListener() {
-            @Override
-            public void onReceive(List<Map<String,Object>> groups, List<Map<String,Object>> groupLeaders) {
-                List<Map<String,Object>> newList = new ArrayList<>();
-                if(test){
-                    newList.addAll(groups);
-                    newList.addAll(groupLeaders);
-                }else{
-                    newList.addAll(groupLeaders);
-                }
-                GroupsAdapter ga = new GroupsAdapter(newList, getContext(), new PositionListener() {
-                    @Override
-                    public void itemClicked(Map<String,Object> group) {
-                        if(test){
-                            PositionListener.super.itemClicked(group);
-                            MainMenuActivity.selected = "groups";
-                            listener.itemClicked(group);
-                        }else{
-                            test = true;
-                            int vgID = ((ViewGroup)(requireView().getParent())).getId();
-                            pb.replaceFragment(requireActivity(),AssignTaskFragment.newInstance(group),vgID);
-                        }
+            db.getJoinedGroups(String.valueOf(user.get("Id")), new DatabaseFuncs.GroupListener() {
+                @Override
+                public void onReceive(List<Map<String, Object>> groups, List<Map<String, Object>> groupLeaders) {
+                    List<Map<String, Object>> newList = new ArrayList<>();
+                    if (test) {
+                        newList.addAll(groups);
+                        newList.addAll(groupLeaders);
+                    } else {
+                        newList.addAll(groupLeaders);
                     }
-                });
-                try {
-                    b.rvGroups.setAdapter(ga);
-                    b.rvGroups.setLayoutManager(new GridLayoutManager(getContext(), 2));
-                    b.etSearch.addTextChangedListener(new TextWatcher() {
+                    GroupsAdapter ga = new GroupsAdapter(newList, requireContext(), new PositionListener() {
                         @Override
-                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                        }
-
-                        @Override
-                        public void onTextChanged(CharSequence s, int start, int before, int count) {
-                            filteredgroups = new ArrayList<>();
-                            if(b.etSearch.getText().toString().isEmpty()){
-                                filteredgroups = newList;
-                            }else{
-                                newList.forEach(map -> {
-                                    if(String.valueOf(map.get("GroupName")).matches("(?i).*"+b.etSearch.getText().toString()+".*")){
-                                        filteredgroups.add(map);
-                                    }
-                                });
+                        public void itemClicked(Map<String, Object> group) {
+                            if (test) {
+                                PositionListener.super.itemClicked(group);
+                                MainMenuActivity.selected = "groups";
+                                listener.itemClicked(group);
+                            } else {
+                                test = true;
+                                int vgID = ((ViewGroup) (requireView().getParent())).getId();
+                                pb.replaceFragment(requireActivity(), AssignTaskFragment.newInstance(group), vgID);
                             }
-                            ga.refreshList(filteredgroups);
-                        }
-
-
-                        @Override
-                        public void afterTextChanged(Editable s) {
-
                         }
                     });
-                } catch (Exception ignored) {
+                    try {
+                        b.rvGroups.setAdapter(ga);
+                        b.rvGroups.setLayoutManager(new GridLayoutManager(getContext(), 2));
+                        b.etSearch.addTextChangedListener(new TextWatcher() {
+                            @Override
+                            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                            }
+
+                            @Override
+                            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                                filteredgroups = new ArrayList<>();
+                                if (b.etSearch.getText().toString().isEmpty()) {
+                                    filteredgroups = newList;
+                                } else {
+                                    newList.forEach(map -> {
+                                        if (String.valueOf(map.get("GroupName")).matches("(?i).*" + b.etSearch.getText().toString() + ".*")) {
+                                            filteredgroups.add(map);
+                                        }
+                                    });
+                                }
+                                ga.refreshList(filteredgroups);
+                            }
+
+
+                            @Override
+                            public void afterTextChanged(Editable s) {
+
+                            }
+                        });
+                    } catch (Exception ignored) {
+
+
+                    }
+                }
+
+                @Override
+                public void onReceive(List<Map<String, Object>> groups) {
+
 
                 }
-            }
 
-            @Override
-            public void onReceive(List<Map<String,Object>> groups) {
+                @Override
+                public void getDeadline(Timestamp timestamp) {
 
-
-            }
-
-            @Override
-            public void getDeadline(Timestamp timestamp) {
-
-            }
-        });
-    }
+                }
+            });
+        }
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

@@ -24,7 +24,6 @@ import java.util.Map;
 
 public class InvitesSubFragment extends Fragment  {
 
-    Gson gson = new Gson();
     DatabaseFuncs db = new DatabaseFuncs();
     FragmentInvitesBinding b;
     public interface PositionListener{

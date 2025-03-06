@@ -48,7 +48,7 @@ public class BottomDialogCreateFragment extends BottomSheetDialogFragment {
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 int a = menuItem.getItemId();
                 if(a == R.id.menu_ct){
-                    replaceFragment(JoinedGroupsSubFragment.newInstance(false),"Joined_Groups");
+                    replaceFragment(JoinedGroupsSubFragment.newInstance(MainMenuActivity.user),"Joined_Groups");
                     dismiss();
                 }
                 if(a == R.id.menu_cg){

@@ -742,12 +742,14 @@ public class DatabaseFuncs {
                 });
     }
     public void getUserById(String id, DataListener dataListener) {
-        final String[] b = {""};
+        db.enableNetwork();
         account.document(id).get().addOnCompleteListener(task -> {
-            DocumentSnapshot d = task.getResult();
-            Map<String, Object> user = d.getData();
-            user.put("Id", d.getId());
-            dataListener.onDataFound(user);
+            if(task.isComplete()){
+                DocumentSnapshot d = task.getResult();
+                Map<String, Object> user = d.getData();
+                user.put("Id", d.getId());
+                dataListener.onDataFound(user);
+            }
         });
     }
     public void createTask(String groupId, List<String> members,String taskName, String taskDescription, long taskDeadline, Button b, Context c,  CreateTaskListener listener){

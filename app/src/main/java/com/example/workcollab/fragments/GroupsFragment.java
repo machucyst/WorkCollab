@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.workcollab.PublicMethods;
 import com.example.workcollab.R;
+import com.example.workcollab.activities.MainMenuActivity;
 import com.example.workcollab.databinding.FragmentGroupsBinding;
 import com.google.android.material.navigation.NavigationBarView;
 
@@ -51,7 +52,7 @@ public class GroupsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        pb.replaceFragment(getChildFragmentManager(),JoinedGroupsSubFragment.newInstance(true),b.groupsFragmentFrame.getId());
+        pb.replaceFragment(getChildFragmentManager(),JoinedGroupsSubFragment.newInstance(MainMenuActivity.user),b.groupsFragmentFrame.getId());
         if (a) {
             pb.replaceFragment(getChildFragmentManager(),InvitesSubFragment.newInstance(),b.groupsFragmentFrame.getId());
             b.groupsMenu.setSelectedItemId(R.id.menu_invites);
@@ -59,7 +60,7 @@ public class GroupsFragment extends Fragment {
         b.groupsMenu.setOnItemSelectedListener(menuItem -> {
             int a = menuItem.getItemId();
             if(a == R.id.menu_joined){
-                pb.replaceFragment(getChildFragmentManager(),JoinedGroupsSubFragment.newInstance(true),b.groupsFragmentFrame.getId());
+                pb.replaceFragment(getChildFragmentManager(),JoinedGroupsSubFragment.newInstance(MainMenuActivity.user),b.groupsFragmentFrame.getId());
                 return true;
             }else if(a == R.id.menu_invites){
                 pb.replaceFragment(getChildFragmentManager(),InvitesSubFragment.newInstance(),b.groupsFragmentFrame.getId());
