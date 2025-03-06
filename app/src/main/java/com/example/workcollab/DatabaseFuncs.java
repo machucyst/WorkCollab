@@ -797,15 +797,13 @@ public class DatabaseFuncs {
     public void setReceivedMessagesListener(String userId, String groupId, MessagesReceivedListener listener) {
         //
         //  <TODO>
-        //      Limit the messages to minimize unnescessary consumption
+        //      Limit the messages to minimize unnescessary data consumption
         //      This shit is not my original code bruh you do it
         //      I already fixed chat
         //   </TODO>
         //
 
         messages.whereEqualTo("groupId", groupId)
-                .orderBy("timestamp", Query.Direction.DESCENDING)
-                .limit(50)
                 .addSnapshotListener((queryDocumentSnapshots, error) -> {
                     if (error != null) {
                         System.out.println("DEBUG Firestore error: " + error.getMessage());
