@@ -802,6 +802,7 @@ public class DatabaseFuncs {
         //      I already fixed chat
         //   </TODO>
         //
+        // TODO: 2nd chat problem, some messages dont get received
 
         messages.whereEqualTo("groupId", groupId)
                 .addSnapshotListener((queryDocumentSnapshots, error) -> {
@@ -818,18 +819,15 @@ public class DatabaseFuncs {
                     List<Message> updatedMessages = new ArrayList<>();
                     List<Message> newMessages = new ArrayList<>();
 
-                    assert queryDocumentSnapshots != null;
-
                     for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
                         QueryDocumentSnapshot d = dc.getDocument();
 
-                        if (userId.equals(d.getId())) continue;
+                        if (userId.equals(d.get("senderId"))) continue;
 
                         Timestamp messageTimestamp = (Timestamp) Objects.requireNonNull(d.get("timestamp"));
                         Timestamp adjustedTimestamp = listener.getCurrentTimestamp();
 
                         if (messageTimestamp.getSeconds() > adjustedTimestamp.getSeconds() || (messageTimestamp.getSeconds() == adjustedTimestamp.getSeconds() && messageTimestamp.getNanoseconds() > adjustedTimestamp.getNanoseconds())) {
-                            System.out.println(d + " aaaac");
                             Message message = MessageCreator(d);
                             message.setReplyId(String.valueOf(d.get("replyId")));
 
@@ -842,17 +840,7 @@ public class DatabaseFuncs {
                                     break;
                             }
                         }
-                        System.out.println("DEBUG Document Change: " + dc.getType() + " for " + d.getId());
-                        System.out.println("DEBUG Message Timestamp: " + d.get("timestamp"));
-                        System.out.println("DEBUG Listener Timestamp: " + listener.getCurrentTimestamp());
-                        System.out.println("DEBUG New Messages List: " + newMessages.size());
                     }
-
-                    // ✅ Only set iHateThisFix to false if messages were actually processed
-                    if (iHateThisFix && (!newMessages.isEmpty() || !updatedMessages.isEmpty())) {
-                        iHateThisFix = false;
-                    }
-
                     listener.onMessageReceived(newMessages, updatedMessages);
                 }
         );
