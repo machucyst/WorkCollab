@@ -827,7 +827,7 @@ public class DatabaseFuncs {
                         if (userId.equals(d.get("senderId"))) continue;
 
                         Timestamp messageTimestamp = (Timestamp) Objects.requireNonNull(d.get("timestamp"));
-                        Timestamp adjustedTimestamp = listener.getCurrentTimestamp();
+                        Timestamp adjustedTimestamp = new Timestamp(listener.getCurrentTimestamp().getSeconds()-5,0);
 
                         if (messageTimestamp.getSeconds() > adjustedTimestamp.getSeconds() || (messageTimestamp.getSeconds() == adjustedTimestamp.getSeconds() && messageTimestamp.getNanoseconds() > adjustedTimestamp.getNanoseconds())) {
                             Message message = MessageCreator(d);
