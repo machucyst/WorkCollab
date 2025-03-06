@@ -801,8 +801,13 @@ public class DatabaseFuncs {
 
             for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
                 QueryDocumentSnapshot d = dc.getDocument();
-                if (userId.equals(d.getId())) continue;
-                if (((Timestamp)d.get("timestamp")).compareTo(listener.getCurrentTimestamp()) > 0 ) {
+                if (userId.equals(d.get("senderId"))) continue;
+                Timestamp messageTimestamp = (Timestamp) d.get("timestamp");
+                Timestamp adjustedTimestamp = new Timestamp(listener.getCurrentTimestamp().getSeconds() - 5, 0);
+                if (messageTimestamp.getSeconds() > adjustedTimestamp.getSeconds() ||
+                        (messageTimestamp.getSeconds() == adjustedTimestamp.getSeconds() &&
+                                messageTimestamp.getNanoseconds() > adjustedTimestamp.getNanoseconds())) {
+
                     Message message = new Message(d.getId(), d.get("message").toString(), d.get("senderId").toString(), d.get("senderUsername").toString(), d.get("groupId").toString(), Uri.parse(d.get("file").toString()), d.get("fileType").toString(), (Timestamp) d.get("timestamp"));
                     message.setReplyId(d.get("replyId").toString());
                     switch (dc.getType()) {
