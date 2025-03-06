@@ -7,6 +7,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.example.workcollab.DatabaseFuncs;
+import com.example.workcollab.PublicMethods;
 import com.example.workcollab.activities.MainMenuActivity;
 import com.example.workcollab.adapters.GroupsAdapter;
 import com.example.workcollab.databinding.FragmentJoinedGroupsBinding;
@@ -29,17 +31,20 @@ public class JoinedGroupsSubFragment extends Fragment {
     DatabaseFuncs db = new DatabaseFuncs();
     FragmentJoinedGroupsBinding b;
     boolean test = true;
+    PublicMethods pb = new PublicMethods();
+    Map tesxt;
 
     public JoinedGroupsSubFragment() {
         // Required empty public constructor
+        // machu: fair enough
     }
     public interface PositionListener{
-        default void itemClicked(Map group){}
+        default void itemClicked(Map<String,Object> group){}
     }
     PositionListener listener;
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         if (context instanceof JoinedGroupsSubFragment.PositionListener) {
             listener = (JoinedGroupsSubFragment.PositionListener) context;
@@ -57,18 +62,17 @@ public class JoinedGroupsSubFragment extends Fragment {
         return f;
     }
 
-    List<Map> filteredgroups = new ArrayList<>();
+    List<Map<String,Object>> filteredgroups = new ArrayList<>();
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(getArguments() != null){
            test = getArguments().getBoolean("test");
         }
-//        System.out.println(user);
-        db.getJoinedGroups(MainMenuActivity.user.get("Id").toString(), new DatabaseFuncs.GroupListener() {
+        db.getJoinedGroups(String.valueOf(MainMenuActivity.user.get("Id")), new DatabaseFuncs.GroupListener() {
             @Override
-            public void onReceive(List<Map> groups, List<Map> groupLeaders) {
-                List<Map> newList = new ArrayList<>();
+            public void onReceive(List<Map<String,Object>> groups, List<Map<String,Object>> groupLeaders) {
+                List<Map<String,Object>> newList = new ArrayList<>();
                 if(test){
                     newList.addAll(groups);
                     newList.addAll(groupLeaders);
@@ -77,14 +81,15 @@ public class JoinedGroupsSubFragment extends Fragment {
                 }
                 GroupsAdapter ga = new GroupsAdapter(newList, getContext(), new PositionListener() {
                     @Override
-                    public void itemClicked(Map group) {
+                    public void itemClicked(Map<String,Object> group) {
                         if(test){
                             PositionListener.super.itemClicked(group);
                             MainMenuActivity.selected = "groups";
                             listener.itemClicked(group);
                         }else{
                             test = true;
-                            requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), AssignTaskFragment.newInstance(group)).addToBackStack(null).commit();
+                            int vgID = ((ViewGroup)(requireView().getParent())).getId();
+                            pb.replaceFragment(requireActivity(),AssignTaskFragment.newInstance(group),vgID);
                         }
                     }
                 });
@@ -104,28 +109,12 @@ public class JoinedGroupsSubFragment extends Fragment {
                                 filteredgroups = newList;
                             }else{
                                 newList.forEach(map -> {
-                                    if(map.get("GroupName").toString().matches("(?i).*"+b.etSearch.getText().toString()+".*")){
+                                    if(String.valueOf(map.get("GroupName")).matches("(?i).*"+b.etSearch.getText().toString()+".*")){
                                         filteredgroups.add(map);
                                     }
                                 });
                             }
                             ga.refreshList(filteredgroups);
-//                            GroupsAdapter ga = new GroupsAdapter(filteredgroups, getContext(), new PositionListener() {
-//                                @Override
-//                                public void itemClicked(Map group) {
-//                                    if(test){
-//                                        PositionListener.super.itemClicked(group);
-//                                        MainMenuActivity.selected = "groups";
-//                                        listener.itemClicked(group);
-//                                    }else{
-//                                        test = true;
-//                                        requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), AssignTaskFragment.newInstance(group)).addToBackStack(null).commit();
-//                                    }
-//
-//                                }
-//                            });
-//                            b.rvGroups.setAdapter(ga);
-//                            b.rvGroups.setLayoutManager(new GridLayoutManager(getContext(), 2));
                         }
 
 
@@ -134,13 +123,13 @@ public class JoinedGroupsSubFragment extends Fragment {
 
                         }
                     });
-                } catch (Exception ex) {
+                } catch (Exception ignored) {
 
                 }
             }
 
             @Override
-            public void onReceive(List<Map> groups) {
+            public void onReceive(List<Map<String,Object>> groups) {
 
 
             }
@@ -152,7 +141,7 @@ public class JoinedGroupsSubFragment extends Fragment {
         });
     }
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         b = FragmentJoinedGroupsBinding.inflate(inflater, container, false);

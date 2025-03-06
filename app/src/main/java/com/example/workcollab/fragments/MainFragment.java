@@ -69,27 +69,23 @@ public class MainFragment extends Fragment {
             @Override
             public void onInvitesClick() {
                 MainMenuActivity.backFlow.clear();
-                MainMenuActivity.backFlow.push("groups");
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment,GroupsFragment.newInstance(true)).commit();
+                replaceFragment("groups",GroupsFragment.newInstance(true));
             }
 
             @Override
             public void onCreateGroupClick() {
-                MainMenuActivity.backFlow.push("creategroups");
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment,CreateGroupFragment.newInstance()).commit();
+                replaceFragment("creategroups",CreateGroupFragment.newInstance());
             }
 
             @Override
             public void onProfileClick() {
                 MainMenuActivity.backFlow.clear();
-                MainMenuActivity.backFlow.push("profile");
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment,AccountFragment.newInstance()).commit();
+                replaceFragment("profile",AccountFragment.newInstance());
             }
-
         });
-        db.getTasks(MainMenuActivity.user.get("Id").toString(), new DatabaseFuncs.TaskListener() {
+        db.getTasks(String.valueOf(MainMenuActivity.user.get("Id")), new DatabaseFuncs.TaskListener() {
             @Override
-            public void onTaskRecieved(List<Map> tasks) {
+            public void onTaskReceived(List<Map<String, Object>> tasks) {
 //                tasks1.addAll(tasks);
 //                adapter = new DeadlinesAdapter(tasks1, getContext(), (position, task) -> {
 //                    // TODO: Task item click
@@ -108,6 +104,11 @@ public class MainFragment extends Fragment {
         }, false);
         return b.getRoot();
 
+    }
+    private void replaceFragment(String backflow, Fragment fragment){
+        MainMenuActivity.backFlow.push(backflow);
+        assert getActivity()!= null: "Activity is null";
+        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment,fragment).commit();
     }
 
     @Override

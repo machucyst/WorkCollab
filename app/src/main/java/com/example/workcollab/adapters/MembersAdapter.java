@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.workcollab.DatabaseFuncs;
 import com.example.workcollab.R;
 import com.example.workcollab.fragments.AssignTaskFragment;
 
@@ -21,12 +20,10 @@ import java.util.Map;
 
 public class MembersAdapter extends RecyclerView.Adapter<MembersAdapter.MyHandler>{
 
-    public final List<Map> user;
+    public final List<Map<String,Object>> user;
     Context context;
-    DatabaseFuncs db = new DatabaseFuncs();
-    private final AssignTaskFragment.PositionListener listener;
-    boolean k;
 
+    private final AssignTaskFragment.PositionListener listener;
 
     @NonNull
     @Override
@@ -38,21 +35,18 @@ public class MembersAdapter extends RecyclerView.Adapter<MembersAdapter.MyHandle
 
     @Override
     public void onBindViewHolder(@NonNull MyHandler holder, @SuppressLint("RecyclerView") int position) {
-        holder.tv_u.setText((user.get(position).get("Username")).toString());
-        Glide.with(context).asBitmap().load(user.get(position).get("Profile").toString()).into(holder.img);
-        holder.toggleBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                holder.k = !holder.k;
-                if (holder.k){
-                   AssignTaskFragment.members.add(user.get(position).get("Id").toString());
-                   Glide.with(context).load(R.drawable.ic_close).into(holder.toggleBtn);
-                }else{
-                    AssignTaskFragment.members.remove(user.get(position).get("Id").toString());
-                    Glide.with(context).load(R.drawable.ic_baseline_add_24).into(holder.toggleBtn);
-                }
-                System.out.println(AssignTaskFragment.members);
+        holder.tv_u.setText(String.valueOf(user.get(position).get("Username")));
+        Glide.with(context).asBitmap().load(String.valueOf(user.get(position).get("Profile"))).into(holder.img);
+        holder.toggleBtn.setOnClickListener(v -> {
+            holder.k = !holder.k;
+            if (holder.k){
+               AssignTaskFragment.members.add(String.valueOf(user.get(position).get("Id")));
+               Glide.with(context).load(R.drawable.ic_close).into(holder.toggleBtn);
+            }else{
+                AssignTaskFragment.members.remove(String.valueOf(user.get(position).get("Id")));
+                Glide.with(context).load(R.drawable.ic_baseline_add_24).into(holder.toggleBtn);
             }
+            System.out.println(AssignTaskFragment.members);
         });
 
     }
@@ -61,7 +55,7 @@ public class MembersAdapter extends RecyclerView.Adapter<MembersAdapter.MyHandle
     public int getItemCount() {
         return user.size();
     }
-    public MembersAdapter(List<Map> user, Context context, AssignTaskFragment.PositionListener listener){
+    public MembersAdapter(List<Map<String,Object>> user, Context context, AssignTaskFragment.PositionListener listener){
         this.user = user;
         this.context = context;
         this.listener = listener;
@@ -71,7 +65,6 @@ public class MembersAdapter extends RecyclerView.Adapter<MembersAdapter.MyHandle
         TextView tv_u;
         boolean k;
         ImageView toggleBtn,img;
-        View parent;
         public MyHandler(@NonNull View v){
             super(v);
             toggleBtn = v.findViewById(R.id.toggleAssign);

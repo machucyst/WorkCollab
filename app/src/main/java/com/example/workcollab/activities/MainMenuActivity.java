@@ -10,12 +10,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -25,9 +27,12 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.workcollab.DatabaseFuncs;
 import com.example.workcollab.NotifiationsService;
+import com.example.workcollab.PublicMethods;
 import com.example.workcollab.R;
 import com.example.workcollab.Utils;
 import com.example.workcollab.adapters.DeadlinesAdapter;
@@ -49,6 +54,8 @@ import com.example.workcollab.fragments.SelectedGroupSettingsFragment;
 import com.example.workcollab.fragments.SubmitTaskFragment;
 import com.example.workcollab.fragments.TaskListFragment;
 import com.example.workcollab.fragments.ViewMemberTasks;
+import com.google.android.material.bottomnavigation.BottomNavigationItemView;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -56,28 +63,29 @@ import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Stack;
 
 public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdapter.ClickItemListener,GroupMembersAdapter.PositionListener,SelectedGroupSettingsFragment.GroupPFP,AccountEditFragment.UpdateListener, AccountFragment.ButtonListeners, JoinedGroupsSubFragment.PositionListener, InvitesSubFragment.PositionListener, TaskListFragment.PositionListener, SubmitTaskFragment.onSubmitClick, ViewMemberTasks.PositionListener {
-    private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 32;
-    private static final int PICK_FILE_REQUEST = 123;
+    private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 32, PICK_FILE_REQUEST = 123;
     private static final long MAX_FILE_SIZE = 20 * 1024 * 1024; // 20 MB
 
     ActivityMainMenuBinding b;
     DialogLogoutConfirmBinding bl;
     static boolean activityRunning = false;
-    Map task;
+    Map<String,Object> task;
     static int index;
+    PublicMethods pb = new PublicMethods();
     public static Stack<String> backFlow = new Stack<>();
-    public static Map selectedgroup;
+    public static Map<String,Object> selectedGroup;
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     public static String selected = "main";
     Bundle bu = new Bundle();
-
-    public static Map user;
+    public static Map<String,Object> user;
 
     DatabaseFuncs db = new DatabaseFuncs();
 
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,14 +95,14 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
+        //Notifications stuff ask Plant
         backFlow.push("main");
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 201);
         } else {
             Intent a = new Intent(this, NotifiationsService.class);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !Utils.isServiceRunning(this, NotifiationsService.class)) {
+            if (!Utils.isServiceRunning(this, NotifiationsService.class)) {
                 startForegroundService(a);
             }
 
@@ -102,19 +110,17 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
 
 
         String email;
-        System.out.println(getUserEmail() + "EmailBeLike2");
-        if (!getUserEmail().equals("")) {
+        if (!getUserEmail().isEmpty()) {
             email = getUserEmail();
         } else {
             email = bu.getString("user-email");
         }
         FirebaseApp.initializeApp(this);
-        System.out.println(email + "whaiohgoeihaoieug aogoiaea");
         db.InitDB(email, new DatabaseFuncs.DataListener() {
 
             @Override
-            public void onDataFound(Map user) {
-                MainMenuActivity.user = user;
+            public void onDataFound(Map<String,Object> user) {
+                    MainMenuActivity.user = user;
                     reload();
                 }
 
@@ -123,6 +129,8 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
 
             }
         });
+
+        // Add Groups || Tasks Button
         b.btnFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -130,57 +138,29 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
                 dba.show(getSupportFragmentManager(),new BottomDialogCreateFragment().getTag());
             }
         });
-        b.bottomNavView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-
-                int a = menuItem.getItemId();
-                if(a == R.id.menu_home){
-                    replaceFragment(MainFragment.newInstance(),"main");
-                    backFlow.clear();
-                    backFlow.push("main");
-                } else if (a == R.id.menu_groups) {
-                    replaceFragment(GroupsFragment.newInstance(false),"groups");
-                    backFlow.clear();
-                    backFlow.push("groups");
-                }else if (a == R.id.menu_tasks){
-                    backFlow.clear();
-                    backFlow.push("tasks");
-                    replaceFragment(TaskListFragment.newInstance(false),"tasks");
-                }else if (a == R.id.menu_profile){
-                    replaceFragment(AccountFragment.newInstance(), "account");
-                    backFlow.clear();
-                    backFlow.push("profile");
-                }
-                return true;
-            }
-
-        });
-        b.bottomNavView.setOnItemReselectedListener(new NavigationBarView.OnItemReselectedListener() {
-            @Override
-            public void onNavigationItemReselected(@NonNull MenuItem menuItem) {
-                int a = menuItem.getItemId();
-                if(a == R.id.menu_home){
-                    replaceFragment(MainFragment.newInstance(),"main");
-                    backFlow.clear();
-                    backFlow.push("main");
-                } else if (a == R.id.menu_groups) {
-                    replaceFragment(GroupsFragment.newInstance(false),"groups");
-                    backFlow.clear();
-                    backFlow.push("groups");
-                }else if (a == R.id.menu_tasks){
-                    backFlow.clear();
-                    backFlow.push("tasks");
-                    replaceFragment(TaskListFragment.newInstance(false),"tasks");
-                }else if (a == R.id.menu_profile){
-                    replaceFragment(AccountFragment.newInstance(), "account");
-                    backFlow.clear();
-                    backFlow.push("profile");
-                }
-            }
-        });
-
+        // Bottom Nav View Button functions
+        b.bottomNavView.setOnItemSelectedListener(menuItem -> {navItemReselect(b.bottomNavView,menuItem); return true;});
+        b.bottomNavView.setOnItemReselectedListener(menuItem -> navItemReselect(b.bottomNavView,menuItem));
     }
+    private void navItemReselect(BottomNavigationView bnv, MenuItem menuItem){
+        int a = menuItem.getItemId();
+        if(a == R.id.menu_home){
+//            bnv.setSelected(R.id.menu_home);
+
+            replaceFragment(MainFragment.newInstance(),"main",true);
+        } else if (a == R.id.menu_groups) {
+//            bnv.setSelectedItemId(R.id.menu_groups);
+            replaceFragment(GroupsFragment.newInstance(false),"groups",true);
+        }else if (a == R.id.menu_tasks){
+//            bnv.setSelectedItemId(R.id.menu_tasks);
+            replaceFragment(TaskListFragment.newInstance(false),"tasks",true);
+        }else if (a == R.id.menu_profile){
+//            bnv.setSelectedItemId(R.id.menu_profile);
+            replaceFragment(AccountFragment.newInstance(),"profile",true);
+        }
+    }
+
+    // Image Editor Cropper Code
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -201,6 +181,7 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
                     options.setSaturationEnabled(false);
                     options.setSharpnessEnabled(false);
                     options.setShowCropGrid(false);
+                    assert sourceUri != null;
                     UCrop.of(sourceUri, destinationUri)
                             .withAspectRatio(1, 1)
                             .withMaxResultSize(450, 450)
@@ -211,32 +192,33 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
                 break;
             case UCrop.REQUEST_CROP:
             if (resultCode == RESULT_OK) {
+                assert data != null;
                 final Uri resultUri = UCrop.getOutput(data);
                 try {
                     switch (index){
                         case 10:
                         db.saveProfile(user, resultUri, new DatabaseFuncs.UpdateListener() {
                             @Override
-                            public void onUpdate(Map user) {
+                            public void onUpdate(Map<String,Object>  user) {
                                 MainMenuActivity.user = user;
-                                replaceFragment(AccountFragment.newInstance(), "Profile");
+                                replaceFragment(AccountFragment.newInstance(),"Profile",false);
                             }
                         });
                         break;
                         case 20:
-                            db.saveGroupProfile(selectedgroup, resultUri, new DatabaseFuncs.UpdateListener() {
+                            db.saveGroupProfile(selectedGroup, resultUri, new DatabaseFuncs.UpdateListener() {
                                 @Override
-                                public void onUpdate(Map user) {
-                                    replaceFragment(SelectedGroupFragment.newInstance(user),"selectedgroup");
+                                public void onUpdate(Map<String,Object> user) {
+                                    replaceFragment(SelectedGroupFragment.newInstance(user),"selectedgroup",false);
                                 }
                             });
                             break;
                     }
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                } catch (Exception ignored) {}
+
             } else if (resultCode == UCrop.RESULT_ERROR) {
+                assert data != null;
                 final Throwable cropError = UCrop.getError(data);
                 // Handle the error
             }
@@ -244,7 +226,10 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
             case PICK_FILE_REQUEST:
                 if (data != null) {
                     if(getFileSize(data.getData())<=MAX_FILE_SIZE){
-                        getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment,SubmitTaskFragment.newInstance(MainMenuActivity.this.task,data.getData())).commit();
+                        getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.frame_fragment,SubmitTaskFragment.newInstance(MainMenuActivity.this.task, Objects.requireNonNull(data.getData())))
+                                .commit();
                     }else{
                         Toast.makeText(this,"File size too large (20 MB Only)",Toast.LENGTH_SHORT).show();
                     }
@@ -257,45 +242,36 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
     }
     private long getFileSize(Uri uri) {
         Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+        assert cursor != null;
         int sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE);
         cursor.moveToFirst();
         long size = cursor.getLong(sizeIndex);
         cursor.close();
         return size;
     }
-
     private String getUserEmail() {
         SharedPreferences sharedPreferences = getSharedPreferences("UserLogInPreferences", Context.MODE_PRIVATE);
         return sharedPreferences.getString("user-email", "");
     }
-
     public void stayLogIn(String email) {
         SharedPreferences sharedPreferences = getSharedPreferences("UserLogInPreferences", Context.MODE_PRIVATE);
         sharedPreferences.edit().putString("user-email", email).apply();
     }
-    void complete(){
+    private void complete(){
+        //Clear auto login
         SharedPreferences sharedPreferences = getSharedPreferences("UserLogInPreferences", Context.MODE_PRIVATE);
         sharedPreferences.edit().remove("user-email").apply();
         FirebaseAuth.getInstance().signOut();
-    }
-    public void replaceFragment(Fragment fragment, String condition){
-        String waa = "";
-        if (!backFlow.isEmpty()) {
-            waa = backFlow.peek();
-        }
-        if(!selected.equals(condition) || !waa.equals(condition)){
-            selected = condition;
-            getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(),fragment).addToBackStack(null).commit();
-        }
     }
     public void logOutConfirm(){
         AlertDialog.Builder builder = new AlertDialog.Builder(MainMenuActivity.this);
 
         // Inflate the layout for the dialog
-        bl = DialogLogoutConfirmBinding.inflate(getLayoutInflater().from(this));
+        getLayoutInflater();
+        bl = DialogLogoutConfirmBinding.inflate(LayoutInflater.from(this));
         builder.setView(bl.getRoot());
         AlertDialog dialog = builder.create();
-        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawableResource(android.R.color.transparent);
         bl.Cancel.setOnClickListener(k->{
             dialog.cancel();
         });
@@ -306,54 +282,55 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
             complete();
             finish();
             selected="main";
-
         });
         dialog.show();
 
 
     }
+    private void replaceFragment(Fragment fragment, String condition, boolean bool){
+        PublicMethods pb = new PublicMethods();
+        pb.replaceFragment(getSupportFragmentManager(),fragment,b.frameFragment.getId(),condition,bool);
+    }
+    private void replaceFragment(Fragment activity){
+        PublicMethods pb = new PublicMethods();
+        pb.replaceFragment(getSupportFragmentManager(),activity,b.frameFragment.getId());
+    }
 
     @Override
     public void onBackPressed() {
-        if (false) {
+        try{
+            if (!backFlow.isEmpty()) {
+                backFlow.pop();
+            }
+            if (backFlow.isEmpty()) {
+                replaceFragment(MainFragment.newInstance(), "main",false);
+            } else {
+                Log.e("woah", backFlow.peek());
+                replaceFragment(changeFragment(backFlow.peek()), backFlow.peek(),false);
+            }
+        } catch (Exception e){
             super.onBackPressed();
-        }
 
-        if (!backFlow.isEmpty()) {
-            backFlow.pop();
-        }
-
-//        replaceFragment(MainFragment.newInstance(user), "main");
-        if (backFlow.isEmpty()) {
-            replaceFragment(MainFragment.newInstance(), "main");
-        } else {
-            Log.e("woah", backFlow.peek());
-            replaceFragment(changeFragment(backFlow.peek()), backFlow.peek());
         }
     }
-
-
     @Override
     public void onLogOutPress() {
         logOutConfirm();
     }
 
     @Override
-    public void onUpdatedEmail(Map user) {
-        stayLogIn(user.get("Email").toString());
+    public void onUpdatedEmail(Map<String,Object> user) {
+        stayLogIn(String.valueOf(user.get("Email")));
         MainMenuActivity.user = user;
     }
-
     @Override
     public void onPressChangePFP() {
-//        mGetCont.launch("image/*");
         index = 10;
         Intent intent = new Intent();
         intent.setType("image/*");  // For .doc files
         intent.setAction(Intent.ACTION_PICK);
         startActivityForResult(Intent.createChooser(intent,"Select Picture"), 101);
     }
-
     @Override
     public void onDeletedAccount() {
         complete();
@@ -361,48 +338,34 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
         startActivity(intent);
         finish();
     }
-
     @Override
-    public void itemClicked(Map group) {
+    public void itemClicked(Map<String,Object>  group) {
         JoinedGroupsSubFragment.PositionListener.super.itemClicked(group);
         backFlow.push("selectedgroup");
         getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(),SelectedGroupFragment.newInstance(group)).commit();
     }
     @Override
-    public void taskItemClicked(Map task){
-
-    }
-
-    @Override
-    public void onDeny(Map group) {
+    public void onDeny(Map<String,Object>  group) {
         InvitesSubFragment.PositionListener.super.onDeny(group);
+        if (group.isEmpty()){
+            replaceFragment(MainFragment.newInstance());
+        }
     }
 
     @Override
-    public void onAccept(Map group) {
+    public void onAccept(Map<String,Object>  group) {
         InvitesSubFragment.PositionListener.super.onAccept(group);
     }
 
     @Override
-    public void onSubmitClick(Map task) {
+    public void onSubmitClicked(Map<String,Object>  task) {
         MainMenuActivity.this.task = task;
-//        System.out.println("ajieoghaoie");
-//        if (ContextCompat.checkSelfPermission(MainMenuActivity.this,
-//                android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-//            System.out.println("ajieoghaoie11");
-//            ActivityCompat.requestPermissions(MainMenuActivity.this,
-//                    new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
-//        } else {
-//            System.out.println("ajieoghaoie23452");
-            openFilePicker();
-//        }
+        openFilePicker();
     }
-
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE) {
-            System.out.println(grantResults + " waawgaw");
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 openFilePicker();
             } else {
@@ -416,9 +379,7 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
         intent.setType("*/*");
         startActivityForResult(intent, PICK_FILE_REQUEST);
     }
-
-
-    public Fragment changeFragment(String fragmentTag) {
+    private Fragment changeFragment(String fragmentTag) {
         switch (fragmentTag) {
             case "main":
                 return MainFragment.newInstance();
@@ -429,7 +390,7 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
             case "creategroups":
                 return CreateGroupFragment.newInstance();
             case "selectgroup":
-                return SelectedGroupFragment.newInstance(selectedgroup);
+                return SelectedGroupFragment.newInstance(selectedGroup);
             case "appearance":
                 return AppearanceFragment.newInstance();
             case "tasks":
@@ -438,44 +399,43 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
         return MainFragment.newInstance();
     }
 
-    public void viewMemberTask(Map task) {
-
+    public void viewMemberTask(Map<String,Object> task) {
+        //TODO: yeah idk
     }
     public void reload(){
-        if(selected.equals("main")){
-            getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), MainFragment.newInstance()).commitAllowingStateLoss();
-            b.bottomNavView.setSelectedItemId(R.id.menu_home);
-            return;
-        }
-        if(selected.equals("groups")){
-            getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), MainFragment.newInstance()).commitAllowingStateLoss();
-            b.bottomNavView.setSelectedItemId(R.id.menu_home);
-            return;
-        }
-        if(selected.equals("account")){
-            getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), AccountFragment.newInstance()).commit();
-            b.bottomNavView.setSelectedItemId(R.id.menu_profile);
-            return;
-        }
-        if(selected.equals("tasks")){
-            getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), MainFragment.newInstance()).commitAllowingStateLoss();
-            b.bottomNavView.setSelectedItemId(R.id.menu_tasks);
-            return;
-        }
-        if (selected.equals("creategroups")) {
-            getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), CreateGroupFragment.newInstance()).commit();
-            return;
-        }
-        if (selected.equals("selectgroup")) {
-            getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), SelectedGroupFragment.newInstance(selectedgroup)).commit();
-            return;
-        }
-        if(selected.equals("appearance")) {
-            getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), AppearanceFragment.newInstance()).commit();
-            return;
-        }
-        if(selected.equals("tasks")) {
-            getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), TaskListFragment.newInstance(false)).commit();
+    //In case of Activity crash/changes reload fragment
+        switch (selected) {
+            case "main":
+                replaceFragment(MainFragment.newInstance());
+                b.bottomNavView.setSelectedItemId(R.id.menu_home);
+                return;
+            case "groups":
+                replaceFragment(GroupsFragment.newInstance(false));
+                b.bottomNavView.setSelectedItemId(R.id.menu_home);
+                return;
+            case "account":
+                replaceFragment(AccountFragment.newInstance());
+                b.bottomNavView.setSelectedItemId(R.id.menu_profile);
+                return;
+            case "creategroups":
+                replaceFragment(CreateGroupFragment.newInstance());
+                return;
+            case "selectgroup":
+                replaceFragment(SelectedGroupFragment.newInstance(selectedGroup));
+                return;
+            case "appearance":
+                replaceFragment(AppearanceFragment.newInstance());
+                return;
+            case "tasks":
+                replaceFragment(TaskListFragment.newInstance(false));
+                break;
+//        if(selected.equals("tasks")){
+//            getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(), MainFragment.newInstance()).commitAllowingStateLoss();
+//            b.bottomNavView.setSelectedItemId(R.id.menu_tasks);
+//            return;
+//        }
+//              >  idk why theres 2 tasks
+//              >  im very confused
         }
     }
 
@@ -490,7 +450,8 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
 
     @Override
     public void otherOne() {
-        getSupportFragmentManager().beginTransaction().replace(b.frameFragment.getId(),MainFragment.newInstance()).commit();
+        //TODO:???????????????????????
+        replaceFragment(MainFragment.newInstance());
     }
 
     @Override
@@ -518,13 +479,13 @@ public class MainMenuActivity extends AppCompatActivity implements DeadlinesAdap
     }
 
     @Override
-    public void onMemberClicked(Map user) {
-        BottomDialogViewProfileFragment bd = new BottomDialogViewProfileFragment(user.get("Id").toString());
-        bd.show(getSupportFragmentManager(),new BottomDialogViewProfileFragment(user.get("Id").toString()).getTag());
+    public void onMemberClicked(Map<String,Object> user) {
+        BottomDialogViewProfileFragment bd = new BottomDialogViewProfileFragment(String.valueOf(user.get("Id")));
+        bd.show(getSupportFragmentManager(),new BottomDialogViewProfileFragment(String.valueOf(user.get("Id"))).getTag());
     }
 
     @Override
-    public void onItemClick(int position, Map task) {
-        replaceFragment(SubmitTaskFragment.newInstance(task),"taskselected");
+    public void onItemClick(int position, Map<String,Object> task) {
+        replaceFragment(SubmitTaskFragment.newInstance(task),"taskselected",false);
     }
 }

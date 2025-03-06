@@ -1,7 +1,5 @@
 package com.example.workcollab;
 
-import static androidx.core.content.ContextCompat.getSystemService;
-
 import android.app.ActivityManager;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -21,8 +19,8 @@ public class Utils {
                 inputStream.close();
             }
             return bitmap;
-        } catch (Exception e) {}
-
+        } catch (Exception ignored) {
+        }
         return null;
     }
     /**

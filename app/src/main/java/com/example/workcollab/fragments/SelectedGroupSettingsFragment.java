@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -30,7 +31,8 @@ import java.util.Map;
  */
 public class SelectedGroupSettingsFragment extends Fragment {
     Gson gson = new Gson();
-    Map group;
+    Map<String,Object> group;
+    PublicMethods pb = new PublicMethods();
     DialogLogoutConfirmBinding dlc;
     DialogTextInputBinding dtb;
     public interface GroupPFP{
@@ -41,7 +43,7 @@ public class SelectedGroupSettingsFragment extends Fragment {
     GroupPFP listener;
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         if (context instanceof SelectedGroupSettingsFragment.GroupPFP) {
             listener = (SelectedGroupSettingsFragment.GroupPFP) context;
@@ -52,7 +54,7 @@ public class SelectedGroupSettingsFragment extends Fragment {
     }
 
     FragmentSelectedGroupSettingsBinding b;
-    public static SelectedGroupSettingsFragment newInstance(Map group) {
+    public static SelectedGroupSettingsFragment newInstance(Map<String,Object> group) {
         Bundle args = new Bundle();
         Gson gson = new Gson();
 //       args.putIn("stream",inputStream);
@@ -71,7 +73,7 @@ public class SelectedGroupSettingsFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         b = FragmentSelectedGroupSettingsBinding.inflate(inflater, container, false);
@@ -79,9 +81,10 @@ public class SelectedGroupSettingsFragment extends Fragment {
         b.nvAccountMenu.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                int vgID = ((ViewGroup) (requireView().getParent())).getId();
                 int a = menuItem.getItemId();
                 if(a == R.id.menu_groupmembers){
-                    requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), InviteMoreMembersFragment.newInstance(group)).addToBackStack(null).commit();
+                    pb.replaceFragment(requireActivity(),InviteMoreMembersFragment.newInstance(group),vgID);
                 }
                 if(a == R.id.menu_groupPicture){
                     listener.onGroupChanged();
@@ -92,18 +95,17 @@ public class SelectedGroupSettingsFragment extends Fragment {
                     builder.setView(dlc.getRoot());
                     AlertDialog dialog = builder.create();
                     dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-                    dlc.editAccount.setText("Are you sure you want to leave this group?");
-                    dlc.Cancel.setOnClickListener(k -> {
-                        dialog.dismiss();
-                    });
+                    dlc.editAccount.setText(R.string.are_you_sure_you_want_to_leave_this_group);
+                    dlc.Cancel.setOnClickListener(k -> dialog.dismiss());
                     dlc.Ok.setOnClickListener(k -> {
-                        db.leaveGroup(MainMenuActivity.user.get("Id").toString(), group.get("Id").toString(), new DatabaseFuncs.BasicListener() {
+                        db.leaveGroup(String.valueOf(MainMenuActivity.user.get("Id")), String.valueOf(group.get("Id")), new DatabaseFuncs.BasicListener() {
                             @Override
-                            public void BasicListener() {
+                            public void basicListener() {
                                 listener.otherOne();
                                 dialog.dismiss();
                             }
                         });
+                        Toast.makeText(getContext(), "Left the group",Toast.LENGTH_SHORT).show();
                     });
                     dialog.show();
                 }
@@ -112,15 +114,14 @@ public class SelectedGroupSettingsFragment extends Fragment {
                     dtb = DialogTextInputBinding.inflate(getLayoutInflater());
                     builder.setView(dtb.getRoot());
                     AlertDialog dialog = builder.create();
-                    dtb.editAccount.setText("Rename Group");
-                    dtb.Cancel.setOnClickListener(k -> {
-                        dialog.dismiss();
-                    });
+                    dtb.editAccount.setText(R.string.rename_group);
+                    dtb.Cancel.setOnClickListener(k -> dialog.dismiss());
                     dtb.Ok.setOnClickListener(k -> {
                         db.updateGroup(group, dtb.editText.getText().toString(),"GroupName", new DatabaseFuncs.UpdateListener() {
                             @Override
-                            public void onUpdate(Map user) {
-                                requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), SelectedGroupFragment.newInstance(user)).addToBackStack(null).commit();
+                            public void onUpdate(Map<String,Object> user) {
+
+                                pb.replaceFragment(requireActivity(),SelectedGroupFragment.newInstance(user),vgID);
                                 dialog.dismiss();
                             }
                         },2);

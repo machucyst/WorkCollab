@@ -1,6 +1,7 @@
 package com.example.workcollab.fragments;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.LayoutInflater;
@@ -9,10 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import com.example.workcollab.PublicMethods;
 import com.example.workcollab.R;
+import com.example.workcollab.activities.MainMenuActivity;
 import com.example.workcollab.databinding.FragmentSettingsBinding;
 import com.google.android.material.navigation.NavigationView;
 
@@ -33,6 +36,7 @@ public class SettingsFragment extends Fragment {
         b = FragmentSettingsBinding.bind(v);
         PublicMethods.menuTextChange(b.nvAccountMenu, R.id.additionalText,R.id.menu_notifications,"Notification Settings");
         b.nvAccountMenu.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 int a = menuItem.getItemId();
@@ -49,6 +53,13 @@ public class SettingsFragment extends Fragment {
             }
         });
         // Inflate the layout for this fragment
+        b.backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MainMenuActivity.backFlow.pop();
+                requireActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
         return v;
     }
 }

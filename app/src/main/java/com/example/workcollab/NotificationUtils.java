@@ -11,9 +11,6 @@ import android.os.Build;
 import android.util.Log;
 
 import androidx.core.app.NotificationManagerCompat;
-
-import java.util.Locale;
-
 public class NotificationUtils {
     public static String DEFAULT_CHANNEL = "default";
     public static int DEFAULT_GROUPER_ID = -1;

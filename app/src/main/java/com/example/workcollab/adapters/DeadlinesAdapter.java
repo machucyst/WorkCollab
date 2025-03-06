@@ -1,5 +1,6 @@
 package com.example.workcollab.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
 import android.view.LayoutInflater;
@@ -28,9 +29,9 @@ public class DeadlinesAdapter extends RecyclerView.Adapter<DeadlinesAdapter.VH> 
     Context context;
     HeaderClickListener headerClickListener;
     ClickItemListener listener;
-    Map user;
+    Map<String,Object> user;
 
-    public DeadlinesAdapter(List<Object> tasks, Context context, ClickItemListener listener, Map user) {
+    public DeadlinesAdapter(List<Object> tasks, Context context, ClickItemListener listener, Map<String,Object> user) {
         this.tasks = tasks;
         this.context = context;
         this.listener = listener;
@@ -44,24 +45,31 @@ public class DeadlinesAdapter extends RecyclerView.Adapter<DeadlinesAdapter.VH> 
         return new VH(CardDeadlineBinding.inflate(LayoutInflater.from(context), parent, false));
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
-    public void onBindViewHolder(@NonNull DeadlinesAdapter.VH holder, int position) {
+    public void onBindViewHolder(@NonNull DeadlinesAdapter.VH holder, @SuppressLint("RecyclerView") int position) {
         if (holder.bind instanceof CardDeadlineBinding) {
-            Map task = (Map) tasks.get(position);
-            if(task.get("TaskName").toString().equals("No tasks :)")){
+            Map<String,Object> task = (Map<String, Object>) tasks.get(position);
+            if(String.valueOf(task.get("TaskName")).equals("No tasks :)")){
                 return;
             }
             DeadlineModel d;
             try {
-                d = new DeadlineModel(task.get("ParentId").toString(), task.get("GroupName").toString(), Uri.parse(task.get("GroupImage").toString()), task);
+                d = new DeadlineModel(String.valueOf(task.get("ParentId")), String.valueOf(task.get("GroupName")), Uri.parse(String.valueOf(task.get("GroupImage"))), task);
             } catch (Exception e) {
-                d = new DeadlineModel(task.get("ParentId").toString(), task.get("GroupName").toString(), Uri.parse(""), task);
+                d = new DeadlineModel(String.valueOf(task.get("ParentId")), String.valueOf(task.get("GroupName")), Uri.parse(""), task);
             }
             // deadline card
             CardDeadlineBinding bind = (CardDeadlineBinding) holder.bind;
-            bind.deadline.setText("Submit before " + new SimpleDateFormat("MMMM d, yyyy", Locale.getDefault()).format(((Timestamp)d.getTask().get("TaskDeadline")).toDate()));
-            bind.groupName.setText("Group: "+d.getGroupName());
-            bind.taskName.setText(d.getTask().get("TaskName").toString());
+            bind.deadline.setText(String.format("Submit before %s",
+                    new SimpleDateFormat("MMMM d, yyyy", Locale.getDefault())
+                            .format(
+                                    (
+                                            (Timestamp) d.getTask().get("TaskDeadline")).toDate()
+                            )
+            ));
+            bind.groupName.setText(String.format("Group: %s", d.getGroupName()));
+            bind.taskName.setText(String.valueOf(d.getTask().get("TaskName")));
 
             if (!(task.get("GroupImage") == null)) {
                 Glide.with(context).load(d.getImage().toString()).into(bind.image);
@@ -69,8 +77,11 @@ public class DeadlinesAdapter extends RecyclerView.Adapter<DeadlinesAdapter.VH> 
                 bind.image.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_test));
             }
 
-            bind.parent.setOnClickListener(v -> {
-                listener.onItemClick(position, task);
+            bind.parent.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    listener.onItemClick(position, task);
+                }
             });
         } else if (holder.bind instanceof CardMainHeaderBinding) {
             CardMainHeaderBinding bind = (CardMainHeaderBinding) holder.bind;
@@ -96,10 +107,14 @@ public class DeadlinesAdapter extends RecyclerView.Adapter<DeadlinesAdapter.VH> 
                 headerClickListener.onProfileClick();
             });
             try{
-                Glide.with(context).load(user.get("Profile").toString()).into(bind.userImage);
-                bind.username.setText("Welcome\nto Work Collab, " + user.get("Username"));
+                Glide.with(context)
+                        .load(String.valueOf(user.get("Profile")))
+                        .into(bind.userImage);
+                bind.username.setText(String.format("Welcome\nto Work Collab, %s", user.get("Username")));
             }catch (Exception ex){
-                Glide.with(context).load(AppCompatResources.getDrawable(context, R.drawable.icon_test)).into(bind.userImage);
+                Glide.with(context)
+                        .load(AppCompatResources.getDrawable(context, R.drawable.icon_test))
+                        .into(bind.userImage);
             }
         }
     }
@@ -125,7 +140,7 @@ public class DeadlinesAdapter extends RecyclerView.Adapter<DeadlinesAdapter.VH> 
     }
 
     public interface ClickItemListener {
-        void onItemClick(int position, Map task);
+        void onItemClick(int position, Map<String,Object> task);
     }
 
     public interface HeaderClickListener {
@@ -138,7 +153,7 @@ public class DeadlinesAdapter extends RecyclerView.Adapter<DeadlinesAdapter.VH> 
         this.headerClickListener = headerClickListener;
     }
 
-    public void addRange(List<Map> tasks) {
+    public void addRange(List<Map<String, Object>> tasks) {
         int pos = this.tasks.size();
         this.tasks.addAll(tasks);
         notifyItemRangeInserted(pos, tasks.size());

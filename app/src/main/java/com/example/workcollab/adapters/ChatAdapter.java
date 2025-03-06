@@ -33,19 +33,18 @@ import java.util.Optional;
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     List<Message> messages;
     Context context;
-    Map currentUser;
+    Map<String,Object> currentUser;
     List<UserData> data = new ArrayList<>();
     DatabaseFuncs db;
     ReplyListener replyListener;
     ChatActivity.onProfileLongHoldPress listener;
 
-    public final static int TYPE_SELF = 1;
-    public final static int TYPE_OTHER = 2;
+    public final static int TYPE_SELF = 1, TYPE_OTHER = 2;
     public interface ReplyListener {
         void onReplySwiped(String message, String messageId, String replyTo);
     }
 
-    public ChatAdapter(List<Message> messages, Context context, Map user, DatabaseFuncs db, ReplyListener replyListener, ChatActivity.onProfileLongHoldPress listener) {
+    public ChatAdapter(List<Message> messages, Context context, Map<String,Object> user, DatabaseFuncs db, ReplyListener replyListener, ChatActivity.onProfileLongHoldPress listener) {
         this.messages = messages;
         this.context = context;
         this.currentUser = user;
@@ -84,7 +83,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
                 @Override
                 public void onDataFound(Map user) {
                     Message m = messages.get(position);
-                    UserData d = new UserData(m.getSenderId(), user.get("Username").toString(), Uri.parse(user.get("Profile").toString()));
+                    UserData d = new UserData(m.getSenderId(), String.valueOf(user.get("Username")), Uri.parse(String.valueOf(user.get("Profile"))));
                     messages.get(position).setSenderUsername(d.getUsername());
                     data.set(data.indexOf(d1), d);
                     Glide.with(context).asBitmap().load(d.getUri()).into(holder.image);
@@ -97,7 +96,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
                         }
                     });
                     holder.sender.setText(d.getUsername());
-
+                    //this IS the last resort
                     notifyDataSetChanged();
                 }
 
@@ -134,10 +133,10 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
 
                 Message r = reply.get();
-                holder.sender.setText( sender + " replied to " + (!sender.equals(r.getSenderUsername()) ? r.getSenderUsername() : "themself"));
+                holder.sender.setText(String.format("%s replied to %s", sender, !sender.equals(r.getSenderUsername()) ? r.getSenderUsername() : "themself"));
                 Optional<UserData> m = data.stream().filter(user -> user.getId().equals(reply.get().getSenderId())).findFirst();
                 if (m.isPresent()) {
-                    holder.sender.setText(sender + " replied to " + (!sender.equals(m.get().getUsername()) ? m.get().getUsername() : "themself"));
+                    holder.sender.setText(String.format("%s replied to %s", sender, !sender.equals(m.get().getUsername()) ? m.get().getUsername() : "themself"));
                 }
                 holder.reply.setText(r.getMessage());
             } else {
@@ -227,7 +226,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
     @Override
     public int getItemViewType(int position) {
-        if (currentUser.get("Id").toString().equals(messages.get(position).getSenderId())) {
+        if (String.valueOf(currentUser.get("Id")).equals(messages.get(position).getSenderId())) {
             return TYPE_SELF;
         } else {
             return TYPE_OTHER;

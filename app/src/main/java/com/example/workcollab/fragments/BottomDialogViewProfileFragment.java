@@ -19,6 +19,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.util.Map;
+import java.util.Objects;
 
 public class BottomDialogViewProfileFragment extends BottomSheetDialogFragment {
     FragmentDialogBottomBinding b;
@@ -38,7 +39,7 @@ public class BottomDialogViewProfileFragment extends BottomSheetDialogFragment {
 
     }
     TextView getAction(int id){
-        return b.nvAccountMenu.getMenu().findItem(id).getActionView().findViewById(R.id.additionalText);
+        return Objects.requireNonNull(b.nvAccountMenu.getMenu().findItem(id).getActionView()).findViewById(R.id.additionalText);
     }
     @SuppressLint("ResourceAsColor")
     @NonNull
@@ -54,11 +55,12 @@ public class BottomDialogViewProfileFragment extends BottomSheetDialogFragment {
         });
         db.getUserById(id, new DatabaseFuncs.DataListener() {
             @Override
-            public void onDataFound(Map user) {
+            public void onDataFound(Map<String,Object> user) {
+                assert getContext() != null: "Context is null how";
                 Glide.with(getContext()).asBitmap().load(Uri.parse(String.valueOf(user.get("Profile")))).into(b.profileImage);
-                getAction(R.id.view_contactnumber).setText(user.get("ContactNumber").toString());
-                getAction(R.id.view_email).setText(user.get("Email").toString());
-                getAction(R.id.view_username).setText(user.get("Username").toString());
+                getAction(R.id.view_contactnumber).setText( String.valueOf(user.get("ContactNumber")));
+                getAction(R.id.view_email).setText(String.valueOf(user.get("Email")));
+                getAction(R.id.view_username).setText(String.valueOf(user.get("Username")));
             }
 
             @Override

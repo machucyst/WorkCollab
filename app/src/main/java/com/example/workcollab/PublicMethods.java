@@ -1,6 +1,7 @@
 package com.example.workcollab;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -8,9 +9,16 @@ import android.os.Environment;
 import android.provider.OpenableColumns;
 import android.widget.TextView;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+
+import com.example.workcollab.activities.MainMenuActivity;
+import com.example.workcollab.fragments.AccountFragment;
 import com.google.android.material.navigation.NavigationView;
 
 import java.io.File;
+import java.util.Stack;
 
 public class PublicMethods {
     public static String DecryptPassword(String password){
@@ -114,16 +122,54 @@ public class PublicMethods {
             case ".gif":
             case ".apng":
             case ".mp4":
+            case ".mkv":
+            case ".webp":
                 return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
             case ".mp3":
                 return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC);
             default:
+            return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
         }
-        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
 
     }
     public static void menuTextChange(NavigationView nv, int id, int ItemId, String text){
         TextView a = (nv.getMenu().findItem(ItemId).getActionView().findViewById(id));
         a.setText(text);
+    }
+    public void replaceFragment(FragmentActivity activity, Fragment fragment, int id, String x, boolean b){
+        if(b) MainMenuActivity.backFlow.clear();
+        MainMenuActivity.backFlow.push(x);
+        assert activity != null;
+        activity.getSupportFragmentManager()
+                .beginTransaction()
+                .replace(id, fragment)
+                .commit();
+    }
+    public void replaceFragment(FragmentActivity activity, Fragment fragment,int id){
+        assert activity != null;
+        activity.getSupportFragmentManager()
+                .beginTransaction()
+                .replace(id, fragment)
+                .commit();
+    }
+    public void replaceFragment(FragmentManager fragmentManager,Fragment fragment, int id){
+        fragmentManager
+                .beginTransaction()
+                .replace(id,fragment)
+                .commit();
+    }
+    public void replaceFragment(FragmentManager fragmentManager, Fragment fragment, int id,String condition, boolean b){
+        if(b){
+            MainMenuActivity.backFlow.clear();
+            MainMenuActivity.backFlow.push(condition);
+        }
+        String placeholder = "";
+        if (!MainMenuActivity.backFlow.isEmpty()) {
+            placeholder = MainMenuActivity.backFlow.peek();
+        }
+        if(!MainMenuActivity.selected.equals(condition) || !placeholder.equals(condition)){
+            MainMenuActivity.selected = condition;
+            fragmentManager.beginTransaction().replace(id,fragment).addToBackStack(null).commit();
+        }
     }
 }

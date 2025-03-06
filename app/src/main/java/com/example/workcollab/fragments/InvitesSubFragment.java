@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -23,12 +25,11 @@ import java.util.Map;
 public class InvitesSubFragment extends Fragment  {
 
     Gson gson = new Gson();
-//    Map user;
     DatabaseFuncs db = new DatabaseFuncs();
     FragmentInvitesBinding b;
     public interface PositionListener{
-        default void onDeny(Map group){}
-        default void onAccept(Map group){}
+        default void onDeny(Map<String,Object>  group){}
+        default void onAccept(Map<String,Object>  group){}
     }
     InvitesSubFragment.PositionListener listener;
 
@@ -67,29 +68,29 @@ public class InvitesSubFragment extends Fragment  {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         b = FragmentInvitesBinding.inflate(inflater,container,false);
         InvitesAdapter a = new InvitesAdapter(new ArrayList<>(), getContext(), new PositionListener() {
             @Override
-            public void onDeny(Map group) {
+            public void onDeny(Map<String,Object> group) {
                 PositionListener.super.onDeny(group);
-                db.denyInvite(MainMenuActivity.user.get("Id").toString(), group.get("Id").toString(), new DatabaseFuncs.OptionListener() {
+                db.denyInvite(String.valueOf(MainMenuActivity.user.get("Id")), String.valueOf(group.get("Id")), new DatabaseFuncs.OptionListener() {
                     @Override
                     public void onOptionPicked() {
-                        System.out.println("Invite Denied");
+                        Toast.makeText(requireContext(),"Invite Denied",Toast.LENGTH_SHORT).show();
                     }
                 });
             }
 
             @Override
-            public void onAccept(Map group) {
+            public void onAccept(Map<String,Object> group) {
                 PositionListener.super.onAccept(group);
-                db.acceptInvite(MainMenuActivity.user.get("Id").toString(), group.get("Id").toString(), new DatabaseFuncs.OptionListener() {
+                db.acceptInvite(String.valueOf(MainMenuActivity.user.get("Id")), String.valueOf(group.get("Id")), new DatabaseFuncs.OptionListener() {
                     @Override
                     public void onOptionPicked() {
-                        System.out.println("Invite to "+group.get("Id").toString()+" Accepted");
+                        Toast.makeText(requireContext(), "Invite to "+group.get("GroupName")+" Accepted",Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -97,14 +98,14 @@ public class InvitesSubFragment extends Fragment  {
 
         b.rvInvites.setAdapter(a);
         b.rvInvites.setLayoutManager(new LinearLayoutManager(getContext()));
-        db.getInvites(MainMenuActivity.user.get("Id").toString(), new DatabaseFuncs.GroupListener() {
+        db.getInvites(String.valueOf(MainMenuActivity.user.get("Id")), new DatabaseFuncs.GroupListener() {
             @Override
-            public void onReceive(List<Map> groups, List<Map> groupLeaders) {
+            public void onReceive(List<Map<String,Object> > groups, List<Map<String,Object> > groupLeaders) {
 
             }
 
             @Override
-            public void onReceive(List<Map> groups) {
+            public void onReceive(List<Map<String,Object> > groups) {
                 a.addRange(groups);
             }
 

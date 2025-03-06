@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -14,13 +13,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.workcollab.DatabaseFuncs;
 import com.example.workcollab.activities.MainMenuActivity;
 import com.example.workcollab.adapters.DeadlinesAdapter;
-import com.example.workcollab.adapters.TasksAdapter;
 import com.example.workcollab.databinding.FragmentTaskListBinding;
 import com.google.firebase.Timestamp;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -99,7 +96,7 @@ public class TaskListFragment extends Fragment {
             b.rvTasks.setAdapter(adapter);
             db.getTasks(group.get("Id").toString(), group.get("GroupName").toString(), group.get("GroupImage") == null ? null : Uri.parse(group.get("GroupImage").toString()), new DatabaseFuncs.TaskListener() {
                 @Override
-                public void onTaskRecieved(List<Map> tasks) {
+                public void onTaskReceived(List<Map<String, Object>> tasks) {
                     adapter.addRange(tasks);
                 }
 
@@ -118,7 +115,7 @@ public class TaskListFragment extends Fragment {
             b.rvTasks.setAdapter(adapter);
            db.getTasks(MainMenuActivity.user.get("Id").toString(), new DatabaseFuncs.TaskListener() {
                @Override
-               public void onTaskRecieved(List<Map> tasks) {
+               public void onTaskReceived(List<Map<String, Object>> tasks) {
                    adapter.addRange(tasks);
 
                }

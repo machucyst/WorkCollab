@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
 import com.example.workcollab.DatabaseFuncs;
+import com.example.workcollab.PublicMethods;
 import com.example.workcollab.R;
 import com.example.workcollab.activities.ChatActivity;
 import com.example.workcollab.activities.MainMenuActivity;
@@ -33,11 +34,11 @@ import java.util.Map;
  * create an instance of this fragment.
  */
 public class SelectedGroupFragment extends Fragment {
-//    Map user;
-    static Map group;
+    Map group;
     DatabaseFuncs db = new DatabaseFuncs();
     DeadlinesAdapter adapter;
     FragmentSelectedGroupBinding b;
+
     public SelectedGroupFragment() {
         // Required empty public constructor
     }
@@ -56,7 +57,7 @@ public class SelectedGroupFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(group == null || (group != null && getArguments() != null)){
+        if(group == null || getArguments() != null){
             System.out.println(getArguments().getString("user") + "awjgoiaehgoaeig");
             Gson gson = new Gson();
             group = gson.fromJson(getArguments().getString("group"),Map.class);
@@ -65,15 +66,15 @@ public class SelectedGroupFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         b = FragmentSelectedGroupBinding.inflate(inflater,container,false);
-        b.tvGroupName.setText(group.get("GroupName").toString());
+        b.tvGroupName.setText(String.valueOf(group.get("GroupName")));
         try {
-            Glide.with(getContext()).load(group.get("GroupImage").toString()).into(b.ivGroupImage);
+            Glide.with(requireContext()).load(String.valueOf(group.get("GroupImage"))).into(b.ivGroupImage);
         }catch (Exception e){
-            Glide.with(getContext()).load(AppCompatResources.getDrawable(getContext(), R.drawable.icon_test)).into(b.ivGroupImage);
+            Glide.with(requireContext()).load(AppCompatResources.getDrawable(requireContext(), R.drawable.icon_test)).into(b.ivGroupImage);
         }
         System.out.println("Selected Group"+MainMenuActivity.user);
         System.out.println(group.get("isLeader"));
@@ -81,9 +82,8 @@ public class SelectedGroupFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 MainMenuActivity.selected="tasks";
-                MainMenuActivity.selectedgroup = group;
-                requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), TaskListFragment.newInstance(group)).addToBackStack(null).commit();
-
+                MainMenuActivity.selectedGroup = group;
+                replaceFragment(TaskListFragment.newInstance(group));
             }
         });
         b.btnChat.setOnClickListener(v -> {
@@ -97,67 +97,69 @@ public class SelectedGroupFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 MainMenuActivity.selected="tasks";
-                MainMenuActivity.selectedgroup = group;
-                requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), SelectedGroupSettingsFragment.newInstance(group)).addToBackStack(null).commit();
-
+                MainMenuActivity.selectedGroup = group;
+                replaceFragment(SelectedGroupSettingsFragment.newInstance(group));
             }
         });
 
         adapter = new DeadlinesAdapter(new ArrayList<>(), getContext(), (position, task) -> {
             MainMenuActivity.backFlow.push("viewtask");
-            if(Boolean.parseBoolean(group.get("isLeader").toString())){
-                requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), ViewMemberTasks.newInstance(task)).addToBackStack(null).commit();
+            if(Boolean.parseBoolean(String.valueOf(group.get("isLeader")))){
+                replaceFragment(ViewMemberTasks.newInstance(task));
             }else{
-                requireActivity().getSupportFragmentManager().beginTransaction().replace(((ViewGroup) (getView().getParent())).getId(), SubmitTaskFragment.newInstance(task)).addToBackStack(null).commit();
+                replaceFragment(SubmitTaskFragment.newInstance(task));
             }
         }, MainMenuActivity.user);
         b.rvDeadlines.setLayoutManager(new LinearLayoutManager(getContext()));
         b.rvDeadlines.setAdapter(adapter);
 
-        db.getTasks(group.get("Id").toString(), group.get("GroupName").toString(), group.get("GroupImage") == null ? null : Uri.parse(group.get("GroupImage").toString()), new DatabaseFuncs.TaskListener() {
-            @Override
-            public void onTaskRecieved(List<Map> tasks) {
-                adapter.addRange(tasks);
-                if (adapter.tasks.size() > 0) {
-                    b.rvDeadlines.setVisibility(View.VISIBLE);
-                    b.waa.setVisibility(View.VISIBLE);
-                } else {
-                    b.rvDeadlines.setVisibility(View.GONE);
-                    b.waa.setVisibility(View.GONE);
-                }
-
-                adapter.setHeaderClickListener(new DeadlinesAdapter.HeaderClickListener() {
+        db.getTasks(String.valueOf(group.get("Id")),
+                String.valueOf(group.get("GroupName")),
+                group.get("GroupImage") == null ? null : Uri.parse(String.valueOf(group.get("GroupImage"))),
+                new DatabaseFuncs.TaskListener() {
                     @Override
-                    public void onInvitesClick() {
-                        MainMenuActivity.backFlow.clear();
-                        MainMenuActivity.backFlow.push("groups");
-                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment,GroupsFragment.newInstance(true)).commit();
+                    public void onTaskReceived(List<Map<String, Object>> tasks) {
+                        adapter.addRange(tasks);
+                        if (!adapter.tasks.isEmpty()) {
+                            b.rvDeadlines.setVisibility(View.VISIBLE);
+                            b.waa.setVisibility(View.VISIBLE);
+                        } else {
+                            b.rvDeadlines.setVisibility(View.GONE);
+                            b.waa.setVisibility(View.GONE);
+                        }
+                        adapter.setHeaderClickListener(new DeadlinesAdapter.HeaderClickListener() {
+                            @Override
+                            public void onInvitesClick() {
+                                replaceFragment(GroupsFragment.newInstance(true),"groups",true);
+                            }
+
+                            @Override
+                            public void onCreateGroupClick() {
+                               replaceFragment(CreateGroupFragment.newInstance(),"creategroups",false);
+                            }
+
+                            @Override
+                            public void onProfileClick() {
+                                replaceFragment(AccountFragment.newInstance(),"profile",true);
+                            }
+                        });
                     }
 
                     @Override
-                    public void onCreateGroupClick() {
-                        MainMenuActivity.backFlow.push("creategroups");
-                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment,CreateGroupFragment.newInstance()).commit();
-                    }
+                    public void getDeadline(Timestamp timestamp) {
 
-                    @Override
-                    public void onProfileClick() {
-                        MainMenuActivity.backFlow.clear();
-                        MainMenuActivity.backFlow.push("profile");
-                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment,AccountFragment.newInstance()).commit();
                     }
                 });
-            }
-
-            @Override
-            public void getDeadline(Timestamp timestamp) {
-
-            }
-        });
-
         return b.getRoot();
     }
-
+    private void replaceFragment(Fragment fragment,String condition, boolean bool){
+        PublicMethods pb = new PublicMethods();
+        pb.replaceFragment(getActivity(),fragment,R.id.frame_fragment,condition,bool);
+    }
+    private void replaceFragment(Fragment fragment){
+        PublicMethods pb = new PublicMethods();
+        pb.replaceFragment(requireActivity(),fragment,R.id.frame_fragment);
+    }
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);

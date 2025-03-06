@@ -21,17 +21,16 @@ import com.example.workcollab.fragments.CreateGroupFragment;
 import java.util.List;
 import java.util.Map;
 
-public class CreateGroupsUsersAdapter extends RecyclerView.Adapter<CreateGroupsUsersAdapter.MyHandler> {
+public class CreateGroupsUsersAdapter extends RecyclerView.Adapter<CreateGroupsUsersAdapter.MyHandler>{
 
-    public final List<Map> groups;
+    public final List<Map<String,Object>> groups;
     private final Context context;
-    public List<Map> a;
-    DatabaseFuncs db = new DatabaseFuncs();
-
-
-    public CreateGroupsUsersAdapter(Context context, List<Map> groups) {
+    public List<Map<String,Object>> a;
+    private final CreateGroupFragment.onRemoveListener listener;
+    public CreateGroupsUsersAdapter(Context context, List<Map<String,Object>> groups, CreateGroupFragment.onRemoveListener listener) {
         this.context = context;
         this.groups = groups;
+        this.listener = listener;
     }
 
     @NonNull
@@ -45,10 +44,10 @@ public class CreateGroupsUsersAdapter extends RecyclerView.Adapter<CreateGroupsU
     @Override
     public void onBindViewHolder(@NonNull MyHandler holder, @SuppressLint("RecyclerView") int position) {
         System.out.println(groups);
-        holder.username.setText(groups.get(position).get("Username").toString());
-        holder.useremail.setText(groups.get(position).get("Email").toString());
+        holder.username.setText(String.valueOf(groups.get(position).get("Username")));
+        holder.useremail.setText(String.valueOf(groups.get(position).get("Email")));
         try {
-            Glide.with(context).asBitmap().load(Uri.parse(groups.get(position).get("Profile").toString())).into(holder.img);
+            Glide.with(context).asBitmap().load(Uri.parse(String.valueOf( groups.get(position).get("Profile") ))).into(holder.img);
         } catch (Exception ex) {
             Glide.with(context).asBitmap().load(R.drawable.icon_test).into(holder.img);
         }
@@ -57,6 +56,7 @@ public class CreateGroupsUsersAdapter extends RecyclerView.Adapter<CreateGroupsU
             public void onClick(View v) {
                 if (position != RecyclerView.NO_POSITION) {
                     removeItem(position);
+                    listener.onRemovedItem(groups);
                     CreateGroupFragment.amabatuhavefun = groups;
                 }
             }
@@ -65,7 +65,7 @@ public class CreateGroupsUsersAdapter extends RecyclerView.Adapter<CreateGroupsU
 
     }
 
-    public List<Map> getGroups() {
+    public List<Map<String,Object>> getGroups() {
         System.out.println(a);
         return a;
     }

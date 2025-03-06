@@ -24,13 +24,6 @@
                 android:orientation="horizontal"
                 android:padding="5dp">
 
-                <ImageView
-                    android:id="@+id/backbtn"
-                    app:tint="@color/textColor"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/ic_back_arrow" />
-
                 <TextView
                     android:id="@+id/editHeader"
                     style="@style/SecondTextStyle"
@@ -92,6 +85,30 @@
                 </androidx.cardview.widget.CardView>
             </FrameLayout>
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/backBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:tint="@color/white"
+                    app:backgroundTint="@color/bg_light"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.045"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.834"
+                    app:srcCompat="@drawable/ic_back_arrow"
+                    tools:ignore="ContentDescription" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
         </LinearLayout>
+
     </FrameLayout>
+
 </layout>

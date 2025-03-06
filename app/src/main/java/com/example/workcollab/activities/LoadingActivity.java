@@ -24,14 +24,15 @@ public class LoadingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(getUserEmail().equals("") || mAuth.getCurrentUser() == null){
-                Intent intent = new Intent(LoadingActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
+        // AUTO LOGIN
+        if(getUserEmail().isEmpty() || mAuth.getCurrentUser() == null){
+            Intent intent = new Intent(LoadingActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
         }else{
-                db.InitDB(getUserEmail(), new DatabaseFuncs.DataListener() {
+            db.InitDB(getUserEmail(), new DatabaseFuncs.DataListener() {
                 @Override
-                public void onDataFound(Map user) {
+                public void onDataFound(Map<String,Object> user) {
                     Intent intent = new Intent(LoadingActivity.this, MainMenuActivity.class);
                     y = true;
                     startActivity(intent);
@@ -40,7 +41,7 @@ public class LoadingActivity extends AppCompatActivity {
 
                 @Override
                 public void noDuplicateUser() {
-                    Toast.makeText(LoadingActivity.this, "Error Loading Account", Toast.LENGTH_SHORT);
+                    Toast.makeText(LoadingActivity.this, "Error Loading Account", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(LoadingActivity.this, MainActivity.class);
                     startActivity(intent);
                     finish();
